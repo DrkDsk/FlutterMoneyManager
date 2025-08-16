@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/features/ui/pages/home_page.dart';
+import 'package:flutter_money_manager/src/core/theme/theme__helper.dart';
+import 'package:flutter_money_manager/src/features/ui/screens/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,11 +10,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const HomePage(),
+      theme: lightTheme(),
+      home: const HomeScreen(),
     );
   }
 }
