@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/features/ui/blocs/home_cubit.dart';
+import 'package:flutter_money_manager/src/core/shared/home/home_builder.dart';
 import 'package:flutter_money_manager/src/features/ui/blocs/home_state.dart';
+import 'package:flutter_money_manager/src/features/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/ui/pages/daily_home_page.dart';
 import 'package:flutter_money_manager/src/features/ui/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   late PageController _pageController;
   late NavigationCubit _homeCubit;
 
@@ -37,25 +37,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: theme.colorScheme.primary,
-      bottomNavigationBar: CustomBottomAppBar(onTap: onTapBottomNavigationBar),
+      bottomNavigationBar: BlocSelector<NavigationCubit, NavigationState, int>(
+        selector: (state) {
+          return state.pageIndex;
+        },
+        builder: (context, pageIndex) {
+          return CustomBottomAppBar(
+            pageIndex: pageIndex,
+            onTap: onTapBottomNavigationBar,
+            items: HomeBuilder.items,
+          );
+        },
+      ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
-              child: PageView(
-                controller: _pageController,
-                children: const [
-                  DailyHomePage(),
-                  Text("Acounts"),
-                  Text("Stats")
-                ],
-              )
-            ),
+                child: PageView(
+              controller: _pageController,
+              children: const [DailyHomePage(), Text("Acounts"), Text("Stats")],
+            )),
           ],
         ),
       ),
