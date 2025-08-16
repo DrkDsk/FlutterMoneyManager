@@ -4,14 +4,14 @@ import 'package:flutter_money_manager/src/features/ui/widgets/home_tab_bar.dart'
 import 'package:flutter_money_manager/src/features/ui/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter_money_manager/src/features/ui/widgets/summary_content.dart';
 
-class WelcomePage extends StatefulWidget {
-  const WelcomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<WelcomePage> createState() => _WelcomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage>
+class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
