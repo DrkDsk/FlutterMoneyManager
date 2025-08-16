@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/theme/theme__helper.dart';
-import 'package:flutter_money_manager/src/features/ui/pages/home_page.dart';
+import 'package:flutter_money_manager/src/features/ui/screens/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: lightTheme(),
-      home: const HomePage(),
+      home: const HomeScreen(),
     );
   }
 }
