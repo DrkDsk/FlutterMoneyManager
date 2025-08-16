@@ -23,8 +23,11 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: theme.colorScheme.primary,
       bottomNavigationBar: const CustomBottomAppBar(),
       body: SafeArea(
         child: Column(

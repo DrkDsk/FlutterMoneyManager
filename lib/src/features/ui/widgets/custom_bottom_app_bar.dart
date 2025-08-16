@@ -7,41 +7,42 @@ class CustomBottomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      color: Colors.black,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            children: [
-              Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: Colors.blue.shade600),
-                  child: const Icon(Icons.home)),
-              const SizedBox(height: 5),
-              const Text(
-                "Home",
-                style: TextStyle(color: Colors.white),
-              )
-            ],
+
+    final theme = Theme.of(context);
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(34)),
+      child: BottomNavigationBar(
+        currentIndex: 2,
+        selectedItemColor: theme.colorScheme.onPrimary,
+        unselectedItemColor: theme.colorScheme.surface,
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 14,
+        ),
+        backgroundColor: Colors.blueAccent.shade100,
+        items: [
+          BottomNavigationBarItem(
+            icon: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+              child: Icon(Icons.home, color: theme.colorScheme.onPrimary),
+            ),
+            label: "Home"
           ),
-          const SizedBox(width: 20),
-          Column(
-            children: [
-              Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: Colors.blue.shade600),
-                  child: const Icon(Icons.home)),
-              const SizedBox(height: 5),
-              const Text(
-                "Accounts",
-                style: TextStyle(color: Colors.white),
-              )
-            ],
+          BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                child: Icon(Icons.account_balance_sharp, color: theme.colorScheme.onPrimary),
+              ),
+              label: "Accounts"
           ),
-        ],
+          BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                child: Icon(Icons.bar_chart_sharp, color: theme.colorScheme.onPrimary),
+              ),
+              label: "Stats",
+          ),
+        ]
       ),
     );
   }
