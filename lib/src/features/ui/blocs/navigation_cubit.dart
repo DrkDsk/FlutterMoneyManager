@@ -1,15 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter_money_manager/src/features/ui/blocs/home_state.dart';
 
-class NavigationCubit extends Cubit<NavigationState> {
-  NavigationCubit() : super(const NavigationState());
+class NavigationCubit extends Cubit<int> {
+  NavigationCubit() : super(0);
 
 
   void setPageIndex(int value) {
-    emit(state.copyWith(pageIndex: value));
+    emit(value);
   }
 
   void setTabIndex(int value) {
-    emit(state.copyWith(tabIndex: value));
+    emit(value);
   }
 }
