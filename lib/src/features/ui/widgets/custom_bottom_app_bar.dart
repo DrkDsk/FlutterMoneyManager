@@ -20,8 +20,8 @@ class CustomBottomAppBar extends StatelessWidget {
       child: BottomNavigationBar(
           onTap: onTap,
           currentIndex: pageIndex,
-          selectedItemColor: theme.colorScheme.onPrimary,
-          unselectedItemColor: theme.colorScheme.surface,
+          selectedItemColor: theme.colorScheme.primary,
+          unselectedItemColor: theme.colorScheme.onPrimary,
           unselectedLabelStyle: const TextStyle(
             fontSize: 14,
           ),
