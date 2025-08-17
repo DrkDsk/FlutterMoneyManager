@@ -25,11 +25,11 @@ class HomeTabBar extends StatelessWidget {
             style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
           Text(
-            "Daily",
+            "Calendar",
             style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
           Text(
-            "Daily",
+            "Summary",
             style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
         ]);
