@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
-import 'package:flutter_money_manager/src/features/ui/widgets/daily_balance_widget.dart';
-import 'package:flutter_money_manager/src/features/ui/widgets/home_tab_bar.dart';
-import 'package:flutter_money_manager/src/features/ui/widgets/summary_content.dart';
+import 'package:flutter_money_manager/src/features/home/ui/widgets/daily_balance_widget.dart';
+import 'package:flutter_money_manager/src/features/home/ui/widgets/home_tab_bar.dart';
+import 'package:flutter_money_manager/src/features/home/ui/widgets/summary_content.dart';
 
 class DailyHomePage extends StatefulWidget {
   const DailyHomePage({super.key});
