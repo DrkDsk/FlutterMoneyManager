@@ -40,7 +40,7 @@ class _DailyHomePageState extends State<DailyHomePage> with TickerProviderStateM
             margin: const EdgeInsets.symmetric(horizontal: 8),
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             decoration: BoxDecoration(
-                color: AppColors.secondary.withOpacity(0.3),
+                color: AppColors.secondary.withOpacity(0.60),
                 borderRadius: BorderRadius.circular(12)),
             child: HomeTabBar(tabController: _tabController),
           ),

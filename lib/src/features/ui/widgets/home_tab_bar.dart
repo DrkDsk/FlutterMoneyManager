@@ -10,24 +10,27 @@ class HomeTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final theme = Theme.of(context);
+
     return TabBar(
         controller: _tabController,
         dividerColor: Colors.transparent,
         onTap: (value) {
 
         },
-        tabs: const [
+        tabs: [
           Text(
             "Daily",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
           Text(
             "Daily",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
           Text(
             "Daily",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
         ]);
   }

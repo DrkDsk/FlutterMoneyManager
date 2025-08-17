@@ -52,7 +52,7 @@ class DailyBalanceWidget extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6),
                                 decoration: BoxDecoration(
-                                    color: theme.colorScheme.onSecondary.withOpacity(0.20),
+                                    color: theme.colorScheme.onPrimary.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(4)),
                                 child: Text("Friday",
                                     style: theme.textTheme.bodyMedium),
@@ -82,10 +82,9 @@ class DailyBalanceWidget extends StatelessWidget {
                                 child: const Icon(Icons.money),
                               ),
                               const SizedBox(width: 8),
-                              const Text(
+                              Text(
                                 "Salary",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
+                                style: theme.textTheme.bodyMedium,
                               )
                             ],
                           ),
