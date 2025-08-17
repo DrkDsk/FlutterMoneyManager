@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/shared/home/home_builder.dart';
-import 'package:flutter_money_manager/src/features/ui/blocs/home_state.dart';
 import 'package:flutter_money_manager/src/features/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/ui/pages/daily_home_page.dart';
 import 'package:flutter_money_manager/src/features/ui/widgets/custom_bottom_app_bar.dart';
@@ -37,13 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.primary,
-      bottomNavigationBar: BlocSelector<NavigationCubit, NavigationState, int>(
+      backgroundColor: colorScheme.primary,
+      bottomNavigationBar: BlocSelector<NavigationCubit, int, int>(
         selector: (state) {
-          return state.pageIndex;
+          return state;
         },
         builder: (context, pageIndex) {
           return CustomBottomAppBar(
@@ -57,9 +56,13 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Expanded(
-                child: PageView(
-              controller: _pageController,
-              children: const [DailyHomePage(), Text("Acounts"), Text("Stats")],
+              child: PageView(
+                controller: _pageController,
+                children: const [
+                  DailyHomePage(),
+                  Text("Acounts"),
+                  Text("Stats")
+                ],
             )),
           ],
         ),

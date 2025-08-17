@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 
 ColorScheme colorScheme = ColorScheme.light(
-  primary: Colors.white24.withOpacity(0.20),
-  onPrimary: Colors.white,
-  secondary: Colors.blueAccent.shade400,
-  onSecondary:  Colors.white38,
-  surface: Colors.grey.shade700
+  primary: AppColors.primary,
+  onPrimary: AppColors.onPrimary,
+  secondary: AppColors.secondary,
+  onSecondary:  AppColors.onSecondary,
+  surface: AppColors.surface
 );
 
 ThemeData lightTheme () {
@@ -20,7 +21,7 @@ ThemeData lightTheme () {
               color: colorScheme.onPrimary
           ),
           bodyMedium: TextStyle(
-              fontSize: 25,
+              fontSize: 20,
               fontWeight: FontWeight.w500,
               color: colorScheme.onPrimary
           ),
