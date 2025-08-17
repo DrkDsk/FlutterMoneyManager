@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/builders/calendar/custom_calendar_builder.dart';
+import 'package:flutter_money_manager/src/core/shared/home/ui/pages/header_calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -29,39 +30,57 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return TableCalendar(
-      availableGestures: AvailableGestures.horizontalSwipe,
-      headerVisible: false,
-      focusedDay: _focusedDay,
-      firstDay: _firstDay,
-      lastDay: _lastDay,
-      selectedDayPredicate: (day) {
-        return isSameDay(_selectedDate, day);
-      },
-      onDayLongPressed: (selectedDay, focusedDay) {
-
-      },
-      onDaySelected: (selectedDay, focusedDay) {
-        setState(() {
-          _selectedDate = selectedDay;
-        });
-      },
-      daysOfWeekStyle: DaysOfWeekStyle(
-        dowTextFormatter: (date, locale) {
-          return date.dayName.substring(0, 3);
-        },
-        weekdayStyle:
-            TextStyle(fontSize: 14.0, color: theme.colorScheme.secondary),
-        weekendStyle: TextStyle(
-            fontSize: 14.0,
-            color: theme.colorScheme.secondary.withOpacity(0.45)),
-      ),
-      calendarBuilders: const CalendarBuilders(
-        todayBuilder: CustomCalendarBuilder.todayBuilder,
-        defaultBuilder: CustomCalendarBuilder.defaultBuilder,
-        outsideBuilder: CustomCalendarBuilder.outsideBuilder,
-        selectedBuilder: CustomCalendarBuilder.selectedBuilder,
-      ),
+    return Column(
+      children: [
+        HeaderCalendar(
+          focusedDate: _focusedDay,
+          onLeftTap: () {
+            setState(() {
+              _focusedDay = _focusedDay.subtract(const Duration(days: 30));
+            });
+          },
+          onRightTap: () {
+            setState(() {
+              _focusedDay = _focusedDay.add(const Duration(days: 30));
+            });
+          }
+        ),
+        const SizedBox(height: 20),
+        TableCalendar(
+          headerVisible: false,
+          focusedDay: _focusedDay,
+          firstDay: _firstDay,
+          lastDay: _lastDay,
+          rowHeight: 60,
+          selectedDayPredicate: (day) {
+            return isSameDay(day, _selectedDate);
+          },
+          onDayLongPressed: (selectedDay, focusedDay) {},
+          calendarFormat: CalendarFormat.month,
+          onDaySelected: (selectedDay, focusedDay) {
+            setState(() {
+              _selectedDate = selectedDay;
+              _focusedDay = focusedDay;
+            });
+          },
+          daysOfWeekStyle: DaysOfWeekStyle(
+            dowTextFormatter: (date, locale) {
+              return date.dayName.substring(0, 3);
+            },
+            weekdayStyle:
+                TextStyle(fontSize: 14.0, color: theme.colorScheme.secondary),
+            weekendStyle: TextStyle(
+                fontSize: 14.0,
+                color: theme.colorScheme.secondary.withOpacity(0.45)),
+          ),
+          calendarBuilders: const CalendarBuilders(
+            todayBuilder: CustomCalendarBuilder.todayBuilder,
+            defaultBuilder: CustomCalendarBuilder.defaultBuilder,
+            outsideBuilder: CustomCalendarBuilder.outsideBuilder,
+            selectedBuilder: CustomCalendarBuilder.selectedBuilder,
+          ),
+        ),
+      ],
     );
   }
 }
