@@ -118,7 +118,7 @@ class DailyBalanceWidget extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.secondary,
+                color: Colors.blueAccent.shade100,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
