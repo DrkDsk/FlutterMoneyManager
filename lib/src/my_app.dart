@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/di/di.dart';
 import 'package:flutter_money_manager/src/core/theme/theme__helper.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/home_redirection_cubit.dart';
+import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/splash/ui/screen/welcome_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => getIt<HomeRedirectionCubit>(),
           ),
+          BlocProvider(
+              create: (_) => getIt<NavigationCubit>()
+          )
         ],
         child: const WelcomeScreen()
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/core/shared/home/home_builder.dart';
+import 'package:flutter_money_manager/src/core/shared/home/ui/builders/home/home_builder.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/pages/daily_home_page.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/custom_bottom_app_bar.dart';
@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: PageView(
                 controller: _pageController,
                 children: const [
-                  DailyHomePage(),
+                  HomePage(),
                   Text("Acounts"),
                   Text("Stats")
                 ],
