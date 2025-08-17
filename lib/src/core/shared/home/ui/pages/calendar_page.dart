@@ -67,11 +67,13 @@ class _CalendarPageState extends State<CalendarPage> {
             dowTextFormatter: (date, locale) {
               return date.dayName.substring(0, 3);
             },
-            weekdayStyle:
-                TextStyle(fontSize: 14.0, color: theme.colorScheme.secondary),
+            weekdayStyle: TextStyle(
+              fontSize: 15.0,
+              color: theme.colorScheme.secondary
+            ),
             weekendStyle: TextStyle(
-                fontSize: 14.0,
-                color: theme.colorScheme.secondary.withOpacity(0.45)),
+              fontSize: 15.0,
+              color: theme.colorScheme.secondary.withOpacity(0.45)),
           ),
           calendarBuilders: const CalendarBuilders(
             todayBuilder: CustomCalendarBuilder.todayBuilder,
