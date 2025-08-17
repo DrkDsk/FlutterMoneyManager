@@ -114,13 +114,22 @@ class DailyBalanceWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          FloatingActionButton(
-            splashColor: theme.colorScheme.secondary,
-            backgroundColor: theme.colorScheme.secondary.withOpacity(0.40),
-            child: const Icon(Icons.add, size: 30),
-            onPressed: () {
-
-            }
+          GestureDetector(
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.secondary,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.onPrimary,
+                    offset: const Offset(3, 3),
+                    blurRadius: 4
+                  )
+                ]
+              ),
+              child: Icon(Icons.add, size: 36, color: theme.colorScheme.primary),
+            ),
           )
         ],
       ),
