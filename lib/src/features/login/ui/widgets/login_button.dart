@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_money_manager/src/core/di/di.dart';
+import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
+import 'package:flutter_money_manager/src/features/home/ui/screens/home_screen.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({
@@ -7,18 +11,27 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 12, vertical: 10),
-      width: MediaQuery.of(context).size.width * 0.80,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: Colors.blueAccent.shade700,
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<NavigationCubit>(),
+            child: const HomeScreen()
+          )
+        )
       ),
-      child: const Text(
-        "Login",
-        style: TextStyle(color: Colors.white),
-        textAlign: TextAlign.center,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        width: MediaQuery.of(context).size.width * 0.80,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: Colors.blueAccent.shade700,
+        ),
+        child: const Text(
+          "Login",
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
