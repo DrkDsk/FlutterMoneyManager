@@ -6,7 +6,6 @@ ColorScheme colorScheme = ColorScheme.light(
   onPrimary: AppColors.onPrimary,
   secondary: AppColors.secondary,
   onSecondary:  AppColors.onSecondary,
-  surface: AppColors.surface
 );
 
 ThemeData lightTheme () {
