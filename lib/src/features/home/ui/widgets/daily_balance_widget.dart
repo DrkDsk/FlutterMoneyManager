@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/features/home/ui/widgets/add_summary_button.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/expense_list.dart';
 
 class DailyBalancePage extends StatelessWidget {
@@ -32,25 +33,10 @@ class DailyBalancePage extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
-          bottom: 50,
-          child: GestureDetector(
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                  color: Colors.blueAccent.shade100,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                        color: theme.colorScheme.onPrimary,
-                        offset: const Offset(3, 3),
-                        blurRadius: 4
-                    )
-                  ]
-              ),
-              child: Icon(Icons.add, size: 36, color: theme.colorScheme.primary),
-            ),
-          ),
+        const Positioned(
+          bottom: 40,
+          right: 0,
+          child: AddSummaryButton(),
         ),
       ],
     );
