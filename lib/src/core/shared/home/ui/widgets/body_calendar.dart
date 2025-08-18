@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/builders/calendar/custom_calendar_builder.dart';
-import 'package:flutter_money_manager/src/core/shared/home/ui/pages/header_calendar.dart';
+import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/header_calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
+class BodyCalendar extends StatefulWidget {
+  const BodyCalendar({super.key});
 
   @override
-  State<CalendarPage> createState() => _CalendarPageState();
+  State<BodyCalendar> createState() => _BodyCalendarState();
 }
 
-class _CalendarPageState extends State<CalendarPage> {
+class _BodyCalendarState extends State<BodyCalendar> {
+
   late DateTime _focusedDay;
   late DateTime _firstDay;
   late DateTime _lastDay;
@@ -28,22 +29,23 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+
     final theme = Theme.of(context);
 
     return Column(
       children: [
         HeaderCalendar(
-          focusedDate: _focusedDay,
-          onLeftTap: () {
-            setState(() {
-              _focusedDay = _focusedDay.subtract(const Duration(days: 30));
-            });
-          },
-          onRightTap: () {
-            setState(() {
-              _focusedDay = _focusedDay.add(const Duration(days: 30));
-            });
-          }
+            focusedDate: _focusedDay,
+            onLeftTap: () {
+              setState(() {
+                _focusedDay = _focusedDay.subtract(const Duration(days: 30));
+              });
+            },
+            onRightTap: () {
+              setState(() {
+                _focusedDay = _focusedDay.add(const Duration(days: 30));
+              });
+            }
         ),
         const SizedBox(height: 20),
         TableCalendar(
@@ -68,12 +70,12 @@ class _CalendarPageState extends State<CalendarPage> {
               return date.dayName.substring(0, 3);
             },
             weekdayStyle: TextStyle(
-              fontSize: 15.0,
-              color: theme.colorScheme.secondary
+                fontSize: 15.0,
+                color: theme.colorScheme.secondary
             ),
             weekendStyle: TextStyle(
-              fontSize: 15.0,
-              color: theme.colorScheme.secondary.withOpacity(0.45)),
+                fontSize: 15.0,
+                color: theme.colorScheme.secondary.withOpacity(0.45)),
           ),
           calendarBuilders: const CalendarBuilders(
             todayBuilder: CustomCalendarBuilder.todayBuilder,
@@ -81,7 +83,7 @@ class _CalendarPageState extends State<CalendarPage> {
             outsideBuilder: CustomCalendarBuilder.outsideBuilder,
             selectedBuilder: CustomCalendarBuilder.selectedBuilder,
           ),
-        ),
+        )
       ],
     );
   }
