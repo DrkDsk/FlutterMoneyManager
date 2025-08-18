@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+
+class ExpenseList extends StatelessWidget {
+  const ExpenseList({
+    super.key,
+  });
+
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: theme.colorScheme.onSecondary.withOpacity(0.10),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Aug 15",
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        decoration: BoxDecoration(
+                            color: theme.colorScheme.onPrimary.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(4)),
+                        child: Text("Friday",
+                            style: theme.textTheme.bodyMedium),
+                      )
+                    ],
+                  ),
+                  Text(
+                    "\$ 40.00",
+                    style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.incomeColor),
+                  )
+                ],
+              ),
+              const Divider(
+                color: Colors.grey,
+                thickness: 0.5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.green.shade600),
+                        child: const Icon(Icons.money, size: 20),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "Salary",
+                        style: theme.textTheme.bodyMedium,
+                      )
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        "\$ 40.00",
+                        style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.incomeColor),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        "Debit Card",
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
+    );
+  }
+}

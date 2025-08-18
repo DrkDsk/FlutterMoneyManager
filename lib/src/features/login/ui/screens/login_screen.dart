@@ -34,9 +34,8 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 20),
               LoginAlternativeContainer(),
               SizedBox(height: 30,),
-              Expanded(
-                child: GoogleLogin(),
-              ),
+              Spacer(),
+              GoogleLogin(),
             ],
           ),
         ),

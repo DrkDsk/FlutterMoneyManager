@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/features/home/ui/widgets/expense_list.dart';
 
-class DailyBalanceWidget extends StatelessWidget {
-  const DailyBalanceWidget({
+class DailyBalancePage extends StatelessWidget {
+  const DailyBalancePage({
     super.key,
   });
 
@@ -10,129 +10,49 @@ class DailyBalanceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          Text(
-            "Transaction on August",
-            style: TextStyle(
-              color: theme.colorScheme.onPrimary,
-              fontSize: 24,
-            ),
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Text(
+                "Transaction on August",
+                style: TextStyle(
+                  color: theme.colorScheme.onPrimary,
+                  fontSize: 24,
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.90,
+                child: const ExpenseList(),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.50,
-            child: ListView.separated(
-              scrollDirection: Axis.vertical,
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: theme.colorScheme.onSecondary.withOpacity(0.10),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Aug 15",
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6),
-                                decoration: BoxDecoration(
-                                    color: theme.colorScheme.onPrimary.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: Text("Friday",
-                                    style: theme.textTheme.bodyMedium),
-                              )
-                            ],
-                          ),
-                          Text(
-                            "\$ 40.00",
-                            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.incomeColor),
-                          )
-                        ],
-                      ),
-                      const Divider(
-                        color: Colors.grey,
-                        thickness: 0.5,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.green.shade600),
-                                child: const Icon(Icons.money),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Salary",
-                                style: theme.textTheme.bodyMedium,
-                              )
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "\$ 40.00",
-                                style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.incomeColor),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                "Debit Card",
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
-            ),
-          ),
-          const SizedBox(height: 20),
-          GestureDetector(
+        ),
+        Positioned(
+          bottom: 50,
+          child: GestureDetector(
             child: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: Colors.blueAccent.shade100,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: theme.colorScheme.onPrimary,
-                    offset: const Offset(3, 3),
-                    blurRadius: 4
-                  )
-                ]
+                  color: Colors.blueAccent.shade100,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                        color: theme.colorScheme.onPrimary,
+                        offset: const Offset(3, 3),
+                        blurRadius: 4
+                    )
+                  ]
               ),
               child: Icon(Icons.add, size: 36, color: theme.colorScheme.primary),
             ),
-          )
-        ],
-      ),
+          ),
+        ),
+      ],
     );
   }
 }
