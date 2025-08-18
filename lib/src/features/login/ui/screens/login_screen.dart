@@ -15,12 +15,13 @@ class LoginScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.primary,
+      resizeToAvoidBottomInset: true,
       body: const SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(left: 16, right: 16, top: 60, bottom: 20),
-          child: Column(
-            children: [
-              SingleChildScrollView(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(left: 16, right: 16, top: 60),
                 child: Column(
                   children: [
                     HeaderLogin(),
@@ -39,10 +40,9 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Spacer(),
-              GoogleLogin()
-            ],
-          ),
+            ),
+            GoogleLogin(),
+          ],
         ),
       ),
     );
