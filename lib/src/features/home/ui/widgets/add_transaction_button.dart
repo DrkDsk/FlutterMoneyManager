@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/core/router/app_router.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/screen/create_transaction_screen.dart';
 
-class AddSummaryButton extends StatelessWidget {
-  const AddSummaryButton({
+class AddTransactionButton extends StatelessWidget {
+  const AddTransactionButton({
     super.key,
   });
 
@@ -11,7 +13,11 @@ class AddSummaryButton extends StatelessWidget {
     final theme = Theme.of(context);
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        final router = AppRouter.of(context);
+
+        router.goToScreen(const CreateTransactionScreen());
+      },
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(

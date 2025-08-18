@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/summary_text.dart';
 
-class SummaryContent extends StatelessWidget {
-  const SummaryContent({
+class TransactionSummaryContent extends StatelessWidget {
+  const TransactionSummaryContent({
     super.key,
   });
 

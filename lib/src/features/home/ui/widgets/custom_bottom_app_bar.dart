@@ -16,7 +16,7 @@ class CustomBottomAppBar extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 4, left: 4, right: 4),
+      margin: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(34)),
         child: BottomNavigationBar(

@@ -20,22 +20,27 @@ class LoginScreen extends StatelessWidget {
           padding: EdgeInsets.only(left: 16, right: 16, top: 60, bottom: 20),
           child: Column(
             children: [
-              HeaderLogin(),
-              SizedBox(height: 20),
-              LoginFormContainer(),
-              SizedBox(
-                height: 20,
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    HeaderLogin(),
+                    SizedBox(height: 20),
+                    LoginFormContainer(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    LoginButton(),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    RegisterLink(),
+                    SizedBox(height: 20),
+                    LoginAlternativeContainer(),
+                  ],
+                ),
               ),
-              LoginButton(),
-              SizedBox(
-                height: 30,
-              ),
-              RegisterLink(),
-              SizedBox(height: 20),
-              LoginAlternativeContainer(),
-              SizedBox(height: 30,),
               Spacer(),
-              GoogleLogin(),
+              GoogleLogin()
             ],
           ),
         ),
