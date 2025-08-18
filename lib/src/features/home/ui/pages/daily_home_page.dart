@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
-import 'package:flutter_money_manager/src/features/home/ui/widgets/add_summary_button.dart';
+import 'package:flutter_money_manager/src/features/home/ui/widgets/add_transaction_button.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/calendar_page.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/daily_balance_widget.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/home_tab_bar.dart';
-import 'package:flutter_money_manager/src/features/home/ui/widgets/summary_content.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/widgets/transaction_summary_content.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 60),
               const SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: SummaryContent()
+                  child: TransactionSummaryContent()
               ),
               const SizedBox(height: 20),
               Container(
@@ -52,14 +52,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   CalendarPage(),
                   DailyBalancePage(),
                 ]),
-              )
+              ),
             ],
           ),
         ),
         const Positioned(
           bottom: 30,
           right: 30,
-          child: AddSummaryButton()
+          child: AddTransactionButton()
         )
       ],
     );

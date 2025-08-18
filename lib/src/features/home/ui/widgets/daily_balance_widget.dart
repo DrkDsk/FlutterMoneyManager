@@ -23,9 +23,9 @@ class DailyBalancePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.90,
-            child: const ExpenseList(),
+          const SizedBox(
+            height: 400,
+            child: ExpenseList(),
           ),
         ],
       ),
