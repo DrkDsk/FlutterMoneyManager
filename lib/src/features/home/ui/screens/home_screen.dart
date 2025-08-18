@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Expanded(
               child: PageView(
+                onPageChanged: onTapBottomNavigationBar,
                 controller: _pageController,
                 children: const [
                   HomePage(),
