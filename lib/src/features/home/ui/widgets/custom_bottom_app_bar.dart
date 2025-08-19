@@ -15,20 +15,18 @@ class CustomBottomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(34)),
-        child: BottomNavigationBar(
-            onTap: onTap,
-            currentIndex: pageIndex,
-            selectedItemColor: theme.colorScheme.primary,
-            unselectedItemColor: theme.colorScheme.onPrimary,
-            unselectedLabelStyle: const TextStyle(
-              fontSize: 14,
-            ),
-            backgroundColor: Colors.blueAccent.shade100,
-            items: items),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: BottomNavigationBar(
+          onTap: onTap,
+          currentIndex: pageIndex,
+          selectedItemColor: theme.colorScheme.primary,
+          unselectedItemColor: theme.colorScheme.onPrimary,
+          unselectedLabelStyle: const TextStyle(
+            fontSize: 14,
+          ),
+          backgroundColor: Colors.blueAccent.shade100,
+          items: items
       ),
     );
   }
