@@ -13,7 +13,7 @@ class CreateTransactionScreen extends StatefulWidget {
 }
 
 class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
-  String defaultAmountValue = "\$ 0.00";
+  String defaultAmountValue = "\$ 0";
 
   late FocusNode _amountFocusNode;
   late FocusNode _paymentFocusNode;
@@ -52,18 +52,23 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   }
 
   void _sanitizeInput(String value) {
-    if (value.isEmpty || value == "0" || value == "00") {
-      _amountController.text = "0";
-      return;
+    final formatted = formatAmount(value);
+    _amountController.value = TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+
+  String formatAmount(String value) {
+    String cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (cleaned.isEmpty || int.tryParse(cleaned) == 0) {
+      return "0";
     }
 
-    var cleaned = value.replaceAll("\$", "").replaceAll(" ", "");
+    cleaned = int.parse(cleaned).toString();
 
-    if (cleaned.startsWith("0")) {
-      cleaned = cleaned.replaceFirst("0", "");
-    }
-
-    _amountController.text = "\$ $cleaned";
+    return "\$ $cleaned";
   }
 
   void _resetIfDefault() {
