@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_app_bar.dart';
+import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/theme/styles.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
@@ -14,7 +15,8 @@ class CreateTransactionScreen extends StatefulWidget {
 class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   String defaultAmountValue = "\$ 0.00";
 
-  late FocusNode _focusNode;
+  late FocusNode _amountFocusNode;
+  late FocusNode _paymentFocusNode;
   late TextEditingController _noteController;
   late TextEditingController _amountController;
 
@@ -22,7 +24,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   void initState() {
     _noteController = TextEditingController();
     _amountController = TextEditingController(text: defaultAmountValue);
-    _focusNode = FocusNode();
+    _amountFocusNode = FocusNode();
+    _paymentFocusNode = FocusNode();
     super.initState();
   }
 
@@ -30,21 +33,22 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   void dispose() {
     _noteController.dispose();
     _amountController.dispose();
-    _focusNode.dispose();
+    _amountFocusNode.dispose();
     super.dispose();
   }
 
   void _formatAmountOnBlur() {
-    _focusNode.unfocus();
+    _amountFocusNode.unfocus();
 
-    if (_amountController.text == "0") {
+    final value = _amountController.text.replaceAll("\$ ", "").replaceAll(" ", "");
+
+    if (value.isEmpty) {
       _amountController.clear();
       _amountController.text = defaultAmountValue;
       return ;
     }
 
-    final onlyAmount = _amountController.text.replaceAll("\$ ", "").replaceAll(" ", "");
-    _amountController.text = "\$ $onlyAmount";
+    _amountController.text = "\$ $value";
   }
 
   void _sanitizeInput(String value) {
@@ -53,13 +57,13 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
       return;
     }
 
-    var cleaned = value.replaceAll("\$", "");
+    var cleaned = value.replaceAll("\$", "").replaceAll(" ", "");
 
     if (cleaned.startsWith("0")) {
       cleaned = cleaned.replaceFirst("0", "");
     }
 
-    _amountController.text = cleaned;
+    _amountController.text = "\$ $cleaned";
   }
 
   void _resetIfDefault() {
@@ -67,6 +71,27 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
       _amountController.text = "0";
     }
   }
+
+  void _showCustomKeyboard(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.5,
+          child: CustomNumericKeyboard(
+            onNumberTap: (number) {
+            },
+            onBackspace: () {
+
+            },
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +173,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                     child: TextFormField(
                       textAlign: TextAlign.right,
                       controller: _amountController,
-                      focusNode: _focusNode,
+                      focusNode: _amountFocusNode,
                       style: mediumStyle?.copyWith(
                           color: AppColors.expenseColor,
                           fontWeight: FontWeight.w700),
@@ -194,15 +219,12 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
               decoration: defaultBorder,
               margin: const EdgeInsets.symmetric(horizontal: 10),
               child: TextFormField(
-                controller: _noteController,
-                style: theme.textTheme.bodySmall,
-                decoration: InputDecoration(
-                    hintText: "Enter a note",
-                    hintStyle:
-                        TextStyle(color: AppColors.onPrimary.withOpacity(0.5)),
-                    filled: true,
-                    fillColor: Colors.grey.withOpacity(0.05),
-                    border: InputBorder.none),
+                readOnly: true,
+                focusNode: _paymentFocusNode,
+                onTap: () => _showCustomKeyboard(context),
+                decoration: const InputDecoration(
+                  border: InputBorder.none
+                ),
               ),
             )
           ],
