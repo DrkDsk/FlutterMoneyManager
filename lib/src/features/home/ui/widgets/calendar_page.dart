@@ -12,7 +12,7 @@ class CalendarPage extends StatelessWidget {
       child: Column(
         children: [
           BodyCalendar(),
-          SizedBox(height: 40),
+          SizedBox(height: 20),
           SizedBox(
             height: 400,
             child: ExpenseList(),
