@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 
 class CreateTransactionCubit extends Cubit<CreateTransactionState> {
@@ -16,7 +17,11 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
     emit(state.copyWith(amount: amount));
   }
 
-  void updatePaymentSource(PaymentSource category) {
-    emit(state.copyWith(paymentSource: category));
+  void updatePaymentSource(PaymentSource paymentSource) {
+    emit(state.copyWith(paymentSource: paymentSource));
+  }
+
+  void updateTransactionCategory(TransactionCategory category) {
+    emit(state.copyWith(transactionCategory: category));
   }
 }

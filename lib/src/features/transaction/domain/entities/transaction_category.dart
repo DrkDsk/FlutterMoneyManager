@@ -3,7 +3,8 @@ import 'package:equatable/equatable.dart';
 class TransactionCategory with EquatableMixin {
   final String name;
   final String icon;
-  TransactionCategory({
+
+  const TransactionCategory({
     required this.name,
     required this.icon,
   });

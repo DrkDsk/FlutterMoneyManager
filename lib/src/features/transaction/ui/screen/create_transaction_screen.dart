@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_payment_sources.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_category.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key});
@@ -104,9 +105,9 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
       builder: (context) {
         return FractionallySizedBox(
             heightFactor: 0.4,
-            child: BottomPaymentSources(
-              onSelectPaymentSource: (category) {
-                _createTransactionCubit.updatePaymentSource(category);
+            child: BottomTransactionCategory(
+              onSelectCategory: (category) {
+                _createTransactionCubit.updateTransactionCategory(category);
                 _router.pop();
               },
             ));
@@ -153,24 +154,21 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              decoration: defaultBorder,
-              child:
-                  BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
-                builder: (context, state) {
-                  final selectedCategory = state.paymentSource;
+        child: Container(
+          margin: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          decoration: defaultBorder,
+          child: BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
+            builder: (context, state) {
+              final paymentSource = state.paymentSource;
+              final transactionCategory = state.transactionCategory;
 
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 100,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Date", style: largeStyle),
@@ -218,9 +216,12 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                                   style: mediumStyle))
                         ],
                       ),
-                      const Divider(
-                          height: 20, color: Colors.grey, thickness: 0.2),
-                      Row(
+                    ),
+                    const Divider(
+                        height: 20, color: Colors.grey, thickness: 0.2),
+                    SizedBox(
+                      height: 100,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text("Amount"),
@@ -245,26 +246,29 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                           )
                         ],
                       ),
-                      const Divider(
-                          height: 20, color: Colors.grey, thickness: 0.2),
-                      Row(
+                    ),
+                    const Divider(
+                        height: 20, color: Colors.grey, thickness: 0.2),
+                    SizedBox(
+                      height: 100,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Category", style: largeStyle),
                           GestureDetector(
-                              onTap: () => _showPaymentSources(context),
-                              child: selectedCategory == null
+                              onTap: () => _showTransactionsCategories(context),
+                              child: transactionCategory == null
                                   ? Text("Uncategorized", style: mediumStyle)
                                   : Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text("${state.paymentSource?.name}",
+                                        Text(transactionCategory.name,
                                             style: mediumStyle),
                                         ...[
                                           const SizedBox(width: 5),
                                           Image.asset(
-                                            selectedCategory.icon,
+                                            transactionCategory.icon,
                                             width: 30,
                                           )
                                         ],
@@ -272,26 +276,29 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                                     ))
                         ],
                       ),
-                      const Divider(
-                          height: 20, color: Colors.grey, thickness: 0.2),
-                      Row(
+                    ),
+                    const Divider(
+                        height: 20, color: Colors.grey, thickness: 0.2),
+                    SizedBox(
+                      height: 100,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Payment Source", style: largeStyle),
                           GestureDetector(
                               onTap: () => _showPaymentSources(context),
-                              child: selectedCategory == null
+                              child: paymentSource == null
                                   ? Text("Uncategorized", style: mediumStyle)
                                   : Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text("${state.paymentSource?.name}",
+                                        Text(paymentSource.name,
                                             style: mediumStyle),
                                         ...[
                                           const SizedBox(width: 5),
                                           Image.asset(
-                                            selectedCategory.icon,
+                                            paymentSource.icon,
                                             width: 30,
                                           )
                                         ],
@@ -299,12 +306,12 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                                     ))
                         ],
                       ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
