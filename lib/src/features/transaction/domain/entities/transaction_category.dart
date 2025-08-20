@@ -1,10 +1,22 @@
 import 'package:equatable/equatable.dart';
 
-class Transactioncategory with EquatableMixin {
+class TransactionCategory with EquatableMixin {
   final String name;
   final String icon;
+  TransactionCategory({
+    required this.name,
+    required this.icon,
+  });
 
-  const Transactioncategory({required this.name, required this.icon});
+  TransactionCategory copyWith({
+    String? name,
+    String? icon,
+  }) {
+    return TransactionCategory(
+      name: name ?? this.name,
+      icon: icon ?? this.icon,
+    );
+  }
 
   @override
   List<Object?> get props => [name, icon];

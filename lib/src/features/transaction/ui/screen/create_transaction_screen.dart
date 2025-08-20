@@ -88,8 +88,25 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         return FractionallySizedBox(
             heightFactor: 0.4,
             child: BottomPaymentSources(
-              onSelectCategory: (category) {
-                _createTransactionCubit.updateTransactionCategory(category);
+              onSelectPaymentSource: (paymentSource) {
+                _createTransactionCubit.updatePaymentSource(paymentSource);
+                _router.pop();
+              },
+            ));
+      },
+    );
+  }
+
+  _showTransactionsCategories(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+            heightFactor: 0.4,
+            child: BottomPaymentSources(
+              onSelectPaymentSource: (category) {
+                _createTransactionCubit.updatePaymentSource(category);
                 _router.pop();
               },
             ));
@@ -148,7 +165,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
               child:
                   BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
                 builder: (context, state) {
-                  final selectedCategory = state.transactioncategory;
+                  final selectedCategory = state.paymentSource;
 
                   return Column(
                     mainAxisSize: MainAxisSize.min,
@@ -242,8 +259,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                            "${state.transactioncategory?.name}",
+                                        Text("${state.paymentSource?.name}",
                                             style: mediumStyle),
                                         ...[
                                           const SizedBox(width: 5),
@@ -262,7 +278,25 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Payment Source", style: largeStyle),
-                          Text("None", style: mediumStyle)
+                          GestureDetector(
+                              onTap: () => _showPaymentSources(context),
+                              child: selectedCategory == null
+                                  ? Text("Uncategorized", style: mediumStyle)
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text("${state.paymentSource?.name}",
+                                            style: mediumStyle),
+                                        ...[
+                                          const SizedBox(width: 5),
+                                          Image.asset(
+                                            selectedCategory.icon,
+                                            width: 30,
+                                          )
+                                        ],
+                                      ],
+                                    ))
                         ],
                       ),
                     ],

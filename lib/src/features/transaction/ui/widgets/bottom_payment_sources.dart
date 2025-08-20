@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
 
 class BottomPaymentSources extends StatelessWidget {
-  const BottomPaymentSources({super.key, required this.onSelectCategory});
+  const BottomPaymentSources({super.key, required this.onSelectPaymentSource});
 
-  final Function(Transactioncategory category) onSelectCategory;
+  final Function(PaymentSource category) onSelectPaymentSource;
 
   @override
   Widget build(BuildContext context) {
@@ -16,22 +16,22 @@ class BottomPaymentSources extends StatelessWidget {
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3, crossAxisSpacing: 40, childAspectRatio: 0.85),
-          itemCount: kDefaultTransactionsCategories.length,
+          itemCount: kDefaultPaymentResources.length,
           itemBuilder: (context, index) {
-            final transactionCategory = kDefaultTransactionsCategories[index];
+            final paymentSource = kDefaultPaymentResources[index];
 
             return GestureDetector(
-              onTap: () => onSelectCategory(transactionCategory),
+              onTap: () => onSelectPaymentSource(paymentSource),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    transactionCategory.icon,
+                    paymentSource.icon,
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    transactionCategory.name,
+                    paymentSource.name,
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 12),
                     maxLines: 2,

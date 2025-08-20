@@ -1,19 +1,19 @@
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
 
 const kDefaultAmountValue = "\$ 0";
 
-const kDefaultTransactionsCategories = [
-  Transactioncategory(
+const kDefaultPaymentResources = [
+  PaymentSource(
       name: "Car Loan", icon: "assets/icons/transactions/car_loan.png"),
-  Transactioncategory(
+  PaymentSource(
       name: "Investments", icon: "assets/icons/transactions/investments.png"),
-  Transactioncategory(name: "Bank", icon: "assets/icons/transactions/bank.png"),
-  Transactioncategory(name: "Cash", icon: "assets/icons/transactions/cash.png"),
-  Transactioncategory(
+  PaymentSource(name: "Bank", icon: "assets/icons/transactions/bank.png"),
+  PaymentSource(name: "Cash", icon: "assets/icons/transactions/cash.png"),
+  PaymentSource(
       name: "Credit Card", icon: "assets/icons/transactions/credit_card.png"),
-  Transactioncategory(
+  PaymentSource(
       name: "Debit Card", icon: "assets/icons/transactions/debit_card.png"),
-  Transactioncategory(
+  PaymentSource(
       name: "Electronic Money",
       icon: "assets/icons/transactions/electronic_money.png")
 ];

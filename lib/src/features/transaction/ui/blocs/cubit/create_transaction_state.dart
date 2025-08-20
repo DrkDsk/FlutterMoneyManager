@@ -1,29 +1,29 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
 
 class CreateTransactionState with EquatableMixin {
   final DateTime transactionDate;
   final String amount;
-  final Transactioncategory? transactioncategory;
+  final PaymentSource? paymentSource;
 
   CreateTransactionState({
     required this.transactionDate,
     required this.amount,
-    this.transactioncategory,
+    this.paymentSource,
   });
 
   CreateTransactionState copyWith({
     DateTime? transactionDate,
     String? amount,
-    Transactioncategory? transactioncategory,
+    PaymentSource? paymentSource,
   }) {
     return CreateTransactionState(
       transactionDate: transactionDate ?? this.transactionDate,
       amount: amount ?? this.amount,
-      transactioncategory: transactioncategory ?? this.transactioncategory,
+      paymentSource: paymentSource ?? this.paymentSource,
     );
   }
 
   @override
-  List<Object?> get props => [transactionDate, amount, transactioncategory];
+  List<Object?> get props => [transactionDate, amount, paymentSource];
 }
