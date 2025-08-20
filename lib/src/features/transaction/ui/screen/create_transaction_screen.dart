@@ -40,21 +40,6 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     super.dispose();
   }
 
-  void _formatAmountOnBlur() {
-    _amountFocusNode.unfocus();
-
-    final value =
-        _amountController.text.replaceAll("\$ ", "").replaceAll(" ", "");
-
-    if (value.isEmpty) {
-      _amountController.clear();
-      _amountController.text = defaultAmountValue;
-      return;
-    }
-
-    _amountController.text = "\$ $value";
-  }
-
   String formatAmount(String value) {
     String cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
 
@@ -65,12 +50,6 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     cleaned = int.parse(cleaned).toString();
 
     return "\$ $cleaned";
-  }
-
-  void _resetIfDefault() {
-    if (_amountController.text == defaultAmountValue) {
-      _amountController.text = "0";
-    }
   }
 
   void _showCustomKeyboard(BuildContext context) {
