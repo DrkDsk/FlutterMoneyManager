@@ -7,6 +7,7 @@ import 'package:flutter_money_manager/src/features/home/ui/screens/home_screen.d
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/login/ui/screens/login_screen.dart';
 import 'package:flutter_money_manager/src/features/splash/ui/screen/splash_screen.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -31,22 +32,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return BlocListener<HomeRedirectionCubit, HomeRedirectionState>(
       listener: (context, state) {
-
         if (state.status == RedirectionStatus.login) {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const LoginScreen())
-          );
+              MaterialPageRoute(builder: (context) => const LoginScreen()));
         }
 
         if (state.status == RedirectionStatus.home) {
-          Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => BlocProvider(
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => BlocProvider(
                   create: (_) => getIt<NavigationCubit>(),
-                  child: const HomeScreen()
-                )
-              )
-          );
+                  child: const HomeScreen())));
         }
       },
       child: const SplashScreen(),
