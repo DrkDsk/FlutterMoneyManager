@@ -6,7 +6,6 @@ class ExpenseList extends StatelessWidget {
     super.key,
   });
 
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -40,14 +39,15 @@ class ExpenseList extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: theme.colorScheme.onPrimary.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(4)),
-                        child: Text("Friday",
-                            style: theme.textTheme.bodyMedium),
+                        child:
+                            Text("Friday", style: theme.textTheme.bodyMedium),
                       )
                     ],
                   ),
                   Text(
                     "\$ 40.00",
-                    style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.incomeColor),
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(color: AppColors.incomeColor),
                   )
                 ],
               ),
@@ -64,8 +64,9 @@ class ExpenseList extends StatelessWidget {
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.green.shade600),
-                        child: const Icon(Icons.money, size: 20),
+                            color: Colors.green.shade200),
+                        child: Icon(Icons.money,
+                            size: 20, color: theme.colorScheme.primary),
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -79,7 +80,8 @@ class ExpenseList extends StatelessWidget {
                     children: [
                       Text(
                         "\$ 40.00",
-                        style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.incomeColor),
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(color: AppColors.incomeColor),
                       ),
                       const SizedBox(
                         height: 4,
