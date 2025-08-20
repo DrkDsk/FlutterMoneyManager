@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 
 class CreateTransactionCubit extends Cubit<CreateTransactionState> {
@@ -13,6 +14,9 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
   void updateAmount(String? amount) {
     emit(state.copyWith(amount: amount));
-    print("state: $state");
+  }
+
+  void updateTransactionCategory(Transactioncategory category) {
+    emit(state.copyWith(transactioncategory: category));
   }
 }

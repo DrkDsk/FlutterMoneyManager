@@ -20,7 +20,7 @@ class CreateTransactionState with EquatableMixin {
     return CreateTransactionState(
       transactionDate: transactionDate ?? this.transactionDate,
       amount: amount ?? this.amount,
-      transactioncategory: transactioncategory,
+      transactioncategory: transactioncategory ?? this.transactioncategory,
     );
   }
 

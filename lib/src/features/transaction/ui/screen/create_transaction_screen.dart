@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/theme/styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_payment_sources.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key});
@@ -17,29 +19,16 @@ class CreateTransactionScreen extends StatefulWidget {
 }
 
 class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
-  late FocusNode _amountFocusNode;
-  late FocusNode _paymentFocusNode;
-  late TextEditingController _noteController;
-  late TextEditingController _amountController;
   late CreateTransactionCubit _createTransactionCubit;
+  late AppRouter _router;
 
-  StringBuffer amountValue = StringBuffer("0");
+  StringBuffer amountValue = StringBuffer();
 
   @override
   void initState() {
-    _noteController = TextEditingController();
-    _amountFocusNode = FocusNode();
-    _paymentFocusNode = FocusNode();
-    _createTransactionCubit = context.read<CreateTransactionCubit>();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _noteController.dispose();
-    _amountController.dispose();
-    _amountFocusNode.dispose();
-    super.dispose();
+    _createTransactionCubit = context.read<CreateTransactionCubit>();
+    _router = AppRouter.of(context);
   }
 
   String formatAmount(String value) {
@@ -62,6 +51,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         return FractionallySizedBox(
           heightFactor: 0.5,
           child: CustomNumericKeyboard(
+            onOkSubmit: () => _router.pop(),
             onNumberTap: (number) {
               amountValue.write(number);
               final formatted = formatAmount(amountValue.toString());
@@ -86,6 +76,23 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
             },
           ),
         );
+      },
+    );
+  }
+
+  _showPaymentSources(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+            heightFactor: 0.4,
+            child: BottomPaymentSources(
+              onSelectCategory: (category) {
+                _createTransactionCubit.updateTransactionCategory(category);
+                _router.pop();
+              },
+            ));
       },
     );
   }
@@ -141,6 +148,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
               child:
                   BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
                 builder: (context, state) {
+                  final selectedCategory = state.transactioncategory;
+
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -225,7 +234,26 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Category", style: largeStyle),
-                          Text("Uncategorized", style: mediumStyle)
+                          GestureDetector(
+                              onTap: () => _showPaymentSources(context),
+                              child: selectedCategory == null
+                                  ? Text("Uncategorized", style: mediumStyle)
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                            "${state.transactioncategory?.name}",
+                                            style: mediumStyle),
+                                        ...[
+                                          const SizedBox(width: 5),
+                                          Image.asset(
+                                            selectedCategory.icon,
+                                            width: 30,
+                                          )
+                                        ],
+                                      ],
+                                    ))
                         ],
                       ),
                       const Divider(
@@ -242,17 +270,6 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                 },
               ),
             ),
-            const SizedBox(height: 10),
-            Container(
-              decoration: defaultBorder,
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: TextFormField(
-                readOnly: true,
-                focusNode: _paymentFocusNode,
-                onTap: () => _showCustomKeyboard(context),
-                decoration: const InputDecoration(border: InputBorder.none),
-              ),
-            )
           ],
         ),
       ),
