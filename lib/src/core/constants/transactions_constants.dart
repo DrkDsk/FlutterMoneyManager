@@ -1,0 +1,1 @@
+const kDefaultAmountValue = "\$ 0";

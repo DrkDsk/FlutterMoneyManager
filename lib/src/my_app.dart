@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => getIt<HomeRedirectionCubit>(),
         ),
-        BlocProvider(create: (_) => getIt<NavigationCubit>())
+        BlocProvider(create: (_) => getIt<NavigationCubit>()),
       ], child: const WelcomeScreen()),
     );
   }

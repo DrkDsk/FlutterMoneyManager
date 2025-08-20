@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/theme/styles.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key});
@@ -13,22 +17,20 @@ class CreateTransactionScreen extends StatefulWidget {
 }
 
 class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
-  static const String defaultAmountValue = "\$ 0";
-
   late FocusNode _amountFocusNode;
   late FocusNode _paymentFocusNode;
   late TextEditingController _noteController;
   late TextEditingController _amountController;
+  late CreateTransactionCubit _createTransactionCubit;
 
   StringBuffer amountValue = StringBuffer("0");
-  String amountString = defaultAmountValue;
 
   @override
   void initState() {
     _noteController = TextEditingController();
-    _amountController = TextEditingController(text: defaultAmountValue);
     _amountFocusNode = FocusNode();
     _paymentFocusNode = FocusNode();
+    _createTransactionCubit = context.read<CreateTransactionCubit>();
     super.initState();
   }
 
@@ -62,29 +64,25 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
           child: CustomNumericKeyboard(
             onNumberTap: (number) {
               amountValue.write(number);
-              setState(() {
-                final formatted = formatAmount(amountValue.toString());
-                amountString = formatted;
-              });
+              final formatted = formatAmount(amountValue.toString());
+              _createTransactionCubit.updateAmount(formatted);
             },
             onBackspace: () {
+              final amountString = _createTransactionCubit.state.amount;
+
               final stringWithOutLast = amountString
                   .substring(0, amountString.length - 1)
                   .replaceAll("\$ ", "")
                   .replaceAll(" ", "");
 
-              if (stringWithOutLast.isEmpty) {
-                setState(() {
-                  amountValue.clear();
-                  amountString = defaultAmountValue;
-                });
+              amountValue.clear();
 
+              if (stringWithOutLast.isEmpty) {
+                _createTransactionCubit.updateAmount(kDefaultAmountValue);
                 return;
               }
 
-              setState(() {
-                amountString = "\$ $stringWithOutLast";
-              });
+              _createTransactionCubit.updateAmount("\$ $stringWithOutLast");
             },
           ),
         );
@@ -140,60 +138,108 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
               margin: const EdgeInsets.all(10),
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               decoration: defaultBorder,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child:
+                  BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
+                builder: (context, state) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text("Date", style: largeStyle),
-                      GestureDetector(
-                          onTap: () {
-                            final today = DateTime.now();
-                            const defaultDuration = Duration(days: 30);
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Date", style: largeStyle),
+                          GestureDetector(
+                              onTap: () async {
+                                final today = DateTime.now();
+                                const defaultDuration = Duration(days: 30);
 
-                            final firstDate = today.subtract(defaultDuration);
-                            final lastDate = today.add(defaultDuration);
+                                final firstDate =
+                                    today.subtract(defaultDuration);
+                                final lastDate = today.add(defaultDuration);
 
-                            showDatePicker(
-                                context: context,
-                                firstDate: firstDate,
-                                lastDate: lastDate);
-                          },
-                          child: Text("Aug 18, 2025", style: mediumStyle))
+                                final selectedDate = await showDatePicker(
+                                    context: context,
+                                    builder: (context, child) {
+                                      return Theme(
+                                        data: Theme.of(context).copyWith(
+                                            colorScheme:
+                                                const ColorScheme.light(
+                                              primary:
+                                                  Colors.blue, // color header
+                                              onPrimary:
+                                                  Colors.white, // texto header
+                                              onSurface:
+                                                  Colors.black, // texto días
+                                            ),
+                                            textButtonTheme:
+                                                TextButtonThemeData(
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: Colors
+                                                    .blue, // color botones
+                                              ),
+                                            ),
+                                            textTheme: const TextTheme()),
+                                        child: child!,
+                                      );
+                                    },
+                                    firstDate: firstDate,
+                                    lastDate: lastDate);
+
+                                _createTransactionCubit
+                                    .updateAmountDate(selectedDate);
+                              },
+                              child: Text("${state.transactionDate}",
+                                  style: mediumStyle))
+                        ],
+                      ),
+                      const Divider(
+                          height: 20, color: Colors.grey, thickness: 0.2),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Amount"),
+                          Expanded(
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => _showCustomKeyboard(context),
+                              child: Container(
+                                alignment: Alignment.centerRight,
+                                child: BlocBuilder<CreateTransactionCubit,
+                                    CreateTransactionState>(
+                                  builder: (context, state) {
+                                    return Text(
+                                      state.amount,
+                                      style: TextStyle(
+                                          color: AppColors.expenseColor),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      const Divider(
+                          height: 20, color: Colors.grey, thickness: 0.2),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Category", style: largeStyle),
+                          Text("Uncategorized", style: mediumStyle)
+                        ],
+                      ),
+                      const Divider(
+                          height: 20, color: Colors.grey, thickness: 0.2),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Payment Source", style: largeStyle),
+                          Text("None", style: mediumStyle)
+                        ],
+                      ),
                     ],
-                  ),
-                  const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Amount"),
-                      GestureDetector(
-                        onTap: () => _showCustomKeyboard(context),
-                        child: Text(
-                          amountString,
-                          style: TextStyle(color: AppColors.expenseColor),
-                        ),
-                      )
-                    ],
-                  ),
-                  const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Category", style: largeStyle),
-                      Text("Uncategorized", style: mediumStyle)
-                    ],
-                  ),
-                  const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Payment Source", style: largeStyle),
-                      Text("None", style: mediumStyle)
-                    ],
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             const SizedBox(height: 10),
