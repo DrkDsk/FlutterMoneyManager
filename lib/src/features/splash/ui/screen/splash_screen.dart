@@ -7,14 +7,11 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: const Color(0xFFFFEFDF),
       body: Center(
-        child: Lottie.asset(
-          "assets/lottie/loading.lottie",
-          decoder: customDecoder
-        ),
+        child: Lottie.asset("assets/lottie/loading.lottie",
+            decoder: customDecoder),
       ),
     );
   }
@@ -23,6 +20,6 @@ class SplashScreen extends StatelessWidget {
 Future<LottieComposition?> customDecoder(List<int> bytes) {
   return LottieComposition.decodeZip(bytes, filePicker: (files) {
     return files.firstWhereOrNull(
-            (f) => f.name.startsWith('animations/') && f.name.endsWith('.json'));
+        (f) => f.name.startsWith('animations/') && f.name.endsWith('.json'));
   });
 }

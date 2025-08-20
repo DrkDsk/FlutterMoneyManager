@@ -13,12 +13,15 @@ class CreateTransactionScreen extends StatefulWidget {
 }
 
 class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
-  String defaultAmountValue = "\$ 0";
+  static const String defaultAmountValue = "\$ 0";
 
   late FocusNode _amountFocusNode;
   late FocusNode _paymentFocusNode;
   late TextEditingController _noteController;
   late TextEditingController _amountController;
+
+  StringBuffer amountValue = StringBuffer("0");
+  String amountString = defaultAmountValue;
 
   @override
   void initState() {
@@ -40,23 +43,16 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   void _formatAmountOnBlur() {
     _amountFocusNode.unfocus();
 
-    final value = _amountController.text.replaceAll("\$ ", "").replaceAll(" ", "");
+    final value =
+        _amountController.text.replaceAll("\$ ", "").replaceAll(" ", "");
 
     if (value.isEmpty) {
       _amountController.clear();
       _amountController.text = defaultAmountValue;
-      return ;
+      return;
     }
 
     _amountController.text = "\$ $value";
-  }
-
-  void _sanitizeInput(String value) {
-    final formatted = formatAmount(value);
-    _amountController.value = TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
   }
 
   String formatAmount(String value) {
@@ -81,22 +77,41 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      barrierColor: Colors.transparent,
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.5,
           child: CustomNumericKeyboard(
             onNumberTap: (number) {
+              amountValue.write(number);
+              setState(() {
+                final formatted = formatAmount(amountValue.toString());
+                amountString = formatted;
+              });
             },
             onBackspace: () {
+              final stringWithOutLast = amountString
+                  .substring(0, amountString.length - 1)
+                  .replaceAll("\$ ", "")
+                  .replaceAll(" ", "");
 
+              if (stringWithOutLast.isEmpty) {
+                setState(() {
+                  amountValue.clear();
+                  amountString = defaultAmountValue;
+                });
+
+                return;
+              }
+
+              setState(() {
+                amountString = "\$ $stringWithOutLast";
+              });
             },
           ),
         );
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -144,77 +159,60 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
             ),
             Container(
               margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               decoration: defaultBorder,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Date", style: largeStyle),
-                        GestureDetector(
-                            onTap: () {
-                              final today = DateTime.now();
-                              const defaultDuration = Duration(days: 30);
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Date", style: largeStyle),
+                      GestureDetector(
+                          onTap: () {
+                            final today = DateTime.now();
+                            const defaultDuration = Duration(days: 30);
 
-                              final firstDate = today.subtract(defaultDuration);
-                              final lastDate = today.add(defaultDuration);
+                            final firstDate = today.subtract(defaultDuration);
+                            final lastDate = today.add(defaultDuration);
 
-                              showDatePicker(
-                                  context: context,
-                                  firstDate: firstDate,
-                                  lastDate: lastDate);
-                            },
-                            child: Text("Aug 18, 2025", style: mediumStyle))
-                      ],
-                    ),
+                            showDatePicker(
+                                context: context,
+                                firstDate: firstDate,
+                                lastDate: lastDate);
+                          },
+                          child: Text("Aug 18, 2025", style: mediumStyle))
+                    ],
                   ),
                   const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextFormField(
-                      textAlign: TextAlign.right,
-                      controller: _amountController,
-                      focusNode: _amountFocusNode,
-                      style: mediumStyle?.copyWith(
-                          color: AppColors.expenseColor,
-                          fontWeight: FontWeight.w700),
-                      onTapOutside: (_) => _formatAmountOnBlur(),
-                      onChanged: _sanitizeInput,
-                      onTap: _resetIfDefault,
-                      keyboardType: TextInputType.number,
-                      enabled: true,
-                      decoration: InputDecoration(
-                        prefixText: "Amount",
-                        prefixStyle: mediumStyle,
-                        border: InputBorder.none,
-                      ),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Amount"),
+                      GestureDetector(
+                        onTap: () => _showCustomKeyboard(context),
+                        child: Text(
+                          amountString,
+                          style: TextStyle(color: AppColors.expenseColor),
+                        ),
+                      )
+                    ],
                   ),
                   const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Category", style: largeStyle),
-                        Text("Uncategorized", style: mediumStyle)
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Category", style: largeStyle),
+                      Text("Uncategorized", style: mediumStyle)
+                    ],
                   ),
                   const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Payment Source", style: largeStyle),
-                        Text("None", style: mediumStyle)
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Payment Source", style: largeStyle),
+                      Text("None", style: mediumStyle)
+                    ],
                   ),
                 ],
               ),
@@ -227,9 +225,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                 readOnly: true,
                 focusNode: _paymentFocusNode,
                 onTap: () => _showCustomKeyboard(context),
-                decoration: const InputDecoration(
-                  border: InputBorder.none
-                ),
+                decoration: const InputDecoration(border: InputBorder.none),
               ),
             )
           ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 
 class CustomNumericKeyboard extends StatelessWidget {
   final Function(String) onNumberTap;
@@ -11,17 +11,40 @@ class CustomNumericKeyboard extends StatelessWidget {
     required this.onBackspace,
   });
 
-  Widget _buildButton(String text, {VoidCallback? onTap}) {
+  Widget _buildButton(String text,
+      {VoidCallback? onTap, TextStyle? style, BoxDecoration? decoration}) {
+    final buttonStyle =
+        style ?? TextStyle(color: Colors.black.withOpacity(0.4), fontSize: 24);
+
+    final boxDecoration = decoration ??
+        BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: AppColors.secondary.withOpacity(0.1));
+
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Material(
+              child: Ink(
+                child: InkWell(
+                  splashColor: Colors.grey.withOpacity(0.1),
+                  highlightColor: AppColors.secondary.withOpacity(0.1),
+                  onTap: onTap,
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: boxDecoration,
+                    child: Center(
+                      child: Text(text, style: buttonStyle),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-          onPressed: onTap,
-          child: Text(text, style: const TextStyle(fontSize: 24)),
         ),
       ),
     );
@@ -31,6 +54,9 @@ class CustomNumericKeyboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(
+          height: 20,
+        ),
         Row(children: [
           _buildButton("1", onTap: () => onNumberTap("1")),
           _buildButton("2", onTap: () => onNumberTap("2")),
@@ -49,7 +75,12 @@ class CustomNumericKeyboard extends StatelessWidget {
         Row(children: [
           const Spacer(),
           _buildButton("0", onTap: () => onNumberTap("0")),
-          _buildButton("⌫", onTap: onBackspace),
+          _buildButton("⌫",
+              onTap: onBackspace,
+              style: const TextStyle(fontSize: 40, color: Colors.white),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.turquoise)),
         ]),
       ],
     );
