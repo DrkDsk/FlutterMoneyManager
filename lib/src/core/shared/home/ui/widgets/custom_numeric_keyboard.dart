@@ -3,13 +3,14 @@ import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 
 class CustomNumericKeyboard extends StatelessWidget {
   final Function(String) onNumberTap;
+  final VoidCallback onOkSubmit;
   final VoidCallback onBackspace;
 
-  const CustomNumericKeyboard({
-    super.key,
-    required this.onNumberTap,
-    required this.onBackspace,
-  });
+  const CustomNumericKeyboard(
+      {super.key,
+      required this.onNumberTap,
+      required this.onBackspace,
+      required this.onOkSubmit});
 
   Widget _buildButton(String text,
       {VoidCallback? onTap, TextStyle? style, BoxDecoration? decoration}) {
@@ -73,7 +74,7 @@ class CustomNumericKeyboard extends StatelessWidget {
           _buildButton("9", onTap: () => onNumberTap("9")),
         ]),
         Row(children: [
-          const Spacer(),
+          _buildButton("OK", onTap: () => onOkSubmit()),
           _buildButton("0", onTap: () => onNumberTap("0")),
           _buildButton("⌫",
               onTap: onBackspace,
