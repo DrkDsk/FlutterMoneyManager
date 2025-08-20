@@ -15,17 +15,12 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => getIt<HomeRedirectionCubit>(),
-          ),
-          BlocProvider(
-              create: (_) => getIt<NavigationCubit>()
-          )
-        ],
-        child: const WelcomeScreen()
-      ),
+      home: MultiBlocProvider(providers: [
+        BlocProvider(
+          create: (context) => getIt<HomeRedirectionCubit>(),
+        ),
+        BlocProvider(create: (_) => getIt<NavigationCubit>())
+      ], child: const WelcomeScreen()),
     );
   }
 }
