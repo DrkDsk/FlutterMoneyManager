@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_app_bar.dart';
+import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/theme/styles.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
@@ -12,17 +13,22 @@ class CreateTransactionScreen extends StatefulWidget {
 }
 
 class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
-  String defaultAmountValue = "\$ 0.00";
+  static const String defaultAmountValue = "\$ 0";
 
-  late FocusNode _focusNode;
+  late FocusNode _amountFocusNode;
+  late FocusNode _paymentFocusNode;
   late TextEditingController _noteController;
   late TextEditingController _amountController;
+
+  StringBuffer amountValue = StringBuffer("0");
+  String amountString = defaultAmountValue;
 
   @override
   void initState() {
     _noteController = TextEditingController();
     _amountController = TextEditingController(text: defaultAmountValue);
-    _focusNode = FocusNode();
+    _amountFocusNode = FocusNode();
+    _paymentFocusNode = FocusNode();
     super.initState();
   }
 
@@ -30,42 +36,60 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   void dispose() {
     _noteController.dispose();
     _amountController.dispose();
-    _focusNode.dispose();
+    _amountFocusNode.dispose();
     super.dispose();
   }
 
-  void _formatAmountOnBlur() {
-    _focusNode.unfocus();
+  String formatAmount(String value) {
+    String cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
 
-    if (_amountController.text == "0") {
-      _amountController.clear();
-      _amountController.text = defaultAmountValue;
-      return ;
+    if (cleaned.isEmpty || int.tryParse(cleaned) == 0) {
+      return "0";
     }
 
-    final onlyAmount = _amountController.text.replaceAll("\$ ", "").replaceAll(" ", "");
-    _amountController.text = "\$ $onlyAmount";
+    cleaned = int.parse(cleaned).toString();
+
+    return "\$ $cleaned";
   }
 
-  void _sanitizeInput(String value) {
-    if (value.isEmpty || value == "0" || value == "00") {
-      _amountController.text = "0";
-      return;
-    }
+  void _showCustomKeyboard(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.5,
+          child: CustomNumericKeyboard(
+            onNumberTap: (number) {
+              amountValue.write(number);
+              setState(() {
+                final formatted = formatAmount(amountValue.toString());
+                amountString = formatted;
+              });
+            },
+            onBackspace: () {
+              final stringWithOutLast = amountString
+                  .substring(0, amountString.length - 1)
+                  .replaceAll("\$ ", "")
+                  .replaceAll(" ", "");
 
-    var cleaned = value.replaceAll("\$", "");
+              if (stringWithOutLast.isEmpty) {
+                setState(() {
+                  amountValue.clear();
+                  amountString = defaultAmountValue;
+                });
 
-    if (cleaned.startsWith("0")) {
-      cleaned = cleaned.replaceFirst("0", "");
-    }
+                return;
+              }
 
-    _amountController.text = cleaned;
-  }
-
-  void _resetIfDefault() {
-    if (_amountController.text == defaultAmountValue) {
-      _amountController.text = "0";
-    }
+              setState(() {
+                amountString = "\$ $stringWithOutLast";
+              });
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -114,77 +138,60 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
             ),
             Container(
               margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               decoration: defaultBorder,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Date", style: largeStyle),
-                        GestureDetector(
-                            onTap: () {
-                              final today = DateTime.now();
-                              const defaultDuration = Duration(days: 30);
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Date", style: largeStyle),
+                      GestureDetector(
+                          onTap: () {
+                            final today = DateTime.now();
+                            const defaultDuration = Duration(days: 30);
 
-                              final firstDate = today.subtract(defaultDuration);
-                              final lastDate = today.add(defaultDuration);
+                            final firstDate = today.subtract(defaultDuration);
+                            final lastDate = today.add(defaultDuration);
 
-                              showDatePicker(
-                                  context: context,
-                                  firstDate: firstDate,
-                                  lastDate: lastDate);
-                            },
-                            child: Text("Aug 18, 2025", style: mediumStyle))
-                      ],
-                    ),
+                            showDatePicker(
+                                context: context,
+                                firstDate: firstDate,
+                                lastDate: lastDate);
+                          },
+                          child: Text("Aug 18, 2025", style: mediumStyle))
+                    ],
                   ),
                   const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextFormField(
-                      textAlign: TextAlign.right,
-                      controller: _amountController,
-                      focusNode: _focusNode,
-                      style: mediumStyle?.copyWith(
-                          color: AppColors.expenseColor,
-                          fontWeight: FontWeight.w700),
-                      onTapOutside: (_) => _formatAmountOnBlur(),
-                      onChanged: _sanitizeInput,
-                      onTap: _resetIfDefault,
-                      keyboardType: TextInputType.number,
-                      enabled: true,
-                      decoration: InputDecoration(
-                        prefixText: "Amount",
-                        prefixStyle: mediumStyle,
-                        border: InputBorder.none,
-                      ),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Amount"),
+                      GestureDetector(
+                        onTap: () => _showCustomKeyboard(context),
+                        child: Text(
+                          amountString,
+                          style: TextStyle(color: AppColors.expenseColor),
+                        ),
+                      )
+                    ],
                   ),
                   const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Category", style: largeStyle),
-                        Text("Uncategorized", style: mediumStyle)
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Category", style: largeStyle),
+                      Text("Uncategorized", style: mediumStyle)
+                    ],
                   ),
                   const Divider(height: 20, color: Colors.grey, thickness: 0.2),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Payment Source", style: largeStyle),
-                        Text("None", style: mediumStyle)
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Payment Source", style: largeStyle),
+                      Text("None", style: mediumStyle)
+                    ],
                   ),
                 ],
               ),
@@ -194,15 +201,10 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
               decoration: defaultBorder,
               margin: const EdgeInsets.symmetric(horizontal: 10),
               child: TextFormField(
-                controller: _noteController,
-                style: theme.textTheme.bodySmall,
-                decoration: InputDecoration(
-                    hintText: "Enter a note",
-                    hintStyle:
-                        TextStyle(color: AppColors.onPrimary.withOpacity(0.5)),
-                    filled: true,
-                    fillColor: Colors.grey.withOpacity(0.05),
-                    border: InputBorder.none),
+                readOnly: true,
+                focusNode: _paymentFocusNode,
+                onTap: () => _showCustomKeyboard(context),
+                decoration: const InputDecoration(border: InputBorder.none),
               ),
             )
           ],
