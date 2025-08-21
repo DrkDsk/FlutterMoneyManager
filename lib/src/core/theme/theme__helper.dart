@@ -14,14 +14,14 @@ ThemeData get lightTheme => ThemeData(
     fontFamily: "Outfit",
     textTheme: TextTheme(
         bodySmall: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
             color: colorScheme.onPrimary),
         bodyMedium: TextStyle(
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.w500,
             color: colorScheme.onPrimary),
         bodyLarge: TextStyle(
-            fontSize: 35,
-            fontWeight: FontWeight.w700,
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
             color: colorScheme.onPrimary)));

@@ -37,7 +37,8 @@ class ExpenseList extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         decoration: BoxDecoration(
-                            color: theme.colorScheme.onPrimary.withOpacity(0.2),
+                            color:
+                                theme.colorScheme.onPrimary.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(4)),
                         child:
                             Text("Friday", style: theme.textTheme.bodyMedium),

@@ -152,10 +152,6 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final mediumStyle = theme.textTheme.bodyLarge
-        ?.copyWith(fontSize: 20, fontWeight: FontWeight.w400);
-    final largeStyle = theme.textTheme.bodyMedium?.copyWith(fontSize: 20);
-
     return Scaffold(
       appBar: const CustomAppBar(),
       bottomNavigationBar: BottomAppBar(
@@ -203,8 +199,6 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                       height: 100,
                       child: CreateTransactionItem(
                         label: "Date",
-                        largeStyle: largeStyle,
-                        mediumStyle: mediumStyle,
                         value: state.transactionDate.toString(),
                         onTap: onTransactionDateChanged,
                       ),
@@ -214,7 +208,6 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                     SizedBox(
                       height: 100,
                       child: CreateTransactionItem(
-                          largeStyle: largeStyle,
                           mediumStyle: TextStyle(color: AppColors.expenseColor),
                           label: "Amount",
                           value: state.amount,
@@ -228,14 +221,15 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                           label: "Category",
                           onTap: () => _showTransactionsCategories(context),
                           value: "Uncategorized",
-                          mediumStyle: mediumStyle,
                           child: transactionCategory == null
                               ? null
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(transactionCategory.name,
-                                        style: mediumStyle),
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
+                                                color: AppColors.expenseColor)),
                                     const SizedBox(width: 5),
                                     Image.asset(
                                       transactionCategory.icon,
@@ -252,21 +246,19 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                           label: "Payment Source",
                           onTap: () => _showPaymentSources(context),
                           value: "Uncategorized",
-                          mediumStyle: mediumStyle,
                           child: paymentSource == null
                               ? null
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text(paymentSource.name,
-                                        style: mediumStyle),
-                                    ...[
-                                      const SizedBox(width: 5),
-                                      Image.asset(
-                                        paymentSource.icon,
-                                        width: 30,
-                                      )
-                                    ],
+                                    Text(
+                                      paymentSource.name,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Image.asset(
+                                      paymentSource.icon,
+                                      width: 30,
+                                    ),
                                   ],
                                 )),
                     ),
