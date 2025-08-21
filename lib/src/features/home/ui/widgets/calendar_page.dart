@@ -13,12 +13,12 @@ class CalendarPage extends StatelessWidget {
         children: [
           Container(
               padding: const EdgeInsets.all(4),
-              decoration: kWidgetRoundedColoredBorder,
+              decoration: kWidgetRoundedDecoration,
               child: const BodyCalendar()),
           const SizedBox(height: 20),
           Container(
             height: 400,
-            decoration: kWidgetRoundedColoredBorder,
+            decoration: kWidgetRoundedDecoration,
             child: const ExpenseList(),
           )
         ],
