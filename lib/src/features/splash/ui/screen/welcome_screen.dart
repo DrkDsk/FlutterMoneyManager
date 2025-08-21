@@ -7,7 +7,6 @@ import 'package:flutter_money_manager/src/features/home/ui/screens/home_screen.d
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/login/ui/screens/login_screen.dart';
 import 'package:flutter_money_manager/src/features/splash/ui/screen/splash_screen.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
