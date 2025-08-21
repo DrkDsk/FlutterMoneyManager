@@ -232,17 +232,15 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                           child: transactionCategory == null
                               ? null
                               : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(transactionCategory.name,
                                         style: mediumStyle),
-                                    ...[
-                                      const SizedBox(width: 5),
-                                      Image.asset(
-                                        transactionCategory.icon,
-                                        width: 30,
-                                      )
-                                    ],
+                                    const SizedBox(width: 5),
+                                    Image.asset(
+                                      transactionCategory.icon,
+                                      width: 30,
+                                    )
                                   ],
                                 )),
                     ),
@@ -258,7 +256,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                           child: paymentSource == null
                               ? null
                               : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(paymentSource.name,
                                         style: mediumStyle),

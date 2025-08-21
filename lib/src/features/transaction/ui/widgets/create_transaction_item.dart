@@ -22,10 +22,15 @@ class CreateTransactionItem extends StatelessWidget {
     final widget = child ?? Text(value ?? "", style: mediumStyle);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: largeStyle),
-        GestureDetector(onTap: onTap, child: widget)
+        Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onTap,
+            child: Align(alignment: Alignment.centerRight, child: widget),
+          ),
+        )
       ],
     );
   }
