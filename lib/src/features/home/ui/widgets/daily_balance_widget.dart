@@ -10,22 +10,17 @@ class DailyBalancePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          Text(
-            "Transaction on August",
-            style: theme.textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 10),
-          const SizedBox(
-            height: 400,
-            child: ExpenseList(),
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 10),
+        Text(
+          "Transaction on August",
+          style: theme.textTheme.bodyLarge,
+        ),
+        const SizedBox(height: 10),
+        const Expanded(child: ExpenseList()),
+      ],
     );
   }
 }

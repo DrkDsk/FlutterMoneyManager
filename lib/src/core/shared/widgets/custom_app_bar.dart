@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
-import 'package:flutter_money_manager/src/core/theme/styles.dart';
+import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});

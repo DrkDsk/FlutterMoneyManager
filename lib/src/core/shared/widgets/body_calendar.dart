@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
-import 'package:flutter_money_manager/src/core/shared/home/ui/builders/calendar/custom_calendar_builder.dart';
-import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/header_calendar.dart';
+import 'package:flutter_money_manager/src/core/shared/builders/calendar/custom_calendar_builder.dart';
+import 'package:flutter_money_manager/src/core/shared/widgets/header_calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BodyCalendar extends StatefulWidget {
@@ -12,7 +12,6 @@ class BodyCalendar extends StatefulWidget {
 }
 
 class _BodyCalendarState extends State<BodyCalendar> {
-
   late DateTime _focusedDay;
   late DateTime _firstDay;
   late DateTime _lastDay;
@@ -29,7 +28,6 @@ class _BodyCalendarState extends State<BodyCalendar> {
 
   @override
   Widget build(BuildContext context) {
-
     final theme = Theme.of(context);
 
     return Column(
@@ -45,8 +43,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
               setState(() {
                 _focusedDay = _focusedDay.add(const Duration(days: 30));
               });
-            }
-        ),
+            }),
         const SizedBox(height: 20),
         TableCalendar(
           headerVisible: false,
@@ -69,10 +66,8 @@ class _BodyCalendarState extends State<BodyCalendar> {
             dowTextFormatter: (date, locale) {
               return date.dayName.substring(0, 3);
             },
-            weekdayStyle: TextStyle(
-                fontSize: 15.0,
-                color: theme.colorScheme.secondary
-            ),
+            weekdayStyle:
+                TextStyle(fontSize: 15.0, color: theme.colorScheme.secondary),
             weekendStyle: TextStyle(
                 fontSize: 15.0,
                 color: theme.colorScheme.secondary.withOpacity(0.45)),
