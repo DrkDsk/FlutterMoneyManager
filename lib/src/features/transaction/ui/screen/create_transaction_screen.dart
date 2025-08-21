@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
+import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/body_calendar.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/theme/styles.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_payment_sources.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_item.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key});
@@ -203,7 +205,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                       height: 100,
                       child: CreateTransactionItem(
                         label: "Date",
-                        value: state.transactionDate.toString(),
+                        value: state.transactionDate.dateFormat(),
                         onTap: onTransactionDateChanged,
                       ),
                     ),

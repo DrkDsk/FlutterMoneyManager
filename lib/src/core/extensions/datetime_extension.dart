@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 extension DateTimeExtension on DateTime {
   String get monthName {
     return [
@@ -35,5 +37,12 @@ extension DateTimeExtension on DateTime {
       default:
         return '';
     }
+  }
+
+  String dateFormat({String? format = 'dd/MM/yyyy'}) {
+    final DateFormat formatter = DateFormat(format);
+    final String formatted = formatter.format(this);
+
+    return formatted;
   }
 }
