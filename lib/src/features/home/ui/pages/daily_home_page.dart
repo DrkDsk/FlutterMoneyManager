@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/add_transaction_button.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/calendar_page.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/daily_balance_widget.dart';
@@ -14,7 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-
   late TabController _tabController;
 
   @override
@@ -35,14 +34,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 60),
               const SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: TransactionSummaryContent()
-              ),
+                  child: TransactionSummaryContent()),
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                    color: AppColors.secondary.withOpacity(0.60),
-                    borderRadius: BorderRadius.circular(12)),
+                decoration: kTabBarDecoration,
                 child: HomeTabBar(tabController: _tabController),
               ),
               const SizedBox(height: 20),
@@ -56,11 +52,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ],
           ),
         ),
-        const Positioned(
-          bottom: 30,
-          right: 30,
-          child: AddTransactionButton()
-        )
+        const Positioned(bottom: 30, right: 30, child: AddTransactionButton())
       ],
     );
   }
