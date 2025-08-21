@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 60),
               const SingleChildScrollView(
