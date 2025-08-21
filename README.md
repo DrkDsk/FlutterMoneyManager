@@ -1,6 +1,6 @@
 ## 🛠 Tech Stack
 
-**OpenIA** -> Asistente para analizar en qué y donde se generaron más gastos y en qué categorías se ha generado un aumento. 
+**OpenIA** -> asistente para analizar en qué y donde se generaron más gastos y en qué categorías se ha generado un aumento. 
 
 **Hive** → almacenamiento local rápido y sin dependencias nativas.
 
