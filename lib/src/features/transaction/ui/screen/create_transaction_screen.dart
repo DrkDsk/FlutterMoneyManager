@@ -3,7 +3,6 @@ import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
-import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/body_calendar.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/home/ui/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/theme/styles.dart';
@@ -56,7 +55,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         return FractionallySizedBox(
           heightFactor: 0.4,
           child: Container(
-            color: AppColors.turquoise,
+            color: AppColors.onPrimary.withOpacity(0.85),
             child: CustomNumericKeyboard(
               onOkSubmit: () => _router.pop(),
               onNumberTap: (number) {
@@ -92,14 +91,18 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      shape: const RoundedRectangleBorder(),
       builder: (context) {
         return FractionallySizedBox(
             heightFactor: 0.4,
-            child: BottomPaymentSources(
-              onSelectPaymentSource: (paymentSource) {
-                _createTransactionCubit.updatePaymentSource(paymentSource);
-                _router.pop();
-              },
+            child: Container(
+              color: AppColors.keyboardBackgroundColor,
+              child: BottomPaymentSources(
+                onSelectPaymentSource: (paymentSource) {
+                  _createTransactionCubit.updatePaymentSource(paymentSource);
+                  _router.pop();
+                },
+              ),
             ));
       },
     );
@@ -109,15 +112,19 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      shape: const RoundedRectangleBorder(),
       builder: (context) {
-        return FractionallySizedBox(
-            heightFactor: 0.4,
-            child: BottomTransactionCategory(
-              onSelectCategory: (category) {
-                _createTransactionCubit.updateTransactionCategory(category);
-                _router.pop();
-              },
-            ));
+        return Container(
+          color: AppColors.keyboardBackgroundColor,
+          child: FractionallySizedBox(
+              heightFactor: 0.4,
+              child: BottomTransactionCategory(
+                onSelectCategory: (category) {
+                  _createTransactionCubit.updateTransactionCategory(category);
+                  _router.pop();
+                },
+              )),
+        );
       },
     );
   }

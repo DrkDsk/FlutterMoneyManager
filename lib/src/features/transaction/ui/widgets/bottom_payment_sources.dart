@@ -9,38 +9,39 @@ class BottomPaymentSources extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: GridView.builder(
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, crossAxisSpacing: 40, childAspectRatio: 0.85),
-          itemCount: kDefaultPaymentResources.length,
-          itemBuilder: (context, index) {
-            final paymentSource = kDefaultPaymentResources[index];
+    final theme = Theme.of(context);
 
-            return GestureDetector(
-              onTap: () => onSelectPaymentSource(paymentSource),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    paymentSource.icon,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    paymentSource.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis, // 👈 evita cortes feos
-                  ),
-                ],
-              ),
-            );
-          }),
-    );
+    return GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, crossAxisSpacing: 10),
+        itemCount: kDefaultPaymentResources.length,
+        itemBuilder: (context, index) {
+          final paymentSource = kDefaultPaymentResources[index];
+
+          return GestureDetector(
+            onTap: () => onSelectPaymentSource(paymentSource),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  paymentSource.icon,
+                  height: 50,
+                  width: 50,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  paymentSource.name,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(color: theme.colorScheme.primary),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis, // 👈 evita cortes feos
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
