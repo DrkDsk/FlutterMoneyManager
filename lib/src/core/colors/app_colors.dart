@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 
 class AppColors {
   static Color primary = const Color(0xFFFFFFFF);
@@ -8,5 +9,5 @@ class AppColors {
   static Color incomeColor = Colors.green.shade600;
   static Color expenseColor = Colors.redAccent;
   static Color turquoise = const Color(0xE268C2E0);
-  static Color keyboardBackgroundColor = onPrimary.withOpacity(0.85);
+  static Color keyboardBackgroundColor = onPrimary.customOpacity(0.85);
 }

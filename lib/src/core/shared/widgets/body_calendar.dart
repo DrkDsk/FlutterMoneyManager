@@ -3,6 +3,7 @@ import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dar
 import 'package:flutter_money_manager/src/core/shared/builders/calendar/custom_calendar_builder.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/header_calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 
 class BodyCalendar extends StatefulWidget {
   const BodyCalendar({super.key});
@@ -70,7 +71,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
                 TextStyle(fontSize: 15.0, color: theme.colorScheme.secondary),
             weekendStyle: TextStyle(
                 fontSize: 15.0,
-                color: theme.colorScheme.secondary.withOpacity(0.45)),
+                color: theme.colorScheme.secondary.customOpacity(0.45)),
           ),
           calendarBuilders: const CalendarBuilders(
             todayBuilder: CustomCalendarBuilder.todayBuilder,
