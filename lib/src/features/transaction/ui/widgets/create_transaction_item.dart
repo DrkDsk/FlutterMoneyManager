@@ -1,34 +1,45 @@
 import 'package:flutter/material.dart';
 
 class CreateTransactionItem extends StatelessWidget {
-  const CreateTransactionItem(
-      {super.key,
-      this.largeStyle,
-      this.mediumStyle,
-      required this.label,
-      this.value,
-      this.child,
-      required this.onTap});
+  const CreateTransactionItem({
+    super.key,
+    required this.label,
+    required this.onTap,
+    this.value,
+    this.child,
+    this.mediumStyle,
+  });
 
-  final void Function()? onTap;
-  final TextStyle? largeStyle;
-  final TextStyle? mediumStyle;
-  final String? value;
   final String label;
+  final String? value;
   final Widget? child;
+  final TextStyle? mediumStyle;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final widget = child ?? Text(value ?? "", style: mediumStyle);
+    final theme = Theme.of(context);
+    final valueTextStyle = mediumStyle ??
+        theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400);
+
+    final displayWidget = child ??
+        Text(
+          value ?? "",
+          style: valueTextStyle,
+          textAlign: TextAlign.right,
+        );
 
     return Row(
       children: [
-        Text(label, style: largeStyle),
+        Text(label,
+            style: theme.textTheme.bodyLarge
+                ?.copyWith(fontWeight: FontWeight.w400)),
         Expanded(
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: onTap,
-            child: Align(alignment: Alignment.centerRight, child: widget),
+            child:
+                Align(alignment: Alignment.centerRight, child: displayWidget),
           ),
         )
       ],

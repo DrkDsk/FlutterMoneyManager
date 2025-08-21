@@ -14,17 +14,18 @@ class SummaryText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         Text(
           summaryLabel,
-          style: const TextStyle(
-              color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 16),
+          style: theme.textTheme.bodyMedium,
         ),
         Text(
           "\$ $summaryValue",
-          style: TextStyle(
-              color: textValueColor, fontWeight: FontWeight.w500, fontSize: 24),
+          style: theme.textTheme.bodyLarge
+              ?.copyWith(color: textValueColor, fontWeight: FontWeight.w400),
         ),
       ],
     );

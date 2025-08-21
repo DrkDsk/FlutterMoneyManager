@@ -17,10 +17,7 @@ class DailyBalancePage extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             "Transaction on August",
-            style: TextStyle(
-              color: theme.colorScheme.onPrimary,
-              fontSize: 24,
-            ),
+            style: theme.textTheme.bodyLarge,
           ),
           const SizedBox(height: 10),
           const SizedBox(
