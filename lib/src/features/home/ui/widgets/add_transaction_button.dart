@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/di/di.dart';
+import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/screen/create_transaction_screen.dart';
@@ -30,7 +31,7 @@ class AddTransactionButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: theme.colorScheme.onPrimary.withOpacity(0.80),
+                color: theme.colorScheme.onPrimary.customOpacity(0.80),
                 offset: const Offset(0, 3),
                 blurRadius: 1,
               )

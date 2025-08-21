@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 
 class ExpenseList extends StatelessWidget {
   const ExpenseList({
@@ -18,7 +19,7 @@ class ExpenseList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: theme.colorScheme.onSecondary.withOpacity(0.10),
+            color: theme.colorScheme.onSecondary.customOpacity(0.10),
           ),
           child: Column(
             children: [
@@ -38,7 +39,7 @@ class ExpenseList extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         decoration: BoxDecoration(
                             color:
-                                theme.colorScheme.onPrimary.withOpacity(0.08),
+                                theme.colorScheme.onPrimary.customOpacity(0.08),
                             borderRadius: BorderRadius.circular(4)),
                         child:
                             Text("Friday", style: theme.textTheme.bodyMedium),
