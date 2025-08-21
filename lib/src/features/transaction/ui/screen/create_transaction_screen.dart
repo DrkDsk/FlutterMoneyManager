@@ -49,33 +49,37 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      shape: const RoundedRectangleBorder(),
       builder: (context) {
         return FractionallySizedBox(
-          heightFactor: 0.5,
-          child: CustomNumericKeyboard(
-            onOkSubmit: () => _router.pop(),
-            onNumberTap: (number) {
-              amountValue.write(number);
-              final formatted = formatAmount(amountValue.toString());
-              _createTransactionCubit.updateAmount(formatted);
-            },
-            onBackspace: () {
-              final amountString = _createTransactionCubit.state.amount;
+          heightFactor: 0.4,
+          child: Container(
+            color: AppColors.turquoise,
+            child: CustomNumericKeyboard(
+              onOkSubmit: () => _router.pop(),
+              onNumberTap: (number) {
+                amountValue.write(number);
+                final formatted = formatAmount(amountValue.toString());
+                _createTransactionCubit.updateAmount(formatted);
+              },
+              onBackspace: () {
+                final amountString = _createTransactionCubit.state.amount;
 
-              final stringWithOutLast = amountString
-                  .substring(0, amountString.length - 1)
-                  .replaceAll("\$ ", "")
-                  .replaceAll(" ", "");
+                final stringWithOutLast = amountString
+                    .substring(0, amountString.length - 1)
+                    .replaceAll("\$ ", "")
+                    .replaceAll(" ", "");
 
-              amountValue.clear();
+                amountValue.clear();
 
-              if (stringWithOutLast.isEmpty) {
-                _createTransactionCubit.updateAmount(kDefaultAmountValue);
-                return;
-              }
+                if (stringWithOutLast.isEmpty) {
+                  _createTransactionCubit.updateAmount(kDefaultAmountValue);
+                  return;
+                }
 
-              _createTransactionCubit.updateAmount("\$ $stringWithOutLast");
-            },
+                _createTransactionCubit.updateAmount("\$ $stringWithOutLast");
+              },
+            ),
           ),
         );
       },
@@ -226,10 +230,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text(transactionCategory.name,
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                                color: AppColors.expenseColor)),
+                                    Text(transactionCategory.name),
                                     const SizedBox(width: 5),
                                     Image.asset(
                                       transactionCategory.icon,
@@ -251,9 +252,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text(
-                                      paymentSource.name,
-                                    ),
+                                    Text(paymentSource.name),
                                     const SizedBox(width: 5),
                                     Image.asset(
                                       paymentSource.icon,
