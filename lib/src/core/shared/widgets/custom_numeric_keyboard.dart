@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 
 class CustomNumericKeyboard extends StatelessWidget {
   final Function(String) onNumberTap;
@@ -15,7 +16,7 @@ class CustomNumericKeyboard extends StatelessWidget {
   Widget _buildButton(String text,
       {VoidCallback? onTap, TextStyle? style, BoxDecoration? decoration}) {
     final buttonStyle = style ??
-        TextStyle(color: AppColors.primary.withOpacity(0.8), fontSize: 22);
+        TextStyle(color: AppColors.primary.customOpacity(0.8), fontSize: 22);
 
     return Expanded(
       child: Center(
@@ -25,8 +26,8 @@ class CustomNumericKeyboard extends StatelessWidget {
             child: Ink(
               decoration: decoration,
               child: InkWell(
-                splashColor: Colors.grey.withOpacity(0.1),
-                highlightColor: AppColors.secondary.withOpacity(0.1),
+                splashColor: Colors.grey.customOpacity(0.1),
+                highlightColor: AppColors.secondary.customOpacity(0.1),
                 onTap: onTap,
                 child: Center(
                   child: Text(text, style: buttonStyle),
@@ -73,14 +74,14 @@ class CustomNumericKeyboard extends StatelessWidget {
               "OK",
               onTap: () => onOkSubmit(),
               decoration: BoxDecoration(
-                  color: AppColors.expenseColor.withOpacity(0.90)),
+                  color: AppColors.expenseColor.customOpacity(0.90)),
             ),
             _buildButton("0", onTap: () => onNumberTap("0")),
             _buildButton("⌫",
                 onTap: onBackspace,
                 style: const TextStyle(fontSize: 40, color: Colors.white),
                 decoration: BoxDecoration(
-                    color: AppColors.secondary.withOpacity(0.50))),
+                    color: AppColors.secondary.customOpacity(0.50))),
           ]),
         ),
       ],

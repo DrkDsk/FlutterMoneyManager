@@ -4,6 +4,7 @@ import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubi
 import 'package:flutter_money_manager/src/features/home/ui/pages/daily_home_page.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/pages/stats_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: PageView(
               onPageChanged: onTapBottomNavigationBar,
               controller: _pageController,
-              children: const [HomePage(), Text("Acounts"), Text("Stats")],
+              children: const [HomePage(), Text("Acounts"), StatsPage()],
             )),
           ],
         ),

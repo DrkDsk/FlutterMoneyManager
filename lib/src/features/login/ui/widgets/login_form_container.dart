@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 
 class LoginFormContainer extends StatelessWidget {
   const LoginFormContainer({
@@ -16,21 +17,15 @@ class LoginFormContainer extends StatelessWidget {
             height: 5,
           ),
           TextFormField(
-            style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             decoration: InputDecoration(
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none
-              ),
+                  borderSide: BorderSide.none),
               filled: true,
               hintText: "email@gmail.com",
-              hintStyle: TextStyle(
-                  color: Colors.grey.shade500
-              ),
-              fillColor: Colors.pink.shade200.withOpacity(0.10),
+              hintStyle: TextStyle(color: Colors.grey.shade500),
+              fillColor: Colors.pink.shade200.customOpacity(0.10),
             ),
           ),
           const SizedBox(
@@ -41,22 +36,16 @@ class LoginFormContainer extends StatelessWidget {
             height: 5,
           ),
           TextFormField(
-            style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             obscureText: true,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none
-              ),
+                  borderSide: BorderSide.none),
               filled: true,
-              hintStyle:TextStyle(
-                  color: Colors.grey.shade500
-              ),
+              hintStyle: TextStyle(color: Colors.grey.shade500),
               hintText: "Ingresar contraseña",
-              fillColor: Colors.pink.shade200.withOpacity(0.10),
+              fillColor: Colors.pink.shade200.customOpacity(0.10),
             ),
           ),
           const SizedBox(
@@ -66,8 +55,7 @@ class LoginFormContainer extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Text("Forgot Password?",
                 style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontWeight: FontWeight.w400)),
+                    color: Colors.grey.shade600, fontWeight: FontWeight.w400)),
           )
         ],
       ),

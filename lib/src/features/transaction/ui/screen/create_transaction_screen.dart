@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
@@ -55,7 +56,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         return FractionallySizedBox(
           heightFactor: 0.4,
           child: Container(
-            color: AppColors.onPrimary.withOpacity(0.85),
+            color: AppColors.onPrimary.customOpacity(0.85),
             child: CustomNumericKeyboard(
               onOkSubmit: () => _router.pop(),
               onNumberTap: (number) {
