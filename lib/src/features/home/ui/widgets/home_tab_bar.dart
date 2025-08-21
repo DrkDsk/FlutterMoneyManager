@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 
 class HomeTabBar extends StatelessWidget {
   const HomeTabBar({
@@ -10,27 +11,21 @@ class HomeTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final theme = Theme.of(context);
-
     return TabBar(
-        controller: _tabController,
         dividerColor: Colors.transparent,
-        onTap: (value) {
-
-        },
-        tabs: [
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: kTabBarDecoration,
+        controller: _tabController,
+        onTap: (value) {},
+        tabs: const [
           Text(
             "Daily",
-            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
           Text(
             "Calendar",
-            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
           Text(
             "Summary",
-            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
           ),
         ]);
   }
