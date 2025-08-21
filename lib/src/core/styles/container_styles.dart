@@ -6,6 +6,11 @@ final kWidgetRoundedDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(12),
     border: Border.all(color: AppColors.turquoise.customOpacity(0.15)));
 
+final kTabBarContainerDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(12),
+    border: Border.all(color: AppColors.turquoise.customOpacity(0.8)));
+
 final kTabBarDecoration = BoxDecoration(
-    color: AppColors.secondary.customOpacity(0.60),
-    borderRadius: BorderRadius.circular(12));
+  borderRadius: BorderRadius.circular(12),
+  color: AppColors.turquoise,
+);

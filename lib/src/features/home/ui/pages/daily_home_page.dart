@@ -23,6 +23,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -37,8 +43,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   child: TransactionSummaryContent()),
               const SizedBox(height: 20),
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: kTabBarDecoration,
+                height: 40,
+                decoration: kTabBarContainerDecoration,
+                padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),
                 child: HomeTabBar(tabController: _tabController),
               ),
               const SizedBox(height: 20),

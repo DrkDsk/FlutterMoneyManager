@@ -16,43 +16,40 @@ class PieChartSampleState extends State {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1.3,
+      aspectRatio: 1.5,
       child: Row(
         children: <Widget>[
           const SizedBox(
             height: 18,
           ),
           Expanded(
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: PieChart(
-                PieChartData(
-                  pieTouchData: PieTouchData(
-                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                      setState(() {
-                        if (!event.isInterestedForInteractions ||
-                            pieTouchResponse == null ||
-                            pieTouchResponse.touchedSection == null) {
-                          touchedIndex = -1;
-                          return;
-                        }
-                        touchedIndex = pieTouchResponse
-                            .touchedSection!.touchedSectionIndex;
-                      });
-                    },
-                  ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  sectionsSpace: 0,
-                  centerSpaceRadius: 40,
-                  sections: showingSections(),
+            child: PieChart(
+              PieChartData(
+                pieTouchData: PieTouchData(
+                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    setState(() {
+                      if (!event.isInterestedForInteractions ||
+                          pieTouchResponse == null ||
+                          pieTouchResponse.touchedSection == null) {
+                        touchedIndex = -1;
+                        return;
+                      }
+                      touchedIndex =
+                          pieTouchResponse.touchedSection!.touchedSectionIndex;
+                    });
+                  },
                 ),
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                sectionsSpace: 0,
+                centerSpaceRadius: 40,
+                sections: showingSections(),
               ),
             ),
           ),
           Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Indicator(
@@ -91,8 +88,8 @@ class PieChartSampleState extends State {
         case 0:
           return PieChartSectionData(
             color: CategoryColors.food,
-            value: 40,
-            title: '40%',
+            value: 50,
+            title: '50%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -104,8 +101,8 @@ class PieChartSampleState extends State {
         case 1:
           return PieChartSectionData(
             color: CategoryColors.transportation,
-            value: 30,
-            title: '30%',
+            value: 50,
+            title: '50%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
