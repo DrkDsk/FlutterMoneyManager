@@ -10,6 +10,7 @@ import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/cr
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_payment_sources.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_item.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key});
@@ -115,6 +116,38 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     );
   }
 
+  void onTransactionDateChanged() async {
+    final today = DateTime.now();
+    const defaultDuration = Duration(days: 30);
+
+    final firstDate = today.subtract(defaultDuration);
+    final lastDate = today.add(defaultDuration);
+
+    final selectedDate = await showDatePicker(
+        context: context,
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(
+                  primary: Colors.blue, // color header
+                  onPrimary: Colors.white, // texto header
+                  onSurface: Colors.black, // texto días
+                ),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue, // color botones
+                  ),
+                ),
+                textTheme: const TextTheme()),
+            child: child!,
+          );
+        },
+        firstDate: firstDate,
+        lastDate: lastDate);
+
+    _createTransactionCubit.updateAmountDate(selectedDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -168,144 +201,74 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                   children: [
                     SizedBox(
                       height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Date", style: largeStyle),
-                          GestureDetector(
-                              onTap: () async {
-                                final today = DateTime.now();
-                                const defaultDuration = Duration(days: 30);
-
-                                final firstDate =
-                                    today.subtract(defaultDuration);
-                                final lastDate = today.add(defaultDuration);
-
-                                final selectedDate = await showDatePicker(
-                                    context: context,
-                                    builder: (context, child) {
-                                      return Theme(
-                                        data: Theme.of(context).copyWith(
-                                            colorScheme:
-                                                const ColorScheme.light(
-                                              primary:
-                                                  Colors.blue, // color header
-                                              onPrimary:
-                                                  Colors.white, // texto header
-                                              onSurface:
-                                                  Colors.black, // texto días
-                                            ),
-                                            textButtonTheme:
-                                                TextButtonThemeData(
-                                              style: TextButton.styleFrom(
-                                                foregroundColor: Colors
-                                                    .blue, // color botones
-                                              ),
-                                            ),
-                                            textTheme: const TextTheme()),
-                                        child: child!,
-                                      );
-                                    },
-                                    firstDate: firstDate,
-                                    lastDate: lastDate);
-
-                                _createTransactionCubit
-                                    .updateAmountDate(selectedDate);
-                              },
-                              child: Text("${state.transactionDate}",
-                                  style: mediumStyle))
-                        ],
+                      child: CreateTransactionItem(
+                        label: "Date",
+                        largeStyle: largeStyle,
+                        mediumStyle: mediumStyle,
+                        value: state.transactionDate.toString(),
+                        onTap: onTransactionDateChanged,
                       ),
                     ),
                     const Divider(
                         height: 20, color: Colors.grey, thickness: 0.2),
                     SizedBox(
                       height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Amount"),
-                          Expanded(
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => _showCustomKeyboard(context),
-                              child: Container(
-                                alignment: Alignment.centerRight,
-                                child: BlocBuilder<CreateTransactionCubit,
-                                    CreateTransactionState>(
-                                  builder: (context, state) {
-                                    return Text(
-                                      state.amount,
-                                      style: TextStyle(
-                                          color: AppColors.expenseColor),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                      child: CreateTransactionItem(
+                          largeStyle: largeStyle,
+                          mediumStyle: TextStyle(color: AppColors.expenseColor),
+                          label: "Amount",
+                          value: state.amount,
+                          onTap: () => _showCustomKeyboard(context)),
                     ),
                     const Divider(
                         height: 20, color: Colors.grey, thickness: 0.2),
                     SizedBox(
                       height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Category", style: largeStyle),
-                          GestureDetector(
-                              onTap: () => _showTransactionsCategories(context),
-                              child: transactionCategory == null
-                                  ? Text("Uncategorized", style: mediumStyle)
-                                  : Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(transactionCategory.name,
-                                            style: mediumStyle),
-                                        ...[
-                                          const SizedBox(width: 5),
-                                          Image.asset(
-                                            transactionCategory.icon,
-                                            width: 30,
-                                          )
-                                        ],
-                                      ],
-                                    ))
-                        ],
-                      ),
+                      child: CreateTransactionItem(
+                          label: "Category",
+                          onTap: () => _showTransactionsCategories(context),
+                          value: "Uncategorized",
+                          mediumStyle: mediumStyle,
+                          child: transactionCategory == null
+                              ? null
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(transactionCategory.name,
+                                        style: mediumStyle),
+                                    const SizedBox(width: 5),
+                                    Image.asset(
+                                      transactionCategory.icon,
+                                      width: 30,
+                                    )
+                                  ],
+                                )),
                     ),
                     const Divider(
                         height: 20, color: Colors.grey, thickness: 0.2),
                     SizedBox(
                       height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Payment Source", style: largeStyle),
-                          GestureDetector(
-                              onTap: () => _showPaymentSources(context),
-                              child: paymentSource == null
-                                  ? Text("Uncategorized", style: mediumStyle)
-                                  : Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(paymentSource.name,
-                                            style: mediumStyle),
-                                        ...[
-                                          const SizedBox(width: 5),
-                                          Image.asset(
-                                            paymentSource.icon,
-                                            width: 30,
-                                          )
-                                        ],
-                                      ],
-                                    ))
-                        ],
-                      ),
+                      child: CreateTransactionItem(
+                          label: "Payment Source",
+                          onTap: () => _showPaymentSources(context),
+                          value: "Uncategorized",
+                          mediumStyle: mediumStyle,
+                          child: paymentSource == null
+                              ? null
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(paymentSource.name,
+                                        style: mediumStyle),
+                                    ...[
+                                      const SizedBox(width: 5),
+                                      Image.asset(
+                                        paymentSource.icon,
+                                        width: 30,
+                                      )
+                                    ],
+                                  ],
+                                )),
                     ),
                   ],
                 ),
