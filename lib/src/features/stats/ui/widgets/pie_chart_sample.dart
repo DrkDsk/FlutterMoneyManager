@@ -3,7 +3,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/colors/category_colors.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
-import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'indicator.dart';
 
 class PieChartSample extends StatefulWidget {

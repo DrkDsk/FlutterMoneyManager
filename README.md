@@ -2,6 +2,8 @@
 
 **OpenIA** -> asistente para analizar en qué y donde se generaron más gastos y en qué categorías se ha generado un aumento. 
 
+**Flutter Charts** -> visualización de gráficas de gastos o ingresos mensuales 
+
 **Hive** → almacenamiento local rápido y sin dependencias nativas.
 
 **Bloc** → gestión predecible del estado.
@@ -18,10 +20,13 @@
 <img width="200" alt="Image" src="https://github.com/user-attachments/assets/562951c7-0514-4733-a663-356b46b192fc" />
 
 
-<img width="200" alt="Image" src="https://github.com/user-attachments/assets/bc793b8d-b210-4154-87e2-aa794215fc5b" />
+<img width="200" alt="Image" src="https://github.com/user-attachments/assets/18276303-adbe-476e-a08f-ade49d8b24db" />
 
 
-<img width="200" alt="Image" src="https://github.com/user-attachments/assets/ad18bad8-f0d3-4b76-9a4f-452656035a24" />
+<img width="200" alt="Image" src="https://github.com/user-attachments/assets/5d7eb08b-05b2-418b-84e3-28e5eeb0ee68" />
+
+
+<img width="200" alt="Image" src="https://github.com/user-attachments/assets/d60c28fe-d6a4-4776-9bdf-2604e94c0dc2"/>
 
 
 <img width="200" alt="Image" src="https://github.com/user-attachments/assets/0a31e2a9-385c-4bb5-88de-7aabeda37e51" />
