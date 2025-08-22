@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/colors/category_colors.dart';
+import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'indicator.dart';
 
 class PieChartSample extends StatefulWidget {
@@ -17,63 +20,76 @@ class PieChartSampleState extends State {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.5,
-      child: Row(
-        children: <Widget>[
-          const SizedBox(
-            height: 18,
-          ),
-          Expanded(
-            child: PieChart(
-              PieChartData(
-                pieTouchData: PieTouchData(
-                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                    setState(() {
-                      if (!event.isInterestedForInteractions ||
-                          pieTouchResponse == null ||
-                          pieTouchResponse.touchedSection == null) {
-                        touchedIndex = -1;
-                        return;
-                      }
-                      touchedIndex =
-                          pieTouchResponse.touchedSection!.touchedSectionIndex;
-                    });
-                  },
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.customOpacity(0.5),
+                  offset: const Offset(0, 3),
+                  blurRadius: 0.1)
+            ],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.turquoise.customOpacity(0.8))),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          children: <Widget>[
+            const SizedBox(
+              height: 18,
+            ),
+            Expanded(
+              child: PieChart(
+                PieChartData(
+                  pieTouchData: PieTouchData(
+                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                      setState(() {
+                        if (!event.isInterestedForInteractions ||
+                            pieTouchResponse == null ||
+                            pieTouchResponse.touchedSection == null) {
+                          touchedIndex = -1;
+                          return;
+                        }
+                        touchedIndex = pieTouchResponse
+                            .touchedSection!.touchedSectionIndex;
+                      });
+                    },
+                  ),
+                  borderData: FlBorderData(
+                    show: false,
+                  ),
+                  sectionsSpace: 0,
+                  centerSpaceRadius: 40,
+                  sections: showingSections(),
                 ),
-                borderData: FlBorderData(
-                  show: false,
-                ),
-                sectionsSpace: 0,
-                centerSpaceRadius: 40,
-                sections: showingSections(),
               ),
             ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Indicator(
-                color: CategoryColors.food,
-                text: 'Food',
-                isSquare: true,
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Indicator(
-                color: CategoryColors.transportation,
-                text: 'Transporatation',
-                isSquare: true,
-              ),
-              const SizedBox(
-                height: 4,
-              )
-            ],
-          ),
-          const SizedBox(
-            width: 28,
-          ),
-        ],
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Indicator(
+                  color: CategoryColors.food,
+                  text: 'Food',
+                  isSquare: true,
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                Indicator(
+                  color: CategoryColors.transportation,
+                  text: 'Transporatation',
+                  isSquare: true,
+                ),
+                const SizedBox(
+                  height: 4,
+                )
+              ],
+            ),
+            const SizedBox(
+              width: 28,
+            ),
+          ],
+        ),
       ),
     );
   }
