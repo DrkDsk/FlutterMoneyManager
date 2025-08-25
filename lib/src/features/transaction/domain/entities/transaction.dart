@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_category_enum.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_source_enum.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 
 class Transaction with EquatableMixin {
   final String? id;
   final TransactionTypeEnum type;
   final DateTime transactionDate;
   final String amount;
-  final TransactionCategory? category;
+  final TransactionCategoryEnum? categoryType;
   final TransactionSourceEnum? sourceType;
 
   Transaction(
@@ -16,7 +16,7 @@ class Transaction with EquatableMixin {
       required this.type,
       DateTime? transactionDate,
       required this.amount,
-      this.category,
+      this.categoryType,
       this.sourceType})
       : transactionDate = transactionDate ?? DateTime.now();
 
@@ -25,18 +25,18 @@ class Transaction with EquatableMixin {
       TransactionTypeEnum? type,
       DateTime? transactionDate,
       String? amount,
-      TransactionCategory? category,
+      TransactionCategoryEnum? categoryType,
       TransactionSourceEnum? sourceType}) {
     return Transaction(
         id: id ?? this.id,
         type: type ?? this.type,
         transactionDate: transactionDate ?? this.transactionDate,
         amount: amount ?? this.amount,
-        category: category ?? this.category,
+        categoryType: categoryType ?? this.categoryType,
         sourceType: sourceType ?? this.sourceType);
   }
 
   @override
   List<Object?> get props =>
-      [id, type, transactionDate, amount, category, sourceType];
+      [id, type, transactionDate, amount, categoryType, sourceType];
 }

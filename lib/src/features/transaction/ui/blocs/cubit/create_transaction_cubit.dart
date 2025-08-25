@@ -33,8 +33,8 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
   void updateTransactionCategory(TransactionCategory category) {
     final transaction = state.transaction;
-    final newState =
-        state.copyWith(transaction: transaction.copyWith(category: category));
+    final newState = state.copyWith(
+        transaction: transaction.copyWith(categoryType: category.getType()));
 
     emit(_validForm(newState));
   }
@@ -44,7 +44,7 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
     final amount = transaction.amount.replaceAll("\$ ", "").replaceAll(" ", "");
     final transactionSource = transaction.sourceType;
-    final transactionCategory = transaction.category;
+    final transactionCategory = transaction.categoryType;
 
     final bool formIsValidated = (transactionSource == null ||
             transactionCategory == null ||
