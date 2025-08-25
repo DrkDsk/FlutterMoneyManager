@@ -9,26 +9,31 @@ class CreateTransactionState with EquatableMixin {
   final TransactionSource? transactionSource;
   final TransactionCategory? transactionCategory;
   final bool formIsValidated;
+  final int tabIndex;
 
   CreateTransactionState(
       {required this.transactionDate,
       this.amount = kDefaultAmountValue,
       this.transactionSource,
       this.transactionCategory,
+      this.tabIndex = 0,
       this.formIsValidated = false});
 
-  CreateTransactionState copyWith(
-      {DateTime? transactionDate,
-      String? amount,
-      TransactionSource? transactionSource,
-      TransactionCategory? transactionCategory,
-      bool? formIsValidated}) {
+  CreateTransactionState copyWith({
+    DateTime? transactionDate,
+    String? amount,
+    TransactionSource? transactionSource,
+    TransactionCategory? transactionCategory,
+    bool? formIsValidated,
+    int? tabIndex,
+  }) {
     return CreateTransactionState(
         transactionDate: transactionDate ?? this.transactionDate,
         amount: amount ?? this.amount,
         transactionSource: transactionSource ?? this.transactionSource,
         transactionCategory: transactionCategory ?? this.transactionCategory,
-        formIsValidated: formIsValidated ?? this.formIsValidated);
+        formIsValidated: formIsValidated ?? this.formIsValidated,
+        tabIndex: tabIndex ?? this.tabIndex);
   }
 
   @override
@@ -37,6 +42,7 @@ class CreateTransactionState with EquatableMixin {
         amount,
         transactionSource,
         transactionCategory,
-        formIsValidated
+        formIsValidated,
+        tabIndex
       ];
 }

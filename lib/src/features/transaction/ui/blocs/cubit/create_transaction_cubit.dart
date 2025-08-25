@@ -41,4 +41,8 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
     return newState.copyWith(formIsValidated: formIsValidated);
   }
+
+  void updateTabIndex(int index) {
+    emit(state.copyWith(tabIndex: index));
+  }
 }
