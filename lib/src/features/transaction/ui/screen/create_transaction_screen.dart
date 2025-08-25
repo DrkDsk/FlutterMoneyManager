@@ -189,9 +189,29 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
       body: SafeArea(
         child: Column(
           children: [
-            CustomTabBar(
-                tabController: _transactionTypeTabController,
-                tabs: const [Tab(text: "Income"), Text("Expense")]),
+            BlocSelector<CreateTransactionCubit, CreateTransactionState,
+                Decoration?>(
+              selector: (state) {
+                if (state.tabIndex == 0) {
+                  return BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.incomeColor,
+                  );
+                }
+
+                return BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.expenseColor,
+                );
+              },
+              builder: (context, indicatorDecoration) {
+                return CustomTabBar(
+                    decoration: indicatorDecoration,
+                    onTap: _createTransactionCubit.updateTabIndex,
+                    tabController: _transactionTypeTabController,
+                    tabs: const [Tab(text: "Income"), Text("Expense")]);
+              },
+            ),
             Expanded(
               child: TabBarView(
                 controller: _transactionTypeTabController,
@@ -222,14 +242,27 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                                   height: 20,
                                   color: Colors.grey,
                                   thickness: 0.2),
-                              SizedBox(
-                                height: 100,
-                                child: CreateTransactionItem(
-                                    mediumStyle: TextStyle(
-                                        color: AppColors.expenseColor),
-                                    label: "Amount",
-                                    value: state.amount,
-                                    onTap: () => _showCustomKeyboard(context)),
+                              BlocSelector<CreateTransactionCubit,
+                                  CreateTransactionState, Color?>(
+                                selector: (state) {
+                                  if (state.tabIndex == 0) {
+                                    return AppColors.incomeColor;
+                                  }
+
+                                  return AppColors.expenseColor;
+                                },
+                                builder: (context, textColor) {
+                                  return SizedBox(
+                                    height: 100,
+                                    child: CreateTransactionItem(
+                                        mediumStyle:
+                                            TextStyle(color: textColor),
+                                        label: "Amount",
+                                        value: state.amount,
+                                        onTap: () =>
+                                            _showCustomKeyboard(context)),
+                                  );
+                                },
                               ),
                               const Divider(
                                   height: 20,
@@ -264,7 +297,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                               SizedBox(
                                 height: 100,
                                 child: CreateTransactionItem(
-                                    label: "Payment Source",
+                                    label: "Deposit Source",
                                     onTap: () =>
                                         _showTransactionSources(context),
                                     value: "Uncategorized",
