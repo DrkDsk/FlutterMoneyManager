@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
@@ -11,7 +14,6 @@ import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/cr
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_sources.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_bottom_appbar.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/expense_transaction_tabview.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
@@ -190,7 +192,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
             BlocSelector<CreateTransactionCubit, CreateTransactionState,
                 Decoration?>(
               selector: (state) {
-                if (state.tabIndex == 0) {
+                if (state.transactionType == TransactionType.income) {
                   return BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: AppColors.incomeColor,
@@ -205,9 +207,13 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
               builder: (context, indicatorDecoration) {
                 return CustomTabBar(
                     decoration: indicatorDecoration,
-                    onTap: _createTransactionCubit.updateTabIndex,
+                    onTap: _createTransactionCubit.updateTransactionType,
                     tabController: _transactionTypeTabController,
-                    tabs: const [Tab(text: "Income"), Text("Expense")]);
+                    tabs: [
+                      ...kDefaultTransactionTypes.map((transactionType) {
+                        return Tab(text: transactionType.name);
+                      })
+                    ]);
               },
             ),
             Expanded(
@@ -215,6 +221,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                 controller: _transactionTypeTabController,
                 children: [
                   ExpenseTransactionTabview(
+                    amountLabelColor: AppColors.incomeColor,
                     transactionTypeSource: "Deposit Source",
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
@@ -224,6 +231,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                   ),
                   ExpenseTransactionTabview(
                     transactionTypeSource: "Payment Source",
+                    amountLabelColor: AppColors.expenseColor,
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
                     onTapCategory: () => _showTransactionsCategories(context),

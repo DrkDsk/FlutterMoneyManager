@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
@@ -42,7 +44,9 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
     return newState.copyWith(formIsValidated: formIsValidated);
   }
 
-  void updateTabIndex(int index) {
-    emit(state.copyWith(tabIndex: index));
+  void updateTransactionType(int index) {
+    final transaction = kDefaultTransactionTypes[index];
+
+    emit(state.copyWith(transactionType: transaction.type));
   }
 }

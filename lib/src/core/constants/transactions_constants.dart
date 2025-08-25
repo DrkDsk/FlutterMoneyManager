@@ -1,5 +1,7 @@
+import 'package:flutter_money_manager/src/core/enums/transaction_type.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_type.dart';
 
 const kDefaultAmountValue = "\$ 0";
 
@@ -36,4 +38,9 @@ const kDefaultTransactionsCategory = [
       name: "Household", icon: "assets/icons/categories/household.png"),
   TransactionCategory(
       name: "Entertainment", icon: "assets/icons/categories/entertainment.png")
+];
+
+const kDefaultTransactionTypes = [
+  Transaction(name: "Income", type: TransactionType.income),
+  Transaction(name: "Expense", type: TransactionType.expense)
 ];
