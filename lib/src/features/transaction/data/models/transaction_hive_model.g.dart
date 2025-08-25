@@ -18,7 +18,7 @@ class TransactionHiveModelAdapter extends TypeAdapter<TransactionHiveModel> {
     };
     return TransactionHiveModel(
       id: fields[0] as String,
-      type: fields[1] as TransactionType,
+      type: fields[1] as TransactionTypeEnum,
       transactionDate: fields[2] as DateTime,
       amount: fields[3] as int,
       category: fields[4] as TransactionCategory,
