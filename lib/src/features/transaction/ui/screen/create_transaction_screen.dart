@@ -61,7 +61,9 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
               onOkSubmit: () => _router.pop(),
               onNumberTap: (number) {
                 amountValue.write(number);
+
                 final formatted = formatAmount(amountValue.toString());
+
                 _createTransactionCubit.updateAmount(formatted);
               },
               onBackspace: () {
@@ -72,13 +74,14 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                     .replaceAll("\$ ", "")
                     .replaceAll(" ", "");
 
-                amountValue.clear();
-
                 if (stringWithOutLast.isEmpty) {
                   _createTransactionCubit.updateAmount(kDefaultAmountValue);
+                  amountValue.clear();
                   return;
                 }
 
+                amountValue.clear();
+                amountValue.write(stringWithOutLast);
                 _createTransactionCubit.updateAmount("\$ $stringWithOutLast");
               },
             ),
