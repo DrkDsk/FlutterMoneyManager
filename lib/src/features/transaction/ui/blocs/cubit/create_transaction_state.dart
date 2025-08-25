@@ -43,5 +43,6 @@ class CreateTransactionState with EquatableMixin {
         transactionSource,
         transactionCategory,
         formIsValidated,
+        transactionType
       ];
 }
