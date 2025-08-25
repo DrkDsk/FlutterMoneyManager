@@ -9,42 +9,42 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
   CreateTransactionCubit() : super(CreateTransactionState());
 
   void updateAmountDate(DateTime? time) {
-    final transaction = state.transactionEntity.copyWith(transactionDate: time);
+    final transaction = state.transaction.copyWith(transactionDate: time);
     final newState = state.copyWith(transaction: transaction);
 
     emit(_validForm(newState));
   }
 
   void updateAmount(String? amount) {
-    final transaction = state.transactionEntity.copyWith(amount: amount);
+    final transaction = state.transaction.copyWith(amount: amount);
     final newState =
         state.copyWith(transaction: transaction.copyWith(amount: amount));
 
     emit(_validForm(newState));
   }
 
-  void updateTransactionSource(TransactionSource transactionSource) {
-    final transaction = state.transactionEntity;
+  void updateTransactionSource(TransactionSource source) {
+    final transaction = state.transaction;
     final newState = state.copyWith(
-        transaction: transaction.copyWith(source: transactionSource));
+        transaction: transaction.copyWith(sourceType: source.getType()));
 
     emit(_validForm(newState));
   }
 
   void updateTransactionCategory(TransactionCategory category) {
-    final transaction = state.transactionEntity;
-    final newState =
-        state.copyWith(transaction: transaction.copyWith(category: category));
+    final transaction = state.transaction;
+    final newState = state.copyWith(
+        transaction: transaction.copyWith(categoryType: category.getType()));
 
     emit(_validForm(newState));
   }
 
   CreateTransactionState _validForm(CreateTransactionState newState) {
-    final transaction = newState.transactionEntity;
+    final transaction = newState.transaction;
 
     final amount = transaction.amount.replaceAll("\$ ", "").replaceAll(" ", "");
-    final transactionSource = transaction.source;
-    final transactionCategory = transaction.category;
+    final transactionSource = transaction.sourceType;
+    final transactionCategory = transaction.categoryType;
 
     final bool formIsValidated = (transactionSource == null ||
             transactionCategory == null ||
@@ -57,11 +57,13 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
   }
 
   void updateTransactionType(int index) {
-    final transaction = state.transactionEntity;
+    final transaction = state.transaction;
 
     final transactionSelected = kDefaultTransactionTypes[index];
 
     emit(state.copyWith(
         transaction: transaction.copyWith(type: transactionSelected.type)));
   }
+
+  void saveTransaction() {}
 }

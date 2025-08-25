@@ -1,10 +1,10 @@
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_category_enum.dart';
 import 'package:hive/hive.dart';
-
-import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:flutter_money_manager/src/core/enums/transaction_source_enum.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 part 'transaction_hive_model.g.dart';
 
@@ -23,18 +23,18 @@ class TransactionHiveModel extends HiveObject {
   final int amount;
 
   @HiveField(4)
-  final TransactionCategory category;
+  final TransactionCategoryEnum categoryType;
 
   @HiveField(5)
-  final TransactionSource source;
+  final TransactionSourceEnum sourceType;
 
   TransactionHiveModel({
     required this.id,
     required this.type,
     required this.transactionDate,
     required this.amount,
-    required this.category,
-    required this.source,
+    required this.categoryType,
+    required this.sourceType,
   });
 
   TransactionHiveModel copyWith({
@@ -42,16 +42,16 @@ class TransactionHiveModel extends HiveObject {
     TransactionTypeEnum? type,
     DateTime? transactionDate,
     int? amount,
-    TransactionCategory? category,
-    TransactionSource? source,
+    TransactionCategoryEnum? categoryType,
+    TransactionSourceEnum? sourceType,
   }) {
     return TransactionHiveModel(
       id: id ?? this.id,
       type: type ?? this.type,
       transactionDate: transactionDate ?? this.transactionDate,
       amount: amount ?? this.amount,
-      category: category ?? this.category,
-      source: source ?? this.source,
+      categoryType: categoryType ?? this.categoryType,
+      sourceType: sourceType ?? this.sourceType,
     );
   }
 
@@ -59,8 +59,8 @@ class TransactionHiveModel extends HiveObject {
     return TransactionHiveModel(
         id: entity.id ?? const Uuid().v4(),
         amount: int.tryParse(entity.amount) ?? 0,
-        category: entity.category!,
-        source: entity.source!,
+        categoryType: entity.categoryType!,
+        sourceType: entity.sourceType!,
         transactionDate: entity.transactionDate,
         type: entity.type);
   }
