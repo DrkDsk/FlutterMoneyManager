@@ -7,10 +7,12 @@ import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_payment_sources.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_sources.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_bottom_appbar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_item.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,9 +24,11 @@ class CreateTransactionScreen extends StatefulWidget {
       _CreateTransactionScreenState();
 }
 
-class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
+class _CreateTransactionScreenState extends State<CreateTransactionScreen>
+    with TickerProviderStateMixin {
   late CreateTransactionCubit _createTransactionCubit;
   late AppRouter _router;
+  late TabController _transactionTypeTabController;
 
   StringBuffer amountValue = StringBuffer();
 
@@ -33,6 +37,13 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     super.initState();
     _createTransactionCubit = context.read<CreateTransactionCubit>();
     _router = AppRouter.of(context);
+    _transactionTypeTabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _transactionTypeTabController.dispose();
   }
 
   String formatAmount(String value) {
@@ -61,7 +72,9 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
               onOkSubmit: () => _router.pop(),
               onNumberTap: (number) {
                 amountValue.write(number);
+
                 final formatted = formatAmount(amountValue.toString());
+
                 _createTransactionCubit.updateAmount(formatted);
               },
               onBackspace: () {
@@ -72,13 +85,14 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                     .replaceAll("\$ ", "")
                     .replaceAll(" ", "");
 
-                amountValue.clear();
-
                 if (stringWithOutLast.isEmpty) {
                   _createTransactionCubit.updateAmount(kDefaultAmountValue);
+                  amountValue.clear();
                   return;
                 }
 
+                amountValue.clear();
+                amountValue.write(stringWithOutLast);
                 _createTransactionCubit.updateAmount("\$ $stringWithOutLast");
               },
             ),
@@ -88,7 +102,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     );
   }
 
-  _showPaymentSources(BuildContext context) {
+  _showTransactionSources(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -98,9 +112,10 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
             heightFactor: 0.4,
             child: Container(
               color: AppColors.keyboardBackgroundColor,
-              child: BottomPaymentSources(
-                onSelectPaymentSource: (paymentSource) {
-                  _createTransactionCubit.updatePaymentSource(paymentSource);
+              child: BottomTransactionSources(
+                onSelectTransactionSource: (transactionSource) {
+                  _createTransactionCubit
+                      .updateTransactionSource(transactionSource);
                   _router.pop();
                 },
               ),
@@ -162,120 +177,215 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     _createTransactionCubit.updateAmountDate(selectedDate);
   }
 
+  void _handleSaveTransaction() {}
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: const CustomAppBar(),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: AppColors.turquoise,
-                    borderRadius: BorderRadius.circular(12)),
-                child: Center(
-                    child: Text("Save",
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(color: theme.colorScheme.primary))),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: theme.colorScheme.secondary)),
-              child: Center(
-                  child: Text("Continue",
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(color: theme.colorScheme.secondary))),
-            )
-          ],
-        ),
+      bottomNavigationBar: CreateTransactionBottomAppBar(
+        onTap: _handleSaveTransaction,
       ),
       body: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          decoration: defaultBorder,
-          child: BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
-            builder: (context, state) {
-              final paymentSource = state.paymentSource;
-              final transactionCategory = state.transactionCategory;
+        child: Column(
+          children: [
+            CustomTabBar(
+                tabController: _transactionTypeTabController,
+                tabs: const [Tab(text: "Income"), Text("Expense")]),
+            Expanded(
+              child: TabBarView(
+                controller: _transactionTypeTabController,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    decoration: defaultBorder,
+                    child: BlocBuilder<CreateTransactionCubit,
+                        CreateTransactionState>(
+                      builder: (context, state) {
+                        final paymentSource = state.transactionSource;
+                        final transactionCategory = state.transactionCategory;
 
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 100,
-                      child: CreateTransactionItem(
-                        label: "Date",
-                        value: state.transactionDate.dateFormat(),
-                        onTap: onTransactionDateChanged,
-                      ),
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 100,
+                                child: CreateTransactionItem(
+                                  label: "Date",
+                                  value: state.transactionDate.dateFormat(),
+                                  onTap: onTransactionDateChanged,
+                                ),
+                              ),
+                              const Divider(
+                                  height: 20,
+                                  color: Colors.grey,
+                                  thickness: 0.2),
+                              SizedBox(
+                                height: 100,
+                                child: CreateTransactionItem(
+                                    mediumStyle: TextStyle(
+                                        color: AppColors.expenseColor),
+                                    label: "Amount",
+                                    value: state.amount,
+                                    onTap: () => _showCustomKeyboard(context)),
+                              ),
+                              const Divider(
+                                  height: 20,
+                                  color: Colors.grey,
+                                  thickness: 0.2),
+                              SizedBox(
+                                height: 100,
+                                child: CreateTransactionItem(
+                                    label: "Category",
+                                    onTap: () =>
+                                        _showTransactionsCategories(context),
+                                    value: "Uncategorized",
+                                    child: transactionCategory == null
+                                        ? null
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(transactionCategory.name),
+                                              const SizedBox(width: 5),
+                                              Image.asset(
+                                                transactionCategory.icon,
+                                                width: 30,
+                                              )
+                                            ],
+                                          )),
+                              ),
+                              const Divider(
+                                  height: 20,
+                                  color: Colors.grey,
+                                  thickness: 0.2),
+                              SizedBox(
+                                height: 100,
+                                child: CreateTransactionItem(
+                                    label: "Payment Source",
+                                    onTap: () =>
+                                        _showTransactionSources(context),
+                                    value: "Uncategorized",
+                                    child: paymentSource == null
+                                        ? null
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(paymentSource.name),
+                                              const SizedBox(width: 5),
+                                              Image.asset(
+                                                paymentSource.icon,
+                                                width: 30,
+                                              ),
+                                            ],
+                                          )),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                    const Divider(
-                        height: 20, color: Colors.grey, thickness: 0.2),
-                    SizedBox(
-                      height: 100,
-                      child: CreateTransactionItem(
-                          mediumStyle: TextStyle(color: AppColors.expenseColor),
-                          label: "Amount",
-                          value: state.amount,
-                          onTap: () => _showCustomKeyboard(context)),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    decoration: defaultBorder,
+                    child: BlocBuilder<CreateTransactionCubit,
+                        CreateTransactionState>(
+                      builder: (context, state) {
+                        final paymentSource = state.transactionSource;
+                        final transactionCategory = state.transactionCategory;
+
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 100,
+                                child: CreateTransactionItem(
+                                  label: "Date",
+                                  value: state.transactionDate.dateFormat(),
+                                  onTap: onTransactionDateChanged,
+                                ),
+                              ),
+                              const Divider(
+                                  height: 20,
+                                  color: Colors.grey,
+                                  thickness: 0.2),
+                              SizedBox(
+                                height: 100,
+                                child: CreateTransactionItem(
+                                    mediumStyle: TextStyle(
+                                        color: AppColors.expenseColor),
+                                    label: "Amount",
+                                    value: state.amount,
+                                    onTap: () => _showCustomKeyboard(context)),
+                              ),
+                              const Divider(
+                                  height: 20,
+                                  color: Colors.grey,
+                                  thickness: 0.2),
+                              SizedBox(
+                                height: 100,
+                                child: CreateTransactionItem(
+                                    label: "Category",
+                                    onTap: () =>
+                                        _showTransactionsCategories(context),
+                                    value: "Uncategorized",
+                                    child: transactionCategory == null
+                                        ? null
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(transactionCategory.name),
+                                              const SizedBox(width: 5),
+                                              Image.asset(
+                                                transactionCategory.icon,
+                                                width: 30,
+                                              )
+                                            ],
+                                          )),
+                              ),
+                              const Divider(
+                                  height: 20,
+                                  color: Colors.grey,
+                                  thickness: 0.2),
+                              SizedBox(
+                                height: 100,
+                                child: CreateTransactionItem(
+                                    label: "Payment Source",
+                                    onTap: () =>
+                                        _showTransactionSources(context),
+                                    value: "Uncategorized",
+                                    child: paymentSource == null
+                                        ? null
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(paymentSource.name),
+                                              const SizedBox(width: 5),
+                                              Image.asset(
+                                                paymentSource.icon,
+                                                width: 30,
+                                              ),
+                                            ],
+                                          )),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                    const Divider(
-                        height: 20, color: Colors.grey, thickness: 0.2),
-                    SizedBox(
-                      height: 100,
-                      child: CreateTransactionItem(
-                          label: "Category",
-                          onTap: () => _showTransactionsCategories(context),
-                          value: "Uncategorized",
-                          child: transactionCategory == null
-                              ? null
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(transactionCategory.name),
-                                    const SizedBox(width: 5),
-                                    Image.asset(
-                                      transactionCategory.icon,
-                                      width: 30,
-                                    )
-                                  ],
-                                )),
-                    ),
-                    const Divider(
-                        height: 20, color: Colors.grey, thickness: 0.2),
-                    SizedBox(
-                      height: 100,
-                      child: CreateTransactionItem(
-                          label: "Payment Source",
-                          onTap: () => _showPaymentSources(context),
-                          value: "Uncategorized",
-                          child: paymentSource == null
-                              ? null
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(paymentSource.name),
-                                    const SizedBox(width: 5),
-                                    Image.asset(
-                                      paymentSource.icon,
-                                      width: 30,
-                                    ),
-                                  ],
-                                )),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  )
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

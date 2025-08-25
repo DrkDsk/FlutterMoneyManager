@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/add_transaction_button.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/calendar_page.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/daily_balance_widget.dart';
-import 'package:flutter_money_manager/src/features/home/ui/widgets/home_tab_bar.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/transaction_summary_content.dart';
 
 class HomePage extends StatefulWidget {
@@ -41,12 +40,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   scrollDirection: Axis.horizontal,
                   child: TransactionSummaryContent()),
               const SizedBox(height: 20),
-              Container(
-                height: 40,
-                decoration: kTabBarContainerDecoration,
-                padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),
-                child: HomeTabBar(tabController: _tabController),
-              ),
+              CustomTabBar(
+                  tabController: _tabController,
+                  margin: EdgeInsets.zero,
+                  tabs: const [
+                    Text(
+                      "Daily",
+                    ),
+                    Text(
+                      "Calendar",
+                    ),
+                    Text(
+                      "Summary",
+                    ),
+                  ]),
               const SizedBox(height: 20),
               Expanded(
                 child: TabBarView(controller: _tabController, children: const [
