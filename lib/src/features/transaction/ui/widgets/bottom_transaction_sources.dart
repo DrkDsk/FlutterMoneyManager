@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 
-class BottomPaymentSources extends StatelessWidget {
-  const BottomPaymentSources({super.key, required this.onSelectPaymentSource});
+class BottomTransactionSources extends StatelessWidget {
+  const BottomTransactionSources(
+      {super.key, required this.onSelectTransactionSource});
 
-  final Function(PaymentSource category) onSelectPaymentSource;
+  final Function(TransactionSource category) onSelectTransactionSource;
 
   @override
   Widget build(BuildContext context) {
@@ -15,24 +16,24 @@ class BottomPaymentSources extends StatelessWidget {
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3, crossAxisSpacing: 10),
-        itemCount: kDefaultPaymentResources.length,
+        itemCount: kDefaultTransactionSources.length,
         itemBuilder: (context, index) {
-          final paymentSource = kDefaultPaymentResources[index];
+          final transactionSource = kDefaultTransactionSources[index];
 
           return GestureDetector(
-            onTap: () => onSelectPaymentSource(paymentSource),
+            onTap: () => onSelectTransactionSource(transactionSource),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  paymentSource.icon,
+                  transactionSource.icon,
                   height: 50,
                   width: 50,
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  paymentSource.name,
+                  transactionSource.name,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium
                       ?.copyWith(color: theme.colorScheme.primary),
