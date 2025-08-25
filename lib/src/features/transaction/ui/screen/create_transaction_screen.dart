@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
@@ -11,7 +13,6 @@ import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/cr
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_sources.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_bottom_appbar.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/expense_transaction_tabview.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
