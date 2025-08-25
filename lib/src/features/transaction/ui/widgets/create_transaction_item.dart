@@ -4,7 +4,7 @@ class CreateTransactionItem extends StatelessWidget {
   const CreateTransactionItem({
     super.key,
     required this.label,
-    required this.onTap,
+    this.onTap,
     this.value,
     this.child,
     this.mediumStyle,
