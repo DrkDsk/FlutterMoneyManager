@@ -23,10 +23,11 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
     emit(_validForm(newState));
   }
 
-  void updateTransactionSource(TransactionSource transactionSource) {
+  void updateTransactionSource(TransactionSource source) {
     final transaction = state.transactionEntity;
     final newState = state.copyWith(
-        transaction: transaction.copyWith(source: transactionSource));
+        transaction:
+            transaction.copyWith(source: source, sourceType: source.getType()));
 
     emit(_validForm(newState));
   }
@@ -64,4 +65,6 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
     emit(state.copyWith(
         transaction: transaction.copyWith(type: transactionSelected.type)));
   }
+
+  void saveTransaction() {}
 }

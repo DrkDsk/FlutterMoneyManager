@@ -6,7 +6,7 @@ class BottomTransactionSources extends StatelessWidget {
   const BottomTransactionSources(
       {super.key, required this.onSelectTransactionSource});
 
-  final Function(TransactionSource category) onSelectTransactionSource;
+  final Function(TransactionSource transactionSource) onSelectTransactionSource;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class BottomTransactionSources extends StatelessWidget {
                   style: theme.textTheme.bodyMedium
                       ?.copyWith(color: theme.colorScheme.primary),
                   maxLines: 2,
-                  overflow: TextOverflow.ellipsis, // 👈 evita cortes feos
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
