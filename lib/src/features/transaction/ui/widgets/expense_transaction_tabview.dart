@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
@@ -32,8 +31,8 @@ class ExpenseTransactionTabview extends StatelessWidget {
       decoration: defaultBorder,
       child: BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
         builder: (context, state) {
-          final paymentSource = state.transactionSource;
-          final transactionCategory = state.transactionCategory;
+          final paymentSource = state.transactionEntity.source;
+          final transactionCategory = state.transactionEntity.category;
 
           return SingleChildScrollView(
             child: Column(
@@ -42,7 +41,7 @@ class ExpenseTransactionTabview extends StatelessWidget {
                   height: 100,
                   child: CreateTransactionItem(
                     label: "Date",
-                    value: state.transactionDate.dateFormat(),
+                    value: state.transactionEntity.transactionDate.dateFormat(),
                     onTap: onSelectTransactionDate,
                   ),
                 ),
@@ -52,7 +51,7 @@ class ExpenseTransactionTabview extends StatelessWidget {
                   child: CreateTransactionItem(
                       mediumStyle: TextStyle(color: amountLabelColor),
                       label: "Amount",
-                      value: state.amount,
+                      value: state.transactionEntity.amount,
                       onTap: onTapAmount),
                 ),
                 const Divider(height: 20, color: Colors.grey, thickness: 0.2),
