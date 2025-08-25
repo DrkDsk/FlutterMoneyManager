@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
@@ -191,7 +192,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
             BlocSelector<CreateTransactionCubit, CreateTransactionState,
                 Decoration?>(
               selector: (state) {
-                if (state.tabIndex == 0) {
+                if (state.transactionType == TransactionType.income) {
                   return BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: AppColors.incomeColor,
@@ -206,9 +207,13 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
               builder: (context, indicatorDecoration) {
                 return CustomTabBar(
                     decoration: indicatorDecoration,
-                    onTap: _createTransactionCubit.updateTabIndex,
+                    onTap: _createTransactionCubit.updateTransactionType,
                     tabController: _transactionTypeTabController,
-                    tabs: const [Tab(text: "Income"), Text("Expense")]);
+                    tabs: [
+                      ...kDefaultTransactionTypes.map((transactionType) {
+                        return Tab(text: transactionType.name);
+                      })
+                    ]);
               },
             ),
             Expanded(

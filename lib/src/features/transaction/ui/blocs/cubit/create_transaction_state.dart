@@ -10,7 +10,6 @@ class CreateTransactionState with EquatableMixin {
   final TransactionSource? transactionSource;
   final TransactionCategory? transactionCategory;
   final bool formIsValidated;
-  final int tabIndex;
   final TransactionType transactionType;
 
   CreateTransactionState(
@@ -18,7 +17,6 @@ class CreateTransactionState with EquatableMixin {
       this.amount = kDefaultAmountValue,
       this.transactionSource,
       this.transactionCategory,
-      this.tabIndex = 0,
       this.formIsValidated = false,
       this.transactionType = TransactionType.income});
 
@@ -28,7 +26,6 @@ class CreateTransactionState with EquatableMixin {
       TransactionSource? transactionSource,
       TransactionCategory? transactionCategory,
       bool? formIsValidated,
-      int? tabIndex,
       TransactionType? transactionType}) {
     return CreateTransactionState(
         transactionDate: transactionDate ?? this.transactionDate,
@@ -36,7 +33,6 @@ class CreateTransactionState with EquatableMixin {
         transactionSource: transactionSource ?? this.transactionSource,
         transactionCategory: transactionCategory ?? this.transactionCategory,
         formIsValidated: formIsValidated ?? this.formIsValidated,
-        tabIndex: tabIndex ?? this.tabIndex,
         transactionType: transactionType ?? this.transactionType);
   }
 
@@ -47,6 +43,5 @@ class CreateTransactionState with EquatableMixin {
         transactionSource,
         transactionCategory,
         formIsValidated,
-        tabIndex
       ];
 }
