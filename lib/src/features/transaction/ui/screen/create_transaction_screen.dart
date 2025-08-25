@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
-import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_numeric_keyboard.dart';
-import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_sources.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_bottom_appbar.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_item.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/widgets/expense_transaction_tabview.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key});
@@ -216,204 +214,21 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
               child: TabBarView(
                 controller: _transactionTypeTabController,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.all(10),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    decoration: defaultBorder,
-                    child: BlocBuilder<CreateTransactionCubit,
-                        CreateTransactionState>(
-                      builder: (context, state) {
-                        final paymentSource = state.transactionSource;
-                        final transactionCategory = state.transactionCategory;
-
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 100,
-                                child: CreateTransactionItem(
-                                  label: "Date",
-                                  value: state.transactionDate.dateFormat(),
-                                  onTap: onTransactionDateChanged,
-                                ),
-                              ),
-                              const Divider(
-                                  height: 20,
-                                  color: Colors.grey,
-                                  thickness: 0.2),
-                              BlocSelector<CreateTransactionCubit,
-                                  CreateTransactionState, Color?>(
-                                selector: (state) {
-                                  if (state.tabIndex == 0) {
-                                    return AppColors.incomeColor;
-                                  }
-
-                                  return AppColors.expenseColor;
-                                },
-                                builder: (context, textColor) {
-                                  return SizedBox(
-                                    height: 100,
-                                    child: CreateTransactionItem(
-                                        mediumStyle:
-                                            TextStyle(color: textColor),
-                                        label: "Amount",
-                                        value: state.amount,
-                                        onTap: () =>
-                                            _showCustomKeyboard(context)),
-                                  );
-                                },
-                              ),
-                              const Divider(
-                                  height: 20,
-                                  color: Colors.grey,
-                                  thickness: 0.2),
-                              SizedBox(
-                                height: 100,
-                                child: CreateTransactionItem(
-                                    label: "Category",
-                                    onTap: () =>
-                                        _showTransactionsCategories(context),
-                                    value: "Uncategorized",
-                                    child: transactionCategory == null
-                                        ? null
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(transactionCategory.name),
-                                              const SizedBox(width: 5),
-                                              Image.asset(
-                                                transactionCategory.icon,
-                                                width: 30,
-                                              )
-                                            ],
-                                          )),
-                              ),
-                              const Divider(
-                                  height: 20,
-                                  color: Colors.grey,
-                                  thickness: 0.2),
-                              SizedBox(
-                                height: 100,
-                                child: CreateTransactionItem(
-                                    label: "Deposit Source",
-                                    onTap: () =>
-                                        _showTransactionSources(context),
-                                    value: "Uncategorized",
-                                    child: paymentSource == null
-                                        ? null
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(paymentSource.name),
-                                              const SizedBox(width: 5),
-                                              Image.asset(
-                                                paymentSource.icon,
-                                                width: 30,
-                                              ),
-                                            ],
-                                          )),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                  ExpenseTransactionTabview(
+                    transactionTypeSource: "Deposit Source",
+                    onSelectTransactionDate: onTransactionDateChanged,
+                    onTapAmount: () => _showCustomKeyboard(context),
+                    onTapCategory: () => _showTransactionsCategories(context),
+                    onTapTransactionSource: () =>
+                        _showTransactionSources(context),
                   ),
-                  Container(
-                    margin: const EdgeInsets.all(10),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    decoration: defaultBorder,
-                    child: BlocBuilder<CreateTransactionCubit,
-                        CreateTransactionState>(
-                      builder: (context, state) {
-                        final paymentSource = state.transactionSource;
-                        final transactionCategory = state.transactionCategory;
-
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 100,
-                                child: CreateTransactionItem(
-                                  label: "Date",
-                                  value: state.transactionDate.dateFormat(),
-                                  onTap: onTransactionDateChanged,
-                                ),
-                              ),
-                              const Divider(
-                                  height: 20,
-                                  color: Colors.grey,
-                                  thickness: 0.2),
-                              SizedBox(
-                                height: 100,
-                                child: CreateTransactionItem(
-                                    mediumStyle: TextStyle(
-                                        color: AppColors.expenseColor),
-                                    label: "Amount",
-                                    value: state.amount,
-                                    onTap: () => _showCustomKeyboard(context)),
-                              ),
-                              const Divider(
-                                  height: 20,
-                                  color: Colors.grey,
-                                  thickness: 0.2),
-                              SizedBox(
-                                height: 100,
-                                child: CreateTransactionItem(
-                                    label: "Category",
-                                    onTap: () =>
-                                        _showTransactionsCategories(context),
-                                    value: "Uncategorized",
-                                    child: transactionCategory == null
-                                        ? null
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(transactionCategory.name),
-                                              const SizedBox(width: 5),
-                                              Image.asset(
-                                                transactionCategory.icon,
-                                                width: 30,
-                                              )
-                                            ],
-                                          )),
-                              ),
-                              const Divider(
-                                  height: 20,
-                                  color: Colors.grey,
-                                  thickness: 0.2),
-                              SizedBox(
-                                height: 100,
-                                child: CreateTransactionItem(
-                                    label: "Payment Source",
-                                    onTap: () =>
-                                        _showTransactionSources(context),
-                                    value: "Uncategorized",
-                                    child: paymentSource == null
-                                        ? null
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(paymentSource.name),
-                                              const SizedBox(width: 5),
-                                              Image.asset(
-                                                paymentSource.icon,
-                                                width: 30,
-                                              ),
-                                            ],
-                                          )),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                  ExpenseTransactionTabview(
+                    transactionTypeSource: "Payment Source",
+                    onSelectTransactionDate: onTransactionDateChanged,
+                    onTapAmount: () => _showCustomKeyboard(context),
+                    onTapCategory: () => _showTransactionsCategories(context),
+                    onTapTransactionSource: () =>
+                        _showTransactionSources(context),
                   )
                 ],
               ),
