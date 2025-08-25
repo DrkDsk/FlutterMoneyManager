@@ -221,6 +221,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                 controller: _transactionTypeTabController,
                 children: [
                   ExpenseTransactionTabview(
+                    amountLabelColor: AppColors.incomeColor,
                     transactionTypeSource: "Deposit Source",
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
@@ -230,6 +231,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                   ),
                   ExpenseTransactionTabview(
                     transactionTypeSource: "Payment Source",
+                    amountLabelColor: AppColors.expenseColor,
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
                     onTapCategory: () => _showTransactionsCategories(context),

@@ -14,6 +14,7 @@ class ExpenseTransactionTabview extends StatelessWidget {
       this.onSelectTransactionDate,
       this.onTapAmount,
       this.onTapCategory,
+      this.amountLabelColor,
       this.onTapTransactionSource});
 
   final void Function()? onSelectTransactionDate;
@@ -21,6 +22,7 @@ class ExpenseTransactionTabview extends StatelessWidget {
   final void Function()? onTapCategory;
   final void Function()? onTapTransactionSource;
   final String transactionTypeSource;
+  final Color? amountLabelColor;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class ExpenseTransactionTabview extends StatelessWidget {
                 SizedBox(
                   height: 100,
                   child: CreateTransactionItem(
-                      mediumStyle: TextStyle(color: AppColors.expenseColor),
+                      mediumStyle: TextStyle(color: amountLabelColor),
                       label: "Amount",
                       value: state.amount,
                       onTap: onTapAmount),
