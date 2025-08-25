@@ -22,7 +22,7 @@ class TransactionHiveModelAdapter extends TypeAdapter<TransactionHiveModel> {
       transactionDate: fields[2] as DateTime,
       amount: fields[3] as int,
       category: fields[4] as TransactionCategory,
-      source: fields[5] as TransactionSource,
+      sourceType: fields[5] as TransactionSourceEnum,
     );
   }
 
@@ -41,7 +41,7 @@ class TransactionHiveModelAdapter extends TypeAdapter<TransactionHiveModel> {
       ..writeByte(4)
       ..write(obj.category)
       ..writeByte(5)
-      ..write(obj.source);
+      ..write(obj.sourceType);
   }
 
   @override

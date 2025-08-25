@@ -25,9 +25,8 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
   void updateTransactionSource(TransactionSource source) {
     final transaction = state.transactionEntity;
-    final newState = state.copyWith(
-        transaction:
-            transaction.copyWith(source: source, sourceType: source.getType()));
+    final newState =
+        state.copyWith(transaction: transaction.copyWith(source: source));
 
     emit(_validForm(newState));
   }
