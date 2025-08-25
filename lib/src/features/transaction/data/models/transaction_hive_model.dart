@@ -1,11 +1,10 @@
+import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:flutter_money_manager/src/core/enums/transaction_source_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
-import 'package:hive/hive.dart';
-
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
-import 'package:uuid/uuid.dart';
 
 part 'transaction_hive_model.g.dart';
 
@@ -61,7 +60,7 @@ class TransactionHiveModel extends HiveObject {
         id: entity.id ?? const Uuid().v4(),
         amount: int.tryParse(entity.amount) ?? 0,
         category: entity.category!,
-        sourceType: entity.source!.getType(),
+        sourceType: entity.sourceType!,
         transactionDate: entity.transactionDate,
         type: entity.type);
   }

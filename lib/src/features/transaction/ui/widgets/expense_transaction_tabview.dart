@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_item.dart';
@@ -31,8 +32,13 @@ class ExpenseTransactionTabview extends StatelessWidget {
       decoration: defaultBorder,
       child: BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
         builder: (context, state) {
-          final paymentSource = state.transactionEntity.source;
-          final transactionCategory = state.transactionEntity.category;
+          final paymentSourceType = state.transaction.sourceType;
+          TransactionSource? transactionSource;
+          if (paymentSourceType != null) {
+            transactionSource = TransactionSource.fromType(paymentSourceType);
+          }
+
+          final transactionCategory = state.transaction.category;
 
           return SingleChildScrollView(
             child: Column(
@@ -41,7 +47,7 @@ class ExpenseTransactionTabview extends StatelessWidget {
                   height: 100,
                   child: CreateTransactionItem(
                     label: "Date",
-                    value: state.transactionEntity.transactionDate.dateFormat(),
+                    value: state.transaction.transactionDate.dateFormat(),
                     onTap: onSelectTransactionDate,
                   ),
                 ),
@@ -51,7 +57,7 @@ class ExpenseTransactionTabview extends StatelessWidget {
                   child: CreateTransactionItem(
                       mediumStyle: TextStyle(color: amountLabelColor),
                       label: "Amount",
-                      value: state.transactionEntity.amount,
+                      value: state.transaction.amount,
                       onTap: onTapAmount),
                 ),
                 const Divider(height: 20, color: Colors.grey, thickness: 0.2),
@@ -82,15 +88,15 @@ class ExpenseTransactionTabview extends StatelessWidget {
                       label: transactionTypeSource,
                       onTap: onTapTransactionSource,
                       value: "Uncategorized",
-                      child: paymentSource == null
+                      child: transactionSource == null
                           ? null
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text(paymentSource.name),
+                                Text(transactionSource.name),
                                 const SizedBox(width: 5),
                                 Image.asset(
-                                  paymentSource.icon,
+                                  transactionSource.icon,
                                   width: 30,
                                 ),
                               ],

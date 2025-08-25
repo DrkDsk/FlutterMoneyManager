@@ -7,6 +7,37 @@ class TransactionSource with EquatableMixin {
 
   const TransactionSource({required this.name, required this.icon});
 
+  factory TransactionSource.fromType(TransactionSourceEnum type) {
+    switch (type) {
+      case TransactionSourceEnum.carLoan:
+        return const TransactionSource(
+            name: "Car Loan",
+            icon: "assets/icons/payment_sources/car_loan.png");
+      case TransactionSourceEnum.investments:
+        return const TransactionSource(
+            name: "Investments",
+            icon: "assets/icons/payment_sources/investments.png");
+      case TransactionSourceEnum.bank:
+        return const TransactionSource(
+            name: "Bank", icon: "assets/icons/payment_sources/bank.png");
+      case TransactionSourceEnum.cash:
+        return const TransactionSource(
+            name: "Cash", icon: "assets/icons/payment_sources/cash.png");
+      case TransactionSourceEnum.creditCard:
+        return const TransactionSource(
+            name: "Credit Card",
+            icon: "assets/icons/payment_sources/credit_card.png");
+      case TransactionSourceEnum.debitCard:
+        return const TransactionSource(
+            name: "Debit Card",
+            icon: "assets/icons/payment_sources/debit_card.png");
+      case TransactionSourceEnum.electricMoney:
+        return const TransactionSource(
+            name: "Electronic Money",
+            icon: "assets/icons/payment_sources/electronic_money.png");
+    }
+  }
+
   TransactionSourceEnum getType() {
     switch (name) {
       case "Car Loan":

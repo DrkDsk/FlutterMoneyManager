@@ -79,7 +79,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
               },
               onBackspace: () {
                 final amountString =
-                    _createTransactionCubit.state.transactionEntity.amount;
+                    _createTransactionCubit.state.transaction.amount;
 
                 final stringWithOutLast = amountString
                     .substring(0, amountString.length - 1)
@@ -193,8 +193,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
             BlocSelector<CreateTransactionCubit, CreateTransactionState,
                 Decoration?>(
               selector: (state) {
-                if (state.transactionEntity.type ==
-                    TransactionTypeEnum.income) {
+                if (state.transaction.type == TransactionTypeEnum.income) {
                   return BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: AppColors.incomeColor,

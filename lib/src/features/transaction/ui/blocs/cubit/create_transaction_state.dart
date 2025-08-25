@@ -4,12 +4,12 @@ import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart'
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
 class CreateTransactionState with EquatableMixin {
-  final Transaction transactionEntity;
+  final Transaction transaction;
   final bool formIsValidated;
 
   CreateTransactionState(
-      {Transaction? transactionEntity, this.formIsValidated = false})
-      : transactionEntity = transactionEntity ??
+      {Transaction? transaction, this.formIsValidated = false})
+      : transaction = transaction ??
             Transaction(
               amount: kDefaultAmountValue,
               type: TransactionTypeEnum.income,
@@ -18,10 +18,10 @@ class CreateTransactionState with EquatableMixin {
   CreateTransactionState copyWith(
       {Transaction? transaction, bool? formIsValidated}) {
     return CreateTransactionState(
-        transactionEntity: transaction ?? transactionEntity,
+        transaction: transaction ?? this.transaction,
         formIsValidated: formIsValidated ?? this.formIsValidated);
   }
 
   @override
-  List<Object?> get props => [transactionEntity, formIsValidated];
+  List<Object?> get props => [transaction, formIsValidated];
 }
