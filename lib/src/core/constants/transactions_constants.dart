@@ -3,8 +3,6 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_type.dart';
 
-const kDefaultAmountValue = "\$ 0";
-
 const kDefaultTransactionSources = [
   TransactionSource(
       name: "Car Loan", icon: "assets/icons/payment_sources/car_loan.png"),

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
@@ -11,7 +10,7 @@ class CreateTransactionState with EquatableMixin {
       {Transaction? transaction, this.formIsValidated = false})
       : transaction = transaction ??
             Transaction(
-              amount: kDefaultAmountValue,
+              amount: 0,
               type: TransactionTypeEnum.income,
             );
 

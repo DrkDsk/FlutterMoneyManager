@@ -15,7 +15,7 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
     emit(_validForm(newState));
   }
 
-  void updateAmount(String? amount) {
+  void updateAmount(int? amount) {
     final transaction = state.transaction.copyWith(amount: amount);
     final newState =
         state.copyWith(transaction: transaction.copyWith(amount: amount));
@@ -42,14 +42,13 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
   CreateTransactionState _validForm(CreateTransactionState newState) {
     final transaction = newState.transaction;
 
-    final amount = transaction.amount.replaceAll("\$ ", "").replaceAll(" ", "");
+    final amount = transaction.amount;
     final transactionSource = transaction.sourceType;
     final transactionCategory = transaction.categoryType;
 
     final bool formIsValidated = (transactionSource == null ||
             transactionCategory == null ||
-            amount == "0" ||
-            amount.isEmpty)
+            amount == 0)
         ? false
         : true;
 

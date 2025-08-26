@@ -64,7 +64,7 @@ class ExpenseTransactionTabview extends StatelessWidget {
                   child: CreateTransactionItem(
                       mediumStyle: TextStyle(color: amountLabelColor),
                       label: "Amount",
-                      value: state.transaction.amount,
+                      value: "\$ ${state.transaction.amount}",
                       onTap: onTapAmount),
                 ),
                 const Divider(height: 20, color: Colors.grey, thickness: 0.2),

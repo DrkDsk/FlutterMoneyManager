@@ -46,18 +46,6 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     _transactionTypeTabController.dispose();
   }
 
-  String formatAmount(String value) {
-    String cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
-
-    if (cleaned.isEmpty || int.tryParse(cleaned) == 0) {
-      return "0";
-    }
-
-    cleaned = int.parse(cleaned).toString();
-
-    return "\$ $cleaned";
-  }
-
   void _showCustomKeyboard(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -73,28 +61,29 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
               onNumberTap: (number) {
                 amountValue.write(number);
 
-                final formatted = formatAmount(amountValue.toString());
+                final updatedAmount = int.tryParse(amountValue.toString()) ?? 0;
 
-                _createTransactionCubit.updateAmount(formatted);
+                _createTransactionCubit.updateAmount(updatedAmount);
               },
               onBackspace: () {
                 final amountString =
-                    _createTransactionCubit.state.transaction.amount;
+                    _createTransactionCubit.state.transaction.amount.toString();
 
-                final stringWithOutLast = amountString
-                    .substring(0, amountString.length - 1)
-                    .replaceAll("\$ ", "")
-                    .replaceAll(" ", "");
-
-                if (stringWithOutLast.isEmpty) {
-                  _createTransactionCubit.updateAmount(kDefaultAmountValue);
+                if (amountString.length <= 1) {
+                  _createTransactionCubit.updateAmount(0);
                   amountValue.clear();
                   return;
                 }
 
-                amountValue.clear();
-                amountValue.write(stringWithOutLast);
-                _createTransactionCubit.updateAmount("\$ $stringWithOutLast");
+                final updatedString =
+                    amountString.substring(0, amountString.length - 1);
+                final updatedAmount = int.tryParse(updatedString) ?? 0;
+
+                amountValue
+                  ..clear()
+                  ..write(updatedString);
+
+                _createTransactionCubit.updateAmount(updatedAmount);
               },
             ),
           ),
