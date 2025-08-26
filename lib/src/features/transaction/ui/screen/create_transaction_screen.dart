@@ -167,7 +167,10 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     _createTransactionCubit.updateAmountDate(selectedDate);
   }
 
-  void _handleSaveTransaction() {}
+  void _handleSaveTransaction() async {
+    await _createTransactionCubit.saveTransaction();
+    _router.pop();
+  }
 
   @override
   Widget build(BuildContext context) {

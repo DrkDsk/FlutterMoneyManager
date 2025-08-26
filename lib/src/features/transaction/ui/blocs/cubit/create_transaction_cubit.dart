@@ -3,10 +3,15 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
 
 class CreateTransactionCubit extends Cubit<CreateTransactionState> {
-  CreateTransactionCubit() : super(CreateTransactionState());
+  final TransactionRepository _repository;
+
+  CreateTransactionCubit({required TransactionRepository repository})
+      : _repository = repository,
+        super(CreateTransactionState());
 
   void updateAmountDate(DateTime? time) {
     final transaction = state.transaction.copyWith(transactionDate: time);
@@ -64,5 +69,17 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
         transaction: transaction.copyWith(type: transactionSelected.type)));
   }
 
-  void saveTransaction() {}
+  Future<void> saveTransaction() async {
+    final transaction = state.transaction;
+
+    emit(state.copyWith(status: CreateTransactionStatus.loading));
+
+    final result = await _repository.saveTransaction(transaction);
+
+    result.fold((left) {
+      emit(state.copyWith(status: CreateTransactionStatus.error));
+    }, (right) {
+      emit(state.copyWith(status: CreateTransactionStatus.success));
+    });
+  }
 }
