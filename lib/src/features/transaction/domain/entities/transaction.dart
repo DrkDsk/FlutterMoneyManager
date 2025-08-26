@@ -7,7 +7,7 @@ class Transaction with EquatableMixin {
   final String? id;
   final TransactionTypeEnum type;
   final DateTime transactionDate;
-  final String amount;
+  final int amount;
   final TransactionCategoryEnum? categoryType;
   final TransactionSourceEnum? sourceType;
 
@@ -24,7 +24,7 @@ class Transaction with EquatableMixin {
       {String? id,
       TransactionTypeEnum? type,
       DateTime? transactionDate,
-      String? amount,
+      int? amount,
       TransactionCategoryEnum? categoryType,
       TransactionSourceEnum? sourceType}) {
     return Transaction(
