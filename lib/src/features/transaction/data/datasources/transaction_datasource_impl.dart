@@ -4,15 +4,16 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:hive/hive.dart';
 
 class TransactionDatasourceImpl implements TransactionDatasource {
-  final Box<TransactionHiveModel> box;
+  final Box<TransactionHiveModel> _box;
 
-  const TransactionDatasourceImpl({required this.box});
+  const TransactionDatasourceImpl({required Box<TransactionHiveModel> box})
+      : _box = box;
 
   @override
   Future<bool> saveTransaction(Transaction transaction) async {
     final hiveModel = TransactionHiveModel.fromEntity(transaction);
 
-    await box.add(hiveModel);
+    await _box.add(hiveModel);
     return true;
   }
 }
