@@ -115,8 +115,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     );
   }
 
-  _showTransactionsCategories(
-      BuildContext context, List<TransactionCategory> items) {
+  _showTransactionsCategories(BuildContext context,
+      {required List<TransactionCategory> items}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -221,8 +221,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     transactionTypeSource: "Deposit Source",
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
-                    onTapCategory: () => _showTransactionsCategories(
-                        context, kDefaultIncomeCategories),
+                    onTapCategory: () => _showTransactionsCategories(context,
+                        items: kDefaultIncomeCategories),
                     onTapTransactionSource: () =>
                         _showTransactionSources(context),
                   ),
@@ -231,8 +231,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     amountLabelColor: AppColors.expenseColor,
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
-                    onTapCategory: () => _showTransactionsCategories(
-                        context, kDefaultExpenseCategories),
+                    onTapCategory: () => _showTransactionsCategories(context,
+                        items: kDefaultExpenseCategories),
                     onTapTransactionSource: () =>
                         _showTransactionSources(context),
                   )
