@@ -57,11 +57,12 @@ class TransactionHiveModel extends HiveObject {
 
   factory TransactionHiveModel.fromEntity(Transaction entity) {
     return TransactionHiveModel(
-        id: entity.id ?? const Uuid().v4(),
-        amount: entity.amount,
-        categoryType: entity.categoryType!,
-        sourceType: entity.sourceType!,
-        transactionDate: entity.transactionDate,
-        type: entity.type);
+      id: entity.id ?? const Uuid().v4(),
+      type: entity.type,
+      transactionDate: entity.transactionDate,
+      amount: entity.amount,
+      categoryType: entity.categoryType!,
+      sourceType: entity.sourceType!,
+    );
   }
 }
