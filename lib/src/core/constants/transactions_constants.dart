@@ -1,23 +1,25 @@
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/income_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/expense_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_type.dart';
 
-const kDefaultPaymentSources = [
-  PaymentSource(
+const kDefaultTransactionSources = [
+  TransactionSource(
       name: "Car Loan", icon: "assets/icons/payment_sources/car_loan.png"),
-  PaymentSource(
+  TransactionSource(
       name: "Investments",
       icon: "assets/icons/payment_sources/investments.png"),
-  PaymentSource(name: "Bank", icon: "assets/icons/payment_sources/bank.png"),
-  PaymentSource(name: "Cash", icon: "assets/icons/payment_sources/cash.png"),
-  PaymentSource(
+  TransactionSource(
+      name: "Bank", icon: "assets/icons/payment_sources/bank.png"),
+  TransactionSource(
+      name: "Cash", icon: "assets/icons/payment_sources/cash.png"),
+  TransactionSource(
       name: "Credit Card",
       icon: "assets/icons/payment_sources/credit_card.png"),
-  PaymentSource(
+  TransactionSource(
       name: "Debit Card", icon: "assets/icons/payment_sources/debit_card.png"),
-  PaymentSource(
+  TransactionSource(
       name: "Electronic Money",
       icon: "assets/icons/payment_sources/electronic_money.png")
 ];

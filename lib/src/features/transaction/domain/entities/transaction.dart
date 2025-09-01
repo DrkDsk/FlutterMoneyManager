@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_category_enum.dart';
-import 'package:flutter_money_manager/src/core/enums/payment_source_enum.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_source_enum.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 class Transaction with EquatableMixin {
@@ -9,7 +9,7 @@ class Transaction with EquatableMixin {
   final DateTime transactionDate;
   final int amount;
   final TransactionCategoryEnum? categoryType;
-  final PaymentSourceEnum? sourceType;
+  final TransactionSourceEnum? sourceType;
 
   Transaction(
       {this.id,
@@ -26,7 +26,7 @@ class Transaction with EquatableMixin {
       DateTime? transactionDate,
       int? amount,
       TransactionCategoryEnum? categoryType,
-      PaymentSourceEnum? sourceType}) {
+      TransactionSourceEnum? sourceType}) {
     return Transaction(
         id: id ?? this.id,
         type: type ?? this.type,

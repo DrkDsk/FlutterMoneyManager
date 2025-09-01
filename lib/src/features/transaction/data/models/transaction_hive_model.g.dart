@@ -22,7 +22,7 @@ class TransactionHiveModelAdapter extends TypeAdapter<TransactionHiveModel> {
       transactionDate: fields[2] as DateTime,
       amount: fields[3] as int,
       categoryType: fields[4] as TransactionCategoryEnum,
-      sourceType: fields[5] as PaymentSourceEnum,
+      sourceType: fields[5] as TransactionSourceEnum,
     );
   }
 

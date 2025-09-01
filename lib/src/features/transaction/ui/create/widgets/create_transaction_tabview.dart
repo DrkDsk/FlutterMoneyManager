@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
@@ -35,11 +35,11 @@ class CreateTransactionTabview extends StatelessWidget {
         builder: (context, state) {
           final paymentSourceType = state.transaction.sourceType;
           final transactionCategoryType = state.transaction.categoryType;
-          PaymentSource? transactionSource;
+          TransactionSource? transactionSource;
           TransactionCategory? transactionCategory;
 
           if (paymentSourceType != null) {
-            transactionSource = PaymentSource.fromType(paymentSourceType);
+            transactionSource = TransactionSource.fromType(paymentSourceType);
           }
 
           if (transactionCategoryType != null) {

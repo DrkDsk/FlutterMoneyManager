@@ -1,59 +1,59 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'payment_source_enum.dart';
+part of 'transaction_source_enum.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PaymentSourceEnumAdapter extends TypeAdapter<PaymentSourceEnum> {
+class TransactionSourceEnumAdapter extends TypeAdapter<TransactionSourceEnum> {
   @override
   final int typeId = 3;
 
   @override
-  PaymentSourceEnum read(BinaryReader reader) {
+  TransactionSourceEnum read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return PaymentSourceEnum.carLoan;
+        return TransactionSourceEnum.carLoan;
       case 1:
-        return PaymentSourceEnum.investments;
+        return TransactionSourceEnum.investments;
       case 2:
-        return PaymentSourceEnum.bank;
+        return TransactionSourceEnum.bank;
       case 3:
-        return PaymentSourceEnum.cash;
+        return TransactionSourceEnum.cash;
       case 4:
-        return PaymentSourceEnum.creditCard;
+        return TransactionSourceEnum.creditCard;
       case 5:
-        return PaymentSourceEnum.debitCard;
+        return TransactionSourceEnum.debitCard;
       case 6:
-        return PaymentSourceEnum.electricMoney;
+        return TransactionSourceEnum.electricMoney;
       default:
-        return PaymentSourceEnum.carLoan;
+        return TransactionSourceEnum.carLoan;
     }
   }
 
   @override
-  void write(BinaryWriter writer, PaymentSourceEnum obj) {
+  void write(BinaryWriter writer, TransactionSourceEnum obj) {
     switch (obj) {
-      case PaymentSourceEnum.carLoan:
+      case TransactionSourceEnum.carLoan:
         writer.writeByte(0);
         break;
-      case PaymentSourceEnum.investments:
+      case TransactionSourceEnum.investments:
         writer.writeByte(1);
         break;
-      case PaymentSourceEnum.bank:
+      case TransactionSourceEnum.bank:
         writer.writeByte(2);
         break;
-      case PaymentSourceEnum.cash:
+      case TransactionSourceEnum.cash:
         writer.writeByte(3);
         break;
-      case PaymentSourceEnum.creditCard:
+      case TransactionSourceEnum.creditCard:
         writer.writeByte(4);
         break;
-      case PaymentSourceEnum.debitCard:
+      case TransactionSourceEnum.debitCard:
         writer.writeByte(5);
         break;
-      case PaymentSourceEnum.electricMoney:
+      case TransactionSourceEnum.electricMoney:
         writer.writeByte(6);
         break;
     }
@@ -65,7 +65,7 @@ class PaymentSourceEnumAdapter extends TypeAdapter<PaymentSourceEnum> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PaymentSourceEnumAdapter &&
+      other is TransactionSourceEnumAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
