@@ -24,4 +24,21 @@ class TransactionRepositoryImpl implements TransactionRepository {
       return Left(GenericFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<Transaction>>> getTransactions() async {
+    try {
+      final models = await _datasource.getTransactionsModels();
+
+      final entities = models
+          .map((transactionHiveModel) => transactionHiveModel.toEntity())
+          .toList();
+
+      return Right(entities);
+    } on UnknownException catch (_) {
+      return Left(GenericFailure());
+    } catch (e) {
+      return Left(GenericFailure());
+    }
+  }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/add_transaction_button.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/calendar_page.dart';
-import 'package:flutter_money_manager/src/features/home/ui/widgets/daily_balance_widget.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/daily_balance_page_widget.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/transaction_summary_content.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transaction_summary_content.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

@@ -65,4 +65,14 @@ class TransactionHiveModel extends HiveObject {
       sourceType: entity.sourceType!,
     );
   }
+
+  Transaction toEntity() {
+    return Transaction(
+        id: id,
+        type: type,
+        transactionDate: transactionDate,
+        amount: amount,
+        categoryType: categoryType,
+        sourceType: sourceType);
+  }
 }

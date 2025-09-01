@@ -9,12 +9,12 @@ import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_sources.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/bottom_transaction_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_bottom_appbar.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/expense_transaction_tabview.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/bottom_transaction_sources.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/bottom_transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/create_transaction_bottom_appbar.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/create_transaction_tabview.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key});
@@ -213,7 +213,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
               child: TabBarView(
                 controller: _transactionTypeTabController,
                 children: [
-                  ExpenseTransactionTabview(
+                  CreateTransactionTabview(
                     amountLabelColor: AppColors.incomeColor,
                     transactionTypeSource: "Deposit Source",
                     onSelectTransactionDate: onTransactionDateChanged,
@@ -222,7 +222,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     onTapTransactionSource: () =>
                         _showTransactionSources(context),
                   ),
-                  ExpenseTransactionTabview(
+                  CreateTransactionTabview(
                     transactionTypeSource: "Payment Source",
                     amountLabelColor: AppColors.expenseColor,
                     onSelectTransactionDate: onTransactionDateChanged,

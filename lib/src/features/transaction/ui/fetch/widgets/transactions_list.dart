@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
 
-class ExpenseList extends StatelessWidget {
-  const ExpenseList({
+class TransactionsList extends StatefulWidget {
+  const TransactionsList({
     super.key,
   });
+
+  @override
+  State<TransactionsList> createState() => _TransactionsListState();
+}
+
+class _TransactionsListState extends State<TransactionsList> {
+  late GetTransactionsListCubit _getTransactionsListCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _getTransactionsListCubit = context.read<GetTransactionsListCubit>();
+    Future.microtask(() {
+      _getTransactionsListCubit.getTransactions();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
