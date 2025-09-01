@@ -1,19 +1,19 @@
-import 'package:flutter_money_manager/src/core/constants/hive_constants.dart';
+import 'package:flutter_money_manager/src/core/helpers/hive_initializer.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/home_redirection_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource_impl.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hive_flutter/adapters.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> initDependencies() async {
-  final box = await Hive.openBox<TransactionHiveModel>(hiveTransactionBoxName);
+  final box = await HiveInitializer.init();
+
+  getIt.registerSingleton(box);
 
   getIt.registerLazySingleton<TransactionDatasource>(
       () => TransactionDatasourceImpl(box: box));

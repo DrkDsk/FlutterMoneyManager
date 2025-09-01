@@ -78,6 +78,7 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
     result.fold((left) {
       emit(state.copyWith(status: CreateTransactionStatus.error));
+      print("error");
     }, (right) {
       emit(state.copyWith(status: CreateTransactionStatus.success));
     });
