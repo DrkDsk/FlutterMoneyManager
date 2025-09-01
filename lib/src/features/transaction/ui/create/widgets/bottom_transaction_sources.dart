@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 
 class BottomTransactionSources extends StatelessWidget {
   const BottomTransactionSources(
       {super.key, required this.onSelectTransactionSource});
 
-  final Function(PaymentSource transactionSource) onSelectTransactionSource;
+  final Function(TransactionSource transactionSource) onSelectTransactionSource;
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +16,9 @@ class BottomTransactionSources extends StatelessWidget {
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3, crossAxisSpacing: 10),
-        itemCount: kDefaultPaymentSources.length,
+        itemCount: kDefaultTransactionSources.length,
         itemBuilder: (context, index) {
-          final transactionSource = kDefaultPaymentSources[index];
+          final transactionSource = kDefaultTransactionSources[index];
 
           return GestureDetector(
             onTap: () => onSelectTransactionSource(transactionSource),

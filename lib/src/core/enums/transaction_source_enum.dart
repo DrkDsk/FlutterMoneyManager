@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
-part 'payment_source_enum.g.dart';
+part 'transaction_source_enum.g.dart';
 
 @HiveType(typeId: 3)
-enum PaymentSourceEnum {
+enum TransactionSourceEnum {
   @HiveField(0)
   carLoan,
 
