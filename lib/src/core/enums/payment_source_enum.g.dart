@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction_source_enum.dart';
+part of 'payment_source_enum.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionSourceEnumAdapter extends TypeAdapter<PaymentSourceEnum> {
+class PaymentSourceEnumAdapter extends TypeAdapter<PaymentSourceEnum> {
   @override
   final int typeId = 3;
 
@@ -65,7 +65,7 @@ class TransactionSourceEnumAdapter extends TypeAdapter<PaymentSourceEnum> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TransactionSourceEnumAdapter &&
+      other is PaymentSourceEnumAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -1,8 +1,8 @@
-import 'package:flutter_money_manager/src/core/enums/expense_category_enum.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_category_enum.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:flutter_money_manager/src/core/enums/transaction_source_enum.dart';
+import 'package:flutter_money_manager/src/core/enums/payment_source_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
@@ -23,7 +23,7 @@ class TransactionHiveModel extends HiveObject {
   final int amount;
 
   @HiveField(4)
-  final ExpenseCategoryEnum categoryType;
+  final TransactionCategoryEnum categoryType;
 
   @HiveField(5)
   final PaymentSourceEnum sourceType;
@@ -42,7 +42,7 @@ class TransactionHiveModel extends HiveObject {
     TransactionTypeEnum? type,
     DateTime? transactionDate,
     int? amount,
-    ExpenseCategoryEnum? categoryType,
+    TransactionCategoryEnum? categoryType,
     PaymentSourceEnum? sourceType,
   }) {
     return TransactionHiveModel(
@@ -61,7 +61,7 @@ class TransactionHiveModel extends HiveObject {
       type: entity.type,
       transactionDate: entity.transactionDate,
       amount: entity.amount,
-      categoryType: entity.expenseCategoryType!,
+      categoryType: entity.categoryType!,
       sourceType: entity.sourceType!,
     );
   }
@@ -72,7 +72,7 @@ class TransactionHiveModel extends HiveObject {
         type: type,
         transactionDate: transactionDate,
         amount: amount,
-        expenseCategoryType: categoryType,
+        categoryType: categoryType,
         sourceType: sourceType);
   }
 }

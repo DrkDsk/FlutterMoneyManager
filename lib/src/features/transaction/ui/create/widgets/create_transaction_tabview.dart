@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/expense_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/create_transaction_item.dart';
@@ -34,9 +34,9 @@ class CreateTransactionTabview extends StatelessWidget {
       child: BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
         builder: (context, state) {
           final paymentSourceType = state.transaction.sourceType;
-          final transactionCategoryType = state.transaction.expenseCategoryType;
+          final transactionCategoryType = state.transaction.categoryType;
           PaymentSource? transactionSource;
-          ExpenseCategory? transactionCategory;
+          TransactionCategory? transactionCategory;
 
           if (paymentSourceType != null) {
             transactionSource = PaymentSource.fromType(paymentSourceType);
@@ -44,7 +44,7 @@ class CreateTransactionTabview extends StatelessWidget {
 
           if (transactionCategoryType != null) {
             transactionCategory =
-                ExpenseCategory.fromType(transactionCategoryType);
+                TransactionCategory.fromType(transactionCategoryType);
           }
 
           return SingleChildScrollView(

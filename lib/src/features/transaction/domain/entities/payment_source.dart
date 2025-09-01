@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/core/enums/transaction_source_enum.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
+import 'package:flutter_money_manager/src/core/enums/payment_source_enum.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 
-class PaymentSource extends TransactionSource with EquatableMixin {
+class PaymentSource extends TransactionCategory with EquatableMixin {
   const PaymentSource({required super.name, required super.icon});
 
   factory PaymentSource.fromType(PaymentSourceEnum type) {

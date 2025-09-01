@@ -39,7 +39,7 @@ class _TransactionsListState extends State<TransactionsList> {
             borderRadius: BorderRadius.circular(12),
             color: theme.colorScheme.onSecondary.customOpacity(0.10),
           ),
-          child: TransactionListItem(
+          child: const TransactionListItem(
             amuount: 40,
             date: "Aug 16",
             weekDay: "Monday",

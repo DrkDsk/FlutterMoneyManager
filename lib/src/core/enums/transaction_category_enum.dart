@@ -1,9 +1,9 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-part 'expense_category_enum.g.dart';
+part 'transaction_category_enum.g.dart';
 
 @HiveType(typeId: 2)
-enum ExpenseCategoryEnum {
+enum TransactionCategoryEnum {
   @HiveField(0)
   food,
 
@@ -20,5 +20,17 @@ enum ExpenseCategoryEnum {
   household,
 
   @HiveField(5)
-  entertainment
+  entertainment,
+
+  @HiveField(6)
+  salary,
+
+  @HiveField(7)
+  bonus,
+
+  @HiveField(8)
+  sidebusiness,
+
+  @HiveField(9)
+  investments
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 
 class BottomTransactionCategory extends StatelessWidget {
-  final Function(TransactionSource category) onSelectCategory;
-  final List<TransactionSource> items;
+  final Function(TransactionCategory category) onSelectCategory;
+  final List<TransactionCategory> items;
 
   const BottomTransactionCategory(
       {super.key, required this.onSelectCategory, required this.items});
