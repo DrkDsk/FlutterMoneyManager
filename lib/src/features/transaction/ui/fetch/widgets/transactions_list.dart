@@ -1,50 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
-import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 
-class TransactionsList extends StatefulWidget {
-  const TransactionsList({
-    super.key,
-  });
+class TransactionsList extends StatelessWidget {
+  const TransactionsList({super.key, required this.transactions});
 
-  @override
-  State<TransactionsList> createState() => _TransactionsListState();
-}
-
-class _TransactionsListState extends State<TransactionsList> {
-  late GetTransactionsListCubit _getTransactionsListCubit;
-
-  @override
-  void initState() {
-    super.initState();
-    _getTransactionsListCubit = context.read<GetTransactionsListCubit>();
-    Future.microtask(() {
-      _getTransactionsListCubit.getTransactions();
-    });
-  }
+  final List<Transaction> transactions;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return ListView.separated(
       scrollDirection: Axis.vertical,
-      itemCount: 5,
+      itemCount: transactions.length,
       itemBuilder: (context, index) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: theme.colorScheme.onSecondary.customOpacity(0.10),
-          ),
-          child: const TransactionListItem(
-            amuount: 40,
-            date: "Aug 16",
-            weekDay: "Monday",
-            source: "Salary",
-            transactionSource: "DEbit card",
+        final transaction = transactions[index];
+
+        final paymentSourceType = transaction.sourceType;
+        final transactionCategoryType = transaction.categoryType;
+        PaymentSource? transactionSource;
+        TransactionCategory? transactionCategory;
+
+        if (paymentSourceType != null) {
+          transactionSource = PaymentSource.fromType(paymentSourceType);
+        }
+
+        if (transactionCategoryType != null) {
+          transactionCategory =
+              TransactionCategory.fromType(transactionCategoryType);
+        }
+
+        if (transactionCategory == null || transactionSource == null) {
+          return const SizedBox.shrink();
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: TransactionListItem(
+            amuount: transaction.amount,
+            source: transactionCategory.name,
+            transactionSource: transactionSource.name,
           ),
         );
       },
@@ -59,14 +55,10 @@ class _TransactionsListState extends State<TransactionsList> {
 class TransactionListItem extends StatelessWidget {
   const TransactionListItem(
       {super.key,
-      required this.date,
-      required this.weekDay,
       required this.amuount,
       required this.source,
       required this.transactionSource});
 
-  final String date;
-  final String weekDay;
   final int amuount;
   final String source;
   final String transactionSource;
@@ -77,29 +69,6 @@ class TransactionListItem extends StatelessWidget {
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Text(
-                  date,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  decoration: BoxDecoration(
-                      color: theme.colorScheme.onPrimary.customOpacity(0.08),
-                      borderRadius: BorderRadius.circular(4)),
-                  child: Text(weekDay, style: theme.textTheme.bodyMedium),
-                )
-              ],
-            ),
-          ],
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

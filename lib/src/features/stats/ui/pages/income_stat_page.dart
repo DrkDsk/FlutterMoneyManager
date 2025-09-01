@@ -8,7 +8,10 @@ class IncomeStatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      children: [PieChartSample(), Expanded(child: TransactionsList())],
+      children: [
+        PieChartSample(),
+        Expanded(child: TransactionsList(transactions: []))
+      ],
     );
   }
 }

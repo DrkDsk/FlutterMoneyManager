@@ -18,7 +18,14 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<List<TransactionHiveModel>> getTransactionsModels() async {
-    return _box.values.toList();
+  Future<List<TransactionHiveModel>> getTransactionsModels(
+      {required int monthIndex}) async {
+    final values = _box.values.toList();
+
+    final filtered = values.where((transaction) {
+      return transaction.transactionDate.month == monthIndex;
+    }).toList();
+
+    return filtered;
   }
 }

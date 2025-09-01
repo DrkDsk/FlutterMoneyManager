@@ -19,7 +19,9 @@ class CalendarPage extends StatelessWidget {
           Container(
             height: 400,
             decoration: kWidgetRoundedDecoration,
-            child: const TransactionsList(),
+            child: const TransactionsList(
+              transactions: [],
+            ),
           )
         ],
       ),
