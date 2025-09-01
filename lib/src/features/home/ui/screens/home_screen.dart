@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/shared/builders/home/home_builder.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
-import 'package:flutter_money_manager/src/features/home/ui/pages/daily_home_page.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/pages/home_page.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/pages/stats_page.dart';

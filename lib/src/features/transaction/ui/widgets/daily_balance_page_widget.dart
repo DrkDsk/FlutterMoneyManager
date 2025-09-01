@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/features/home/ui/widgets/expense_list.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/widgets/transactions_list.dart';
 
 class DailyBalancePage extends StatelessWidget {
   const DailyBalancePage({
@@ -19,7 +19,7 @@ class DailyBalancePage extends StatelessWidget {
           style: theme.textTheme.bodyLarge,
         ),
         const SizedBox(height: 10),
-        const Expanded(child: ExpenseList()),
+        const Expanded(child: TransactionsList()),
       ],
     );
   }
