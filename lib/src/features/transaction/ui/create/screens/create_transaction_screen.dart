@@ -125,6 +125,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
           child: FractionallySizedBox(
               heightFactor: 0.4,
               child: BottomTransactionCategory(
+                items: kDefaultExpenseCategories,
                 onSelectCategory: (category) {
                   _createTransactionCubit.updateTransactionCategory(category);
                   _router.pop();

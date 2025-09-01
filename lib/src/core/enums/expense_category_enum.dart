@@ -1,9 +1,9 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-part 'transaction_category_enum.g.dart';
+part 'expense_category_enum.g.dart';
 
 @HiveType(typeId: 2)
-enum TransactionCategoryEnum {
+enum ExpenseCategoryEnum {
   @HiveField(0)
   food,
 

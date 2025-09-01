@@ -1,55 +1,54 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction_category_enum.dart';
+part of 'expense_category_enum.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionCategoryEnumAdapter
-    extends TypeAdapter<TransactionCategoryEnum> {
+class TransactionCategoryEnumAdapter extends TypeAdapter<ExpenseCategoryEnum> {
   @override
   final int typeId = 2;
 
   @override
-  TransactionCategoryEnum read(BinaryReader reader) {
+  ExpenseCategoryEnum read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return TransactionCategoryEnum.food;
+        return ExpenseCategoryEnum.food;
       case 1:
-        return TransactionCategoryEnum.tansportation;
+        return ExpenseCategoryEnum.tansportation;
       case 2:
-        return TransactionCategoryEnum.housing;
+        return ExpenseCategoryEnum.housing;
       case 3:
-        return TransactionCategoryEnum.utility;
+        return ExpenseCategoryEnum.utility;
       case 4:
-        return TransactionCategoryEnum.household;
+        return ExpenseCategoryEnum.household;
       case 5:
-        return TransactionCategoryEnum.entertainment;
+        return ExpenseCategoryEnum.entertainment;
       default:
-        return TransactionCategoryEnum.food;
+        return ExpenseCategoryEnum.food;
     }
   }
 
   @override
-  void write(BinaryWriter writer, TransactionCategoryEnum obj) {
+  void write(BinaryWriter writer, ExpenseCategoryEnum obj) {
     switch (obj) {
-      case TransactionCategoryEnum.food:
+      case ExpenseCategoryEnum.food:
         writer.writeByte(0);
         break;
-      case TransactionCategoryEnum.tansportation:
+      case ExpenseCategoryEnum.tansportation:
         writer.writeByte(1);
         break;
-      case TransactionCategoryEnum.housing:
+      case ExpenseCategoryEnum.housing:
         writer.writeByte(2);
         break;
-      case TransactionCategoryEnum.utility:
+      case ExpenseCategoryEnum.utility:
         writer.writeByte(3);
         break;
-      case TransactionCategoryEnum.household:
+      case ExpenseCategoryEnum.household:
         writer.writeByte(4);
         break;
-      case TransactionCategoryEnum.entertainment:
+      case ExpenseCategoryEnum.entertainment:
         writer.writeByte(5);
         break;
     }

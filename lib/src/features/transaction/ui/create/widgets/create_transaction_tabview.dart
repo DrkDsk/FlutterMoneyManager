@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/expense_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/create_transaction_item.dart';
@@ -34,17 +34,17 @@ class CreateTransactionTabview extends StatelessWidget {
       child: BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
         builder: (context, state) {
           final paymentSourceType = state.transaction.sourceType;
-          final transactionCategoryType = state.transaction.categoryType;
-          TransactionSource? transactionSource;
-          TransactionCategory? transactionCategory;
+          final transactionCategoryType = state.transaction.expenseCategoryType;
+          PaymentSource? transactionSource;
+          ExpenseCategory? transactionCategory;
 
           if (paymentSourceType != null) {
-            transactionSource = TransactionSource.fromType(paymentSourceType);
+            transactionSource = PaymentSource.fromType(paymentSourceType);
           }
 
           if (transactionCategoryType != null) {
             transactionCategory =
-                TransactionCategory.fromType(transactionCategoryType);
+                ExpenseCategory.fromType(transactionCategoryType);
           }
 
           return SingleChildScrollView(

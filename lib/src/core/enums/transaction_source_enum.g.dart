@@ -6,54 +6,54 @@ part of 'transaction_source_enum.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionSourceEnumAdapter extends TypeAdapter<TransactionSourceEnum> {
+class TransactionSourceEnumAdapter extends TypeAdapter<PaymentSourceEnum> {
   @override
   final int typeId = 3;
 
   @override
-  TransactionSourceEnum read(BinaryReader reader) {
+  PaymentSourceEnum read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return TransactionSourceEnum.carLoan;
+        return PaymentSourceEnum.carLoan;
       case 1:
-        return TransactionSourceEnum.investments;
+        return PaymentSourceEnum.investments;
       case 2:
-        return TransactionSourceEnum.bank;
+        return PaymentSourceEnum.bank;
       case 3:
-        return TransactionSourceEnum.cash;
+        return PaymentSourceEnum.cash;
       case 4:
-        return TransactionSourceEnum.creditCard;
+        return PaymentSourceEnum.creditCard;
       case 5:
-        return TransactionSourceEnum.debitCard;
+        return PaymentSourceEnum.debitCard;
       case 6:
-        return TransactionSourceEnum.electricMoney;
+        return PaymentSourceEnum.electricMoney;
       default:
-        return TransactionSourceEnum.carLoan;
+        return PaymentSourceEnum.carLoan;
     }
   }
 
   @override
-  void write(BinaryWriter writer, TransactionSourceEnum obj) {
+  void write(BinaryWriter writer, PaymentSourceEnum obj) {
     switch (obj) {
-      case TransactionSourceEnum.carLoan:
+      case PaymentSourceEnum.carLoan:
         writer.writeByte(0);
         break;
-      case TransactionSourceEnum.investments:
+      case PaymentSourceEnum.investments:
         writer.writeByte(1);
         break;
-      case TransactionSourceEnum.bank:
+      case PaymentSourceEnum.bank:
         writer.writeByte(2);
         break;
-      case TransactionSourceEnum.cash:
+      case PaymentSourceEnum.cash:
         writer.writeByte(3);
         break;
-      case TransactionSourceEnum.creditCard:
+      case PaymentSourceEnum.creditCard:
         writer.writeByte(4);
         break;
-      case TransactionSourceEnum.debitCard:
+      case PaymentSourceEnum.debitCard:
         writer.writeByte(5);
         break;
-      case TransactionSourceEnum.electricMoney:
+      case PaymentSourceEnum.electricMoney:
         writer.writeByte(6);
         break;
     }
