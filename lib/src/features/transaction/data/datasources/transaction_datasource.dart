@@ -3,5 +3,6 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 
 abstract interface class TransactionDatasource {
   Future<bool> saveTransaction(Transaction transaction);
-  Future<List<TransactionHiveModel>> getTransactionsModels();
+  Future<List<TransactionHiveModel>> getTransactionsModels(
+      {required int monthIndex});
 }

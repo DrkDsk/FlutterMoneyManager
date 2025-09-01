@@ -26,9 +26,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, List<Transaction>>> getTransactions() async {
+  Future<Either<Failure, List<Transaction>>> getTransactions(
+      {int? monthIndex}) async {
     try {
-      final models = await _datasource.getTransactionsModels();
+      final models = await _datasource.getTransactionsModels(
+          monthIndex: monthIndex ?? DateTime.now().month);
 
       final entities = models
           .map((transactionHiveModel) => transactionHiveModel.toEntity())
