@@ -1,23 +1,36 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_category_enum.dart';
 
-class TransactionCategory with EquatableMixin {
+class TransactionCategory {
   final String name;
   final String icon;
 
-  const TransactionCategory({
-    required this.name,
-    required this.icon,
-  });
+  const TransactionCategory({required this.icon, required this.name});
 
-  TransactionCategory copyWith({
-    String? name,
-    String? icon,
-  }) {
-    return TransactionCategory(
-      name: name ?? this.name,
-      icon: icon ?? this.icon,
-    );
+  TransactionCategoryEnum getCategoryType() {
+    switch (name) {
+      case "Food":
+        return TransactionCategoryEnum.food;
+      case "Transportation":
+        return TransactionCategoryEnum.tansportation;
+      case "Housing":
+        return TransactionCategoryEnum.housing;
+      case "utility":
+        return TransactionCategoryEnum.utility;
+      case "Household":
+        return TransactionCategoryEnum.household;
+      case "Entertainment":
+        return TransactionCategoryEnum.entertainment;
+      case "Salary":
+        return TransactionCategoryEnum.salary;
+      case "Bonus":
+        return TransactionCategoryEnum.bonus;
+      case "Side Business":
+        return TransactionCategoryEnum.sidebusiness;
+      case "Investments":
+        return TransactionCategoryEnum.investments;
+      default:
+        return TransactionCategoryEnum.food;
+    }
   }
 
   factory TransactionCategory.fromType(TransactionCategoryEnum type) {
@@ -42,28 +55,20 @@ class TransactionCategory with EquatableMixin {
         return const TransactionCategory(
             name: "Entertainment",
             icon: "assets/icons/categories/entertainment.png");
+      case TransactionCategoryEnum.salary:
+        return const TransactionCategory(
+            name: "Salary", icon: "assets/icons/categories/salary.png");
+      case TransactionCategoryEnum.bonus:
+        return const TransactionCategory(
+            name: "Bonus", icon: "assets/icons/categories/bonus.png");
+      case TransactionCategoryEnum.sidebusiness:
+        return const TransactionCategory(
+            icon: "assets/icons/categories/side_business.png",
+            name: "Side Business");
+      case TransactionCategoryEnum.investments:
+        return const TransactionCategory(
+            icon: "assets/icons/payment_sources/investments.png",
+            name: "Investments");
     }
   }
-
-  TransactionCategoryEnum getType() {
-    switch (name) {
-      case "Food":
-        return TransactionCategoryEnum.food;
-      case "Transportation":
-        return TransactionCategoryEnum.tansportation;
-      case "Housing":
-        return TransactionCategoryEnum.housing;
-      case "utility":
-        return TransactionCategoryEnum.utility;
-      case "Household":
-        return TransactionCategoryEnum.household;
-      case "Entertainment":
-        return TransactionCategoryEnum.entertainment;
-      default:
-        return TransactionCategoryEnum.food;
-    }
-  }
-
-  @override
-  List<Object?> get props => [name, icon];
 }

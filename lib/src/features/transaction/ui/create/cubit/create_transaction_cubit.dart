@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/payment_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
@@ -28,7 +28,7 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
     emit(_validForm(newState));
   }
 
-  void updateTransactionSource(TransactionSource source) {
+  void updateTransactionSource(PaymentSource source) {
     final transaction = state.transaction;
     final newState = state.copyWith(
         transaction: transaction.copyWith(sourceType: source.getType()));
@@ -36,10 +36,12 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
     emit(_validForm(newState));
   }
 
-  void updateTransactionCategory(TransactionCategory category) {
+  void updateTransactionCategory(TransactionCategory source) {
     final transaction = state.transaction;
+    final category = source.getCategoryType();
+
     final newState = state.copyWith(
-        transaction: transaction.copyWith(categoryType: category.getType()));
+        transaction: transaction.copyWith(categoryType: category));
 
     emit(_validForm(newState));
   }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 
 class BottomTransactionCategory extends StatelessWidget {
   final Function(TransactionCategory category) onSelectCategory;
+  final List<TransactionCategory> items;
 
-  const BottomTransactionCategory({super.key, required this.onSelectCategory});
+  const BottomTransactionCategory(
+      {super.key, required this.onSelectCategory, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +17,9 @@ class BottomTransactionCategory extends StatelessWidget {
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3, crossAxisSpacing: 10),
-      itemCount: kDefaultTransactionsCategory.length,
+      itemCount: items.length,
       itemBuilder: (context, index) {
-        final category = kDefaultTransactionsCategory[index];
+        final category = items[index];
 
         return GestureDetector(
           onTap: () => onSelectCategory(category),

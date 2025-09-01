@@ -26,6 +26,14 @@ class TransactionCategoryEnumAdapter
         return TransactionCategoryEnum.household;
       case 5:
         return TransactionCategoryEnum.entertainment;
+      case 6:
+        return TransactionCategoryEnum.salary;
+      case 7:
+        return TransactionCategoryEnum.bonus;
+      case 8:
+        return TransactionCategoryEnum.sidebusiness;
+      case 9:
+        return TransactionCategoryEnum.investments;
       default:
         return TransactionCategoryEnum.food;
     }
@@ -51,6 +59,18 @@ class TransactionCategoryEnumAdapter
         break;
       case TransactionCategoryEnum.entertainment:
         writer.writeByte(5);
+        break;
+      case TransactionCategoryEnum.salary:
+        writer.writeByte(6);
+        break;
+      case TransactionCategoryEnum.bonus:
+        writer.writeByte(7);
+        break;
+      case TransactionCategoryEnum.sidebusiness:
+        writer.writeByte(8);
+        break;
+      case TransactionCategoryEnum.investments:
+        writer.writeByte(9);
         break;
     }
   }

@@ -20,5 +20,17 @@ enum TransactionCategoryEnum {
   household,
 
   @HiveField(5)
-  entertainment
+  entertainment,
+
+  @HiveField(6)
+  salary,
+
+  @HiveField(7)
+  bonus,
+
+  @HiveField(8)
+  sidebusiness,
+
+  @HiveField(9)
+  investments
 }

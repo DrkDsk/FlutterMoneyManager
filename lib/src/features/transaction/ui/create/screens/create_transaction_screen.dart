@@ -9,6 +9,7 @@ import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/bottom_transaction_sources.dart';
@@ -114,7 +115,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     );
   }
 
-  _showTransactionsCategories(BuildContext context) {
+  _showTransactionsCategories(
+      BuildContext context, List<TransactionCategory> items) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -125,6 +127,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
           child: FractionallySizedBox(
               heightFactor: 0.4,
               child: BottomTransactionCategory(
+                items: items,
                 onSelectCategory: (category) {
                   _createTransactionCubit.updateTransactionCategory(category);
                   _router.pop();
@@ -218,7 +221,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     transactionTypeSource: "Deposit Source",
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
-                    onTapCategory: () => _showTransactionsCategories(context),
+                    onTapCategory: () => _showTransactionsCategories(
+                        context, kDefaultIncomeCategories),
                     onTapTransactionSource: () =>
                         _showTransactionSources(context),
                   ),
@@ -227,7 +231,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     amountLabelColor: AppColors.expenseColor,
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
-                    onTapCategory: () => _showTransactionsCategories(context),
+                    onTapCategory: () => _showTransactionsCategories(
+                        context, kDefaultExpenseCategories),
                     onTapTransactionSource: () =>
                         _showTransactionSources(context),
                   )
