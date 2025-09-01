@@ -4,4 +4,5 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 
 abstract interface class TransactionRepository {
   Future<Either<Failure, bool>> saveTransaction(Transaction transaction);
+  Future<Either<Failure, List<Transaction>>> getTransactions();
 }

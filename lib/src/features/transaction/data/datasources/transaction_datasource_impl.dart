@@ -16,4 +16,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     await _box.add(hiveModel);
     return true;
   }
+
+  @override
+  Future<List<TransactionHiveModel>> getTransactionsModels() async {
+    return _box.values.toList();
+  }
 }
