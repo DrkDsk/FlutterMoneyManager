@@ -4,7 +4,7 @@ import 'package:flutter_money_manager/src/core/constants/transactions_constants.
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
 
 class CreateTransactionCubit extends Cubit<CreateTransactionState> {
   final TransactionRepository _repository;

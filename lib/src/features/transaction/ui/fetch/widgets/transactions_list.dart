@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/get_transactions/get_transactions_list_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
 
 class TransactionsList extends StatefulWidget {
   const TransactionsList({

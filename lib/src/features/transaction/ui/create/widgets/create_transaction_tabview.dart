@@ -4,12 +4,12 @@ import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dar
 import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/create_transaction_item.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/create_transaction_item.dart';
 
-class ExpenseTransactionTabview extends StatelessWidget {
-  const ExpenseTransactionTabview(
+class CreateTransactionTabview extends StatelessWidget {
+  const CreateTransactionTabview(
       {super.key,
       required this.transactionTypeSource,
       this.onSelectTransactionDate,

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
 
-import './get_transactions_list_state.dart';
+import 'get_transactions_list_state.dart';
 
 class GetTransactionsListCubit extends Cubit<GetTransactionListState> {
   final TransactionRepository _repository;

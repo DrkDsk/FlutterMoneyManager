@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/widgets/transactions_list.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transactions_list.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/pie_chart_sample.dart';
 
 class ExpenseStatPage extends StatelessWidget {

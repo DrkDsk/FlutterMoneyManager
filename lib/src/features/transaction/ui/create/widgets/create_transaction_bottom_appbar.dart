@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_state.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateTransactionBottomAppBar extends StatelessWidget {

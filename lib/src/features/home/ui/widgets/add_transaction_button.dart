@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/di/di.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/blocs/cubit/create_transaction_cubit.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/screen/create_transaction_screen.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/create/screens/create_transaction_screen.dart';
 
 class AddTransactionButton extends StatelessWidget {
   const AddTransactionButton({
