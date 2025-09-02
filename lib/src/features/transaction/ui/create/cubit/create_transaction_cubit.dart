@@ -31,17 +31,17 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
   void updateTransactionSource(TransactionSource source) {
     final transaction = state.transaction;
     final newState = state.copyWith(
-        transaction: transaction.copyWith(sourceType: source.getType()));
+        transaction: transaction.copyWith(sourceType: source.name));
 
     emit(_validForm(newState));
   }
 
-  void updateTransactionCategory(TransactionCategory source) {
+  void updateTransactionCategory(TransactionCategory category) {
     final transaction = state.transaction;
-    final category = source.getCategoryType();
+    /* final category = source.getCategoryType(); */
 
     final newState = state.copyWith(
-        transaction: transaction.copyWith(categoryType: category));
+        transaction: transaction.copyWith(categoryType: category.name));
 
     emit(_validForm(newState));
   }
