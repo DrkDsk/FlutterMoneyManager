@@ -40,53 +40,59 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
               "Transacciones de ${state.monthName}",
               style: theme.textTheme.bodyLarge,
             ),
-            Expanded(
-              child: ListView.separated(
-                itemCount: state.data.length,
-                separatorBuilder: (context, index) {
-                  return const SizedBox.shrink();
-                },
-                itemBuilder: (context, index) {
-                  final grouped = state.data[index];
-                  final date = grouped.date;
-                  final monthName = date.monthName;
-                  final formattedDate = "$monthName ${date.day}";
+            if (state.data.isNotEmpty) ...[
+              Expanded(
+                child: ListView.separated(
+                  itemCount: state.data.length,
+                  separatorBuilder: (context, index) {
+                    return const SizedBox.shrink();
+                  },
+                  itemBuilder: (context, index) {
+                    final grouped = state.data[index];
+                    final date = grouped.date;
+                    final monthName = date.monthName;
+                    final formattedDate = "$monthName ${date.day}";
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Text(
-                            formattedDate,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
-                            decoration: BoxDecoration(
-                                color: theme.colorScheme.onPrimary
-                                    .customOpacity(0.08),
-                                borderRadius: BorderRadius.circular(4)),
-                            child: Text(date.dayName,
-                                style: theme.textTheme.bodyMedium),
-                          ),
-                          const SizedBox(width: 10),
-                          const Text("2025")
-                        ],
-                      ),
-                      SizedBox(
-                          height: 300,
-                          child: TransactionsList(
-                              transactions: grouped.transactions)),
-                    ],
-                  );
-                },
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(
+                              formattedDate,
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 6),
+                              decoration: BoxDecoration(
+                                  color: theme.colorScheme.onPrimary
+                                      .customOpacity(0.08),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: Text(date.dayName,
+                                  style: theme.textTheme.bodyMedium),
+                            ),
+                            const SizedBox(width: 10),
+                            Text("${date.year}")
+                          ],
+                        ),
+                        SizedBox(
+                            height: 300,
+                            child: TransactionsList(
+                                transactions: grouped.transactions)),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
+            ] else ...[
+              const Expanded(
+                  child: Center(child: Text("Sin transacciones disponibles")))
+            ]
           ],
         );
       },
