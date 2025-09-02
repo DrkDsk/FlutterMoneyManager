@@ -6,8 +6,6 @@ import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart'
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
@@ -51,30 +49,24 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
         final result = grouped.entries.map((entry) {
           final transactions = entry.value.map((raw) {
-            final value = raw["amount"] as num;
-            final amount = value.toInt();
+            final id = raw["id"] as String;
+            final amount = (raw["amount"] as num).toInt();
             final type = raw['type'] == "expense"
                 ? TransactionTypeEnum.expense
                 : TransactionTypeEnum.income;
 
-            final categoryType =
-                TransactionCategory.fromString(raw["categoryType"])
-                    .getCategoryType();
-            final sourceType =
-                TransactionSource.fromString(raw['sourceType']).getType();
-
+            final categoryType = raw["categoryType"] as String;
+            final sourceType = raw["categoryType"] as String;
             final transactionDate = DateTime.fromMillisecondsSinceEpoch(
                 raw['transactionDate'] as int);
 
-            final id = raw["id"] as String;
-
             return Transaction(
+                id: id,
                 type: type,
                 amount: amount,
                 transactionDate: transactionDate,
-                categoryType: raw["categoryType"] as String,
-                sourceType: raw["categoryType"] as String,
-                id: id);
+                categoryType: categoryType,
+                sourceType: sourceType);
           }).toList();
 
           int income = 0;
