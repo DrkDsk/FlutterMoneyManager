@@ -6,6 +6,7 @@ import 'package:flutter_money_manager/src/core/constants/transactions_constants.
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_balance.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
@@ -30,7 +31,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, List<TransactionsData>>> getTransactions(
+  Future<Either<Failure, TransactionBalance>> getTransactions(
       {int? monthIndex}) async {
     try {
       final models = await _datasource.getTransactionsModels(
@@ -38,7 +39,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final rawModels = models.map((element) => element.toJson()).toList();
 
-      final result = await Isolate.run(() {
+      final balance = await Isolate.run(() {
+        int income = 0;
+        int expense = 0;
+
         final grouped = <DateTime, List<Map<String, dynamic>>>{};
 
         for (final raw in rawModels) {
@@ -47,7 +51,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
           grouped.putIfAbsent(date, () => []).add(raw);
         }
 
-        final result = grouped.entries.map((entry) {
+        final transactionsData = grouped.entries.map((entry) {
           final transactions = entry.value.map((raw) {
             final id = raw["id"] as String;
             final amount = (raw["amount"] as num).toInt();
@@ -67,8 +71,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
                 sourceType: sourceType);
           }).toList();
 
-          int income = 0;
-          int expense = 0;
           for (final transaction in transactions) {
             if (transaction.type == kIncomeType) {
               income += transaction.amount;
@@ -80,15 +82,17 @@ class TransactionRepositoryImpl implements TransactionRepository {
           return TransactionsData(
             transactions: transactions,
             date: entry.key,
-            incomeBalance: income,
-            expenseBalance: expense,
           );
         }).toList();
 
-        return result;
+        return TransactionBalance(
+            transactionsData: transactionsData,
+            income: income,
+            expense: expense,
+            total: income - expense);
       });
 
-      return Right(result);
+      return Right(balance);
     } on UnknownException catch (_) {
       return Left(GenericFailure());
     } catch (e) {

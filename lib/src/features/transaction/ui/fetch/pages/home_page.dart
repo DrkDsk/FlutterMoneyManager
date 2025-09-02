@@ -36,9 +36,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Column(
             children: [
               const SizedBox(height: 60),
-              const SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: TransactionSummaryContent()),
+              const TransactionSummaryContent(),
               const SizedBox(height: 20),
               CustomTabBar(
                   tabController: _tabController,

@@ -41,17 +41,17 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
               style: theme.textTheme.bodyLarge,
             ),
             const SizedBox(height: 10),
-            if (state.data.isNotEmpty) ...[
+            if (state.transactions.isNotEmpty) ...[
               Expanded(
                 child: ListView.separated(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: state.data.length,
+                  itemCount: state.transactions.length,
                   separatorBuilder: (context, index) {
                     return const SizedBox.shrink();
                   },
                   itemBuilder: (context, index) {
-                    final grouped = state.data[index];
+                    final grouped = state.transactions[index];
                     final date = grouped.date;
                     final monthName = date.monthName;
                     final formattedDate = "$monthName ${date.day}";
@@ -80,7 +80,7 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
                                   style: theme.textTheme.bodyMedium),
                             ),
                             const SizedBox(width: 10),
-                            Text("${date.year}")
+                            Text("${date.year}"),
                           ],
                         ),
                         const SizedBox(height: 10),
