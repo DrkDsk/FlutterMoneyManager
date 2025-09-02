@@ -35,8 +35,7 @@ class TransactionCategory {
       case "bonus":
         return const IncomeCategory(
             name: "Bonus", icon: "assets/icons/categories/bonus.png");
-      case "sidebusiness":
-      case "side_business":
+      case "side business":
         return const IncomeCategory(
             icon: "assets/icons/categories/side_business.png",
             name: "Side Business");

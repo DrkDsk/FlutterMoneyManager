@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 
 class TransactionListItem extends StatelessWidget {
@@ -22,7 +23,7 @@ class TransactionListItem extends StatelessWidget {
     final theme = Theme.of(context);
 
     final transactionTypeColor =
-        type == "income" ? AppColors.incomeColor : AppColors.expenseColor;
+        type == kIncomeType ? AppColors.incomeColor : AppColors.expenseColor;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -8,8 +8,7 @@ class TransactionSource with EquatableMixin {
 
   factory TransactionSource.fromString(String value) {
     switch (value.toLowerCase()) {
-      case "carloan":
-      case "car_loan":
+      case "car loan":
         return const TransactionSource(
             name: "Car Loan",
             icon: "assets/icons/payment_sources/car_loan.png");
@@ -23,19 +22,15 @@ class TransactionSource with EquatableMixin {
       case "cash":
         return const TransactionSource(
             name: "Cash", icon: "assets/icons/payment_sources/cash.png");
-      case "creditcard":
-      case "credit_card":
+      case "credit card":
         return const TransactionSource(
             name: "Credit Card",
             icon: "assets/icons/payment_sources/credit_card.png");
-      case "debitcard":
-      case "debit_card":
+      case "debit card":
         return const TransactionSource(
             name: "Debit Card",
             icon: "assets/icons/payment_sources/debit_card.png");
-      case "electricmoney":
-      case "electronicmoney":
-      case "electronic_money":
+      case "electronic money":
         return const TransactionSource(
             name: "Electronic Money",
             icon: "assets/icons/payment_sources/electronic_money.png");
