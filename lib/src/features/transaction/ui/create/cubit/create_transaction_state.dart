@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
 enum CreateTransactionStatus { initial, loading, error, success }
@@ -16,7 +15,7 @@ class CreateTransactionState with EquatableMixin {
       : transaction = transaction ??
             Transaction(
               amount: 0,
-              type: TransactionTypeEnum.income,
+              type: "income",
             );
 
   CreateTransactionState copyWith(

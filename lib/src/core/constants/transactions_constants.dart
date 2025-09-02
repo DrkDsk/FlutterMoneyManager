@@ -1,4 +1,3 @@
-import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/income_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/expense_category.dart';
@@ -48,6 +47,6 @@ const kDefaultIncomeCategories = [
 ];
 
 const kDefaultTransactionTypes = [
-  TransactionType(name: "Income", type: TransactionTypeEnum.income),
-  TransactionType(name: "Expense", type: TransactionTypeEnum.expense)
+  TransactionType(name: "Income", type: "income"),
+  TransactionType(name: "Expense", type: "expense")
 ];

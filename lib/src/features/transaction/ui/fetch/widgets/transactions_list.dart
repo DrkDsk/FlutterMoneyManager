@@ -28,12 +28,12 @@ class TransactionsList extends StatelessWidget {
         TransactionCategory? transactionCategory;
 
         if (paymentSourceType != null) {
-          transactionSource = TransactionSource.fromType(paymentSourceType);
+          transactionSource = TransactionSource.fromString(paymentSourceType);
         }
 
         if (transactionCategoryType != null) {
           transactionCategory =
-              TransactionCategory.fromType(transactionCategoryType);
+              TransactionCategory.fromString(transactionCategoryType);
         }
 
         if (transactionCategory == null || transactionSource == null) {

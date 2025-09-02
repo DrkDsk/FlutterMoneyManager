@@ -1,10 +1,7 @@
-import 'package:flutter_money_manager/src/core/enums/transaction_category_enum.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:flutter_money_manager/src/core/enums/transaction_source_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
-import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 part 'transaction_hive_model.g.dart';
 
@@ -14,7 +11,7 @@ class TransactionHiveModel extends HiveObject {
   final String id;
 
   @HiveField(1)
-  final TransactionTypeEnum type;
+  final String type;
 
   @HiveField(2)
   final DateTime transactionDate;
@@ -23,10 +20,10 @@ class TransactionHiveModel extends HiveObject {
   final int amount;
 
   @HiveField(4)
-  final TransactionCategoryEnum categoryType;
+  final String categoryType;
 
   @HiveField(5)
-  final TransactionSourceEnum sourceType;
+  final String sourceType;
 
   TransactionHiveModel({
     required this.id,
@@ -39,11 +36,11 @@ class TransactionHiveModel extends HiveObject {
 
   TransactionHiveModel copyWith({
     String? id,
-    TransactionTypeEnum? type,
+    String? type,
     DateTime? transactionDate,
     int? amount,
-    TransactionCategoryEnum? categoryType,
-    TransactionSourceEnum? sourceType,
+    String? categoryType,
+    String? sourceType,
   }) {
     return TransactionHiveModel(
       id: id ?? this.id,
@@ -68,11 +65,11 @@ class TransactionHiveModel extends HiveObject {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "type": type.name,
+        "type": type,
         "transactionDate": transactionDate.millisecondsSinceEpoch,
         "amount": amount,
-        "categoryType": categoryType.name,
-        "sourceType": sourceType.name
+        "categoryType": categoryType,
+        "sourceType": sourceType
       };
 
   Transaction toEntity() {
