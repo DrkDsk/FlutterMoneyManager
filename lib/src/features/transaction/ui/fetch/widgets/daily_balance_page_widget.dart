@@ -6,26 +6,10 @@ import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/ge
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transactions_list.dart';
 
-class DailyBalancePage extends StatefulWidget {
+class DailyBalancePage extends StatelessWidget {
   const DailyBalancePage({
     super.key,
   });
-
-  @override
-  State<DailyBalancePage> createState() => _DailyBalancePageState();
-}
-
-class _DailyBalancePageState extends State<DailyBalancePage> {
-  late GetTransactionsListCubit _getTransactionsListCubit;
-
-  @override
-  void initState() {
-    super.initState();
-    _getTransactionsListCubit = context.read<GetTransactionsListCubit>();
-    Future.microtask(() {
-      _getTransactionsListCubit.getTransactions();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
