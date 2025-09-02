@@ -5,29 +5,42 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 enum GetTransactionListStatus { initial, loading, error, success }
 
 class GetTransactionListState with EquatableMixin {
-  final List<TransactionsData> data;
+  final List<TransactionsData> transactions;
   final GetTransactionListStatus status;
   final String? errorMessage;
   final String monthName;
+  final int income;
+  final int expense;
+  final int total;
 
   GetTransactionListState({
-    this.data = const [],
+    this.transactions = const [],
     this.status = GetTransactionListStatus.initial,
     this.errorMessage,
+    this.income = 0,
+    this.expense = 0,
+    this.total = 0,
     String? monthName,
   }) : monthName = monthName ?? DateTime.now().monthName;
 
   @override
-  List<Object> get props => [data, status, monthName];
+  List<Object> get props =>
+      [transactions, status, monthName, income, expense, total];
 
   GetTransactionListState copyWith(
-      {List<TransactionsData>? data,
+      {List<TransactionsData>? transactions,
       GetTransactionListStatus? status,
+      int? income,
+      int? expense,
+      int? total,
       String? errorMessage,
       String? monthName}) {
     return GetTransactionListState(
         status: status ?? this.status,
-        data: data ?? this.data,
+        transactions: transactions ?? this.transactions,
+        income: income ?? this.income,
+        expense: expense ?? this.expense,
+        total: total ?? this.total,
         monthName: monthName ?? this.monthName,
         errorMessage: errorMessage ?? this.errorMessage);
   }
