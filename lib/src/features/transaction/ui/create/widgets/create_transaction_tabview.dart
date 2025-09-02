@@ -39,12 +39,12 @@ class CreateTransactionTabview extends StatelessWidget {
           TransactionCategory? transactionCategory;
 
           if (paymentSourceType != null) {
-            transactionSource = TransactionSource.fromType(paymentSourceType);
+            transactionSource = TransactionSource.fromString(paymentSourceType);
           }
 
           if (transactionCategoryType != null) {
             transactionCategory =
-                TransactionCategory.fromType(transactionCategoryType);
+                TransactionCategory.fromString(transactionCategoryType);
           }
 
           return SingleChildScrollView(
