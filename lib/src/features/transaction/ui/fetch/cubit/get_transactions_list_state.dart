@@ -12,6 +12,7 @@ class GetTransactionListState with EquatableMixin {
   final int income;
   final int expense;
   final int total;
+  final int indexMonth;
 
   GetTransactionListState({
     this.transactions = const [],
@@ -21,11 +22,13 @@ class GetTransactionListState with EquatableMixin {
     this.expense = 0,
     this.total = 0,
     String? monthName,
-  }) : monthName = monthName ?? DateTime.now().monthName;
+    int? indexMonth,
+  })  : monthName = monthName ?? DateTime.now().monthName,
+        indexMonth = indexMonth ?? DateTime.now().month;
 
   @override
   List<Object> get props =>
-      [transactions, status, monthName, income, expense, total];
+      [transactions, status, monthName, income, expense, total, indexMonth];
 
   GetTransactionListState copyWith(
       {List<TransactionsData>? transactions,
@@ -34,6 +37,7 @@ class GetTransactionListState with EquatableMixin {
       int? expense,
       int? total,
       String? errorMessage,
+      int? indexMonth,
       String? monthName}) {
     return GetTransactionListState(
         status: status ?? this.status,
@@ -42,6 +46,7 @@ class GetTransactionListState with EquatableMixin {
         expense: expense ?? this.expense,
         total: total ?? this.total,
         monthName: monthName ?? this.monthName,
+        indexMonth: indexMonth ?? this.indexMonth,
         errorMessage: errorMessage ?? this.errorMessage);
   }
 }
