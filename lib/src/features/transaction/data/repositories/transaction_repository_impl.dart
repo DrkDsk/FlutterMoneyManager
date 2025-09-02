@@ -1,13 +1,11 @@
 import 'dart:isolate';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
@@ -45,10 +43,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final result = await Isolate.run(() {
         final grouped = <DateTime, List<Map<String, dynamic>>>{};
 
-        for (final tx in rawModels) {
+        for (final raw in rawModels) {
           final date =
-              DateTime.fromMillisecondsSinceEpoch(tx['transactionDate']);
-          grouped.putIfAbsent(date, () => []).add(tx);
+              DateTime.fromMillisecondsSinceEpoch(raw['transactionDate']);
+          grouped.putIfAbsent(date, () => []).add(raw);
         }
 
         final result = grouped.entries.map((entry) {
@@ -74,8 +72,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
                 type: type,
                 amount: amount,
                 transactionDate: transactionDate,
-                categoryType: categoryType,
-                sourceType: sourceType,
+                categoryType: raw["categoryType"] as String,
+                sourceType: raw["categoryType"] as String,
                 id: id);
           }).toList();
 
