@@ -58,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Expanded(
                 child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
               onPageChanged: onTapBottomNavigationBar,
               controller: _pageController,
               children: const [HomePage(), Text("Acounts"), StatsPage()],
