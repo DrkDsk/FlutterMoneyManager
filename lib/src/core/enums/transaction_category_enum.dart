@@ -8,7 +8,7 @@ enum TransactionCategoryEnum {
   food,
 
   @HiveField(1)
-  tansportation,
+  transportation,
 
   @HiveField(2)
   housing,

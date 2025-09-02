@@ -1,10 +1,15 @@
+import 'dart:isolate';
+
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
@@ -32,34 +37,68 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<Either<Failure, List<TransactionsData>>> getTransactions(
       {int? monthIndex}) async {
     try {
-      final Map<DateTime, List<TransactionHiveModel>> grouped = {};
-
       final models = await _datasource.getTransactionsModels(
           monthIndex: monthIndex ?? DateTime.now().month);
 
-      for (final tx in models) {
-        final dateOnly = DateTime(tx.transactionDate.year,
-            tx.transactionDate.month, tx.transactionDate.day);
-        grouped.putIfAbsent(dateOnly, () => []).add(tx);
-      }
+      final rawModels = models.map((element) => element.toJson()).toList();
 
-      final result = grouped.entries.map((entry) {
-        final transactions = entry.value.map((e) => e.toEntity()).toList();
+      final result = await Isolate.run(() {
+        final grouped = <DateTime, List<Map<String, dynamic>>>{};
 
-        final income = transactions
-            .where((t) => t.type == TransactionTypeEnum.income)
-            .fold<int>(0, (sum, t) => sum + t.amount);
-        final expense = transactions
-            .where((t) => t.type == TransactionTypeEnum.expense)
-            .fold<int>(0, (sum, t) => sum + t.amount);
+        for (final tx in rawModels) {
+          final date =
+              DateTime.fromMillisecondsSinceEpoch(tx['transactionDate']);
+          grouped.putIfAbsent(date, () => []).add(tx);
+        }
 
-        return TransactionsData(
-          transactions: transactions,
-          date: entry.key,
-          incomeBalance: income,
-          expenseBalance: expense,
-        );
-      }).toList();
+        final result = grouped.entries.map((entry) {
+          final transactions = entry.value.map((raw) {
+            final value = raw["amount"] as num;
+            final amount = value.toInt();
+            final type = raw['type'] == "expense"
+                ? TransactionTypeEnum.expense
+                : TransactionTypeEnum.income;
+
+            final categoryType =
+                TransactionCategory.fromString(raw["categoryType"])
+                    .getCategoryType();
+            final sourceType =
+                TransactionSource.fromString(raw['sourceType']).getType();
+
+            final transactionDate = DateTime.fromMillisecondsSinceEpoch(
+                raw['transactionDate'] as int);
+
+            final id = raw["id"] as String;
+
+            return Transaction(
+                type: type,
+                amount: amount,
+                transactionDate: transactionDate,
+                categoryType: categoryType,
+                sourceType: sourceType,
+                id: id);
+          }).toList();
+
+          int income = 0;
+          int expense = 0;
+          for (final t in transactions) {
+            if (t.type == TransactionTypeEnum.income) {
+              income += t.amount;
+            } else {
+              expense += t.amount;
+            }
+          }
+
+          return TransactionsData(
+            transactions: transactions,
+            date: entry.key,
+            incomeBalance: income,
+            expenseBalance: expense,
+          );
+        }).toList();
+
+        return result;
+      });
 
       return Right(result);
     } on UnknownException catch (_) {

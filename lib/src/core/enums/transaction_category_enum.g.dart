@@ -17,7 +17,7 @@ class TransactionCategoryEnumAdapter
       case 0:
         return TransactionCategoryEnum.food;
       case 1:
-        return TransactionCategoryEnum.tansportation;
+        return TransactionCategoryEnum.transportation;
       case 2:
         return TransactionCategoryEnum.housing;
       case 3:
@@ -45,7 +45,7 @@ class TransactionCategoryEnumAdapter
       case TransactionCategoryEnum.food:
         writer.writeByte(0);
         break;
-      case TransactionCategoryEnum.tansportation:
+      case TransactionCategoryEnum.transportation:
         writer.writeByte(1);
         break;
       case TransactionCategoryEnum.housing:

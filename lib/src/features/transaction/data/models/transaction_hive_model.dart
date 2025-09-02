@@ -66,6 +66,15 @@ class TransactionHiveModel extends HiveObject {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "type": type.name,
+        "transactionDate": transactionDate.millisecondsSinceEpoch,
+        "amount": amount,
+        "categoryType": categoryType.name,
+        "sourceType": sourceType.name
+      };
+
   Transaction toEntity() {
     return Transaction(
         id: id,
