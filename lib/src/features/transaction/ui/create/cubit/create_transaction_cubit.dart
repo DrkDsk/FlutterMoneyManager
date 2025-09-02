@@ -38,7 +38,6 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
   void updateTransactionCategory(TransactionCategory category) {
     final transaction = state.transaction;
-    /* final category = source.getCategoryType(); */
 
     final newState = state.copyWith(
         transaction: transaction.copyWith(categoryType: category.name));

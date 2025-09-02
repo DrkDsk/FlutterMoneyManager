@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/core/enums/transaction_category_enum.dart';
-import 'package:flutter_money_manager/src/core/enums/transaction_source_enum.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 class Transaction with EquatableMixin {
