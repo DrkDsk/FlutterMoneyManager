@@ -1,7 +1,6 @@
 import 'dart:isolate';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
@@ -51,10 +50,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
           final transactions = entry.value.map((raw) {
             final id = raw["id"] as String;
             final amount = (raw["amount"] as num).toInt();
-            final type = raw['type'] == "expense"
-                ? TransactionTypeEnum.expense
-                : TransactionTypeEnum.income;
 
+            final transactionType = raw['type'] as String;
             final categoryType = raw["categoryType"] as String;
             final sourceType = raw["categoryType"] as String;
             final transactionDate = DateTime.fromMillisecondsSinceEpoch(
@@ -62,7 +59,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
             return Transaction(
                 id: id,
-                type: type,
+                type: transactionType,
                 amount: amount,
                 transactionDate: transactionDate,
                 categoryType: categoryType,
@@ -72,7 +69,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
           int income = 0;
           int expense = 0;
           for (final t in transactions) {
-            if (t.type == TransactionTypeEnum.income) {
+            if (t.type == "income") {
               income += t.amount;
             } else {
               expense += t.amount;

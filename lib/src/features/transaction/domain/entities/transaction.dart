@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 class Transaction with EquatableMixin {
   final String? id;
-  final TransactionTypeEnum type;
+  final String type;
   final DateTime transactionDate;
   final int amount;
   final String? categoryType;
@@ -20,7 +19,7 @@ class Transaction with EquatableMixin {
 
   Transaction copyWith(
       {String? id,
-      TransactionTypeEnum? type,
+      String? type,
       DateTime? transactionDate,
       int? amount,
       String? categoryType,
