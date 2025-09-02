@@ -40,6 +40,7 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
               "Transacciones de ${state.monthName}",
               style: theme.textTheme.bodyLarge,
             ),
+            const SizedBox(height: 10),
             if (state.data.isNotEmpty) ...[
               Expanded(
                 child: ListView.separated(
@@ -82,6 +83,7 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
                             Text("${date.year}")
                           ],
                         ),
+                        const SizedBox(height: 10),
                         TransactionsList(transactions: grouped.transactions),
                       ],
                     );
