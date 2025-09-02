@@ -43,6 +43,8 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
             if (state.data.isNotEmpty) ...[
               Expanded(
                 child: ListView.separated(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
                   itemCount: state.data.length,
                   separatorBuilder: (context, index) {
                     return const SizedBox.shrink();
@@ -80,10 +82,7 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
                             Text("${date.year}")
                           ],
                         ),
-                        SizedBox(
-                            height: 300,
-                            child: TransactionsList(
-                                transactions: grouped.transactions)),
+                        TransactionsList(transactions: grouped.transactions),
                       ],
                     );
                   },
