@@ -19,11 +19,10 @@ class GetTransactionsListCubit extends Cubit<GetTransactionListState> {
       emit(state.copyWith(
           status: GetTransactionListStatus.error, errorMessage: left.message));
     }, (right) {
-      final transactions = right;
+      final data = right;
 
-      emit(state.copyWith(
-          transactions: transactions,
-          status: GetTransactionListStatus.success));
+      emit(
+          state.copyWith(data: data, status: GetTransactionListStatus.success));
     });
   }
 }
