@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 
 enum GetTransactionListStatus { initial, loading, error, success }
@@ -9,11 +10,12 @@ class GetTransactionListState with EquatableMixin {
   final String? errorMessage;
   final String monthName;
 
-  const GetTransactionListState(
-      {this.data = const [],
-      this.errorMessage,
-      this.monthName = "",
-      this.status = GetTransactionListStatus.initial});
+  GetTransactionListState({
+    this.data = const [],
+    this.status = GetTransactionListStatus.initial,
+    this.errorMessage,
+    String? monthName,
+  }) : monthName = monthName ?? DateTime.now().monthName;
 
   @override
   List<Object> get props => [data, status, monthName];

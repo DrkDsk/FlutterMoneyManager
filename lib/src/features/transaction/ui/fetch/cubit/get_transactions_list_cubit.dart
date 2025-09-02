@@ -8,7 +8,7 @@ class GetTransactionsListCubit extends Cubit<GetTransactionListState> {
 
   GetTransactionsListCubit({required TransactionRepository repository})
       : _repository = repository,
-        super(const GetTransactionListState());
+        super(GetTransactionListState());
 
   Future<void> getTransactions() async {
     emit(state.copyWith(status: GetTransactionListStatus.loading));

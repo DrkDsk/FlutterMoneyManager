@@ -26,49 +26,45 @@ class TransactionListItem extends StatelessWidget {
         ? AppColors.incomeColor
         : AppColors.expenseColor;
 
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: backgroundContainerColor.customOpacity(0.15)),
-                  child: Image.asset(
-                    iconAssetCategory,
-                    width: 20,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  source,
-                  style: theme.textTheme.bodyMedium,
-                )
-              ],
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: backgroundContainerColor.customOpacity(0.15)),
+              child: Image.asset(
+                iconAssetCategory,
+                width: 20,
+              ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  "\$ $amuount",
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(color: AppColors.incomeColor),
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  transactionSource,
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ],
+            const SizedBox(width: 8),
+            Text(
+              source,
+              style: theme.textTheme.bodyMedium,
             )
           ],
         ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              "\$ $amuount",
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: AppColors.incomeColor),
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            Text(
+              transactionSource,
+              style: theme.textTheme.bodyMedium,
+            ),
+          ],
+        )
       ],
     );
   }

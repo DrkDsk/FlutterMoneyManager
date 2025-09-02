@@ -13,7 +13,12 @@ class TransactionsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       scrollDirection: Axis.vertical,
+      shrinkWrap: true,
       itemCount: transactions.length,
+      separatorBuilder: (_, index) => const Divider(
+        color: Colors.grey,
+        thickness: 0.5,
+      ),
       itemBuilder: (context, index) {
         final transaction = transactions[index];
 
@@ -46,10 +51,6 @@ class TransactionsList extends StatelessWidget {
           ),
         );
       },
-      separatorBuilder: (_, index) => const Divider(
-        color: Colors.grey,
-        thickness: 0.5,
-      ),
     );
   }
 }
