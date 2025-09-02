@@ -93,7 +93,9 @@ class TransactionSource with EquatableMixin {
             name: "Electronic Money",
             icon: "assets/icons/payment_sources/electronic_money.png");
       default:
-        throw ArgumentError("Unknown source string: $value");
+        return const TransactionSource(
+            name: "Car Loan",
+            icon: "assets/icons/payment_sources/car_loan.png");
     }
   }
 

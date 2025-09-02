@@ -112,7 +112,8 @@ class TransactionCategory {
             icon: "assets/icons/payment_sources/investments.png",
             name: "Investments");
       default:
-        throw ArgumentError("Unknown category string: $value");
+        return const ExpenseCategory(
+            name: "Food", icon: "assets/icons/categories/food.png");
     }
   }
 }
