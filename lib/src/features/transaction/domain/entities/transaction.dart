@@ -8,8 +8,8 @@ class Transaction with EquatableMixin {
   final TransactionTypeEnum type;
   final DateTime transactionDate;
   final int amount;
-  final TransactionCategoryEnum? categoryType;
-  final TransactionSourceEnum? sourceType;
+  final String? categoryType;
+  final String? sourceType;
 
   Transaction(
       {this.id,
@@ -25,8 +25,8 @@ class Transaction with EquatableMixin {
       TransactionTypeEnum? type,
       DateTime? transactionDate,
       int? amount,
-      TransactionCategoryEnum? categoryType,
-      TransactionSourceEnum? sourceType}) {
+      String? categoryType,
+      String? sourceType}) {
     return Transaction(
         id: id ?? this.id,
         type: type ?? this.type,

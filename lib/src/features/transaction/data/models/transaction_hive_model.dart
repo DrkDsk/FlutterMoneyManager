@@ -23,10 +23,10 @@ class TransactionHiveModel extends HiveObject {
   final int amount;
 
   @HiveField(4)
-  final TransactionCategoryEnum categoryType;
+  final String categoryType;
 
   @HiveField(5)
-  final TransactionSourceEnum sourceType;
+  final String sourceType;
 
   TransactionHiveModel({
     required this.id,
@@ -42,8 +42,8 @@ class TransactionHiveModel extends HiveObject {
     TransactionTypeEnum? type,
     DateTime? transactionDate,
     int? amount,
-    TransactionCategoryEnum? categoryType,
-    TransactionSourceEnum? sourceType,
+    String? categoryType,
+    String? sourceType,
   }) {
     return TransactionHiveModel(
       id: id ?? this.id,
@@ -71,8 +71,8 @@ class TransactionHiveModel extends HiveObject {
         "type": type.name,
         "transactionDate": transactionDate.millisecondsSinceEpoch,
         "amount": amount,
-        "categoryType": categoryType.name,
-        "sourceType": sourceType.name
+        "categoryType": categoryType,
+        "sourceType": sourceType
       };
 
   Transaction toEntity() {
