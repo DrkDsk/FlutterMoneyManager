@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
@@ -68,11 +69,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
           int income = 0;
           int expense = 0;
-          for (final t in transactions) {
-            if (t.type == "income") {
-              income += t.amount;
+          for (final transaction in transactions) {
+            if (transaction.type == kIncomeType) {
+              income += transaction.amount;
             } else {
-              expense += t.amount;
+              expense += transaction.amount;
             }
           }
 

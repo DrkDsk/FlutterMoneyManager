@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/extensions/string_extension.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/pages/expense_stat_page.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/pages/income_stat_page.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
@@ -29,9 +31,10 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomTabBar(
-            tabController: _tabController,
-            tabs: const [Tab(text: "Income"), Tab(text: "Expense")]),
+        CustomTabBar(tabController: _tabController, tabs: [
+          Tab(text: kIncomeType.firstUpper()),
+          Tab(text: kExpenseType.firstUpper())
+        ]),
         Expanded(
             child: TabBarView(
                 controller: _tabController,
