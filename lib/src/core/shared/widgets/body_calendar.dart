@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/builders/calendar/custom_calendar_builder.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/header_calendar.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_event.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 
@@ -20,7 +21,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
   late DateTime _lastDay;
   late DateTime _selectedDate;
 
-  late GetTransactionsListCubit _getTransactionsListCubit;
+  late TransactionsBloc _transactionsBloc;
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
     _firstDay = DateTime.now().subtract(const Duration(days: 300));
     _lastDay = _focusedDay.add(const Duration(days: 1080));
     _selectedDate = DateTime.now();
-    _getTransactionsListCubit = context.read<GetTransactionsListCubit>();
+    _transactionsBloc = context.read<TransactionsBloc>();
   }
 
   @override
@@ -44,17 +45,25 @@ class _BodyCalendarState extends State<BodyCalendar> {
               setState(() {
                 _focusedDay = _focusedDay.subtract(const Duration(days: 30));
               });
-              _getTransactionsListCubit.previousPageIndex();
-              final int index = _getTransactionsListCubit.state.indexMonth;
-              _getTransactionsListCubit.getTransactions(monthIndex: index);
+              final monthIndex = _transactionsBloc.prevIndex();
+
+              if (monthIndex == null) return;
+
+              _transactionsBloc.add(UpdateMonth(monthIndex: monthIndex));
+              _transactionsBloc
+                  .add(LoadTransactionsByMonth(monthIndex: monthIndex));
             },
             onRightTap: () {
               setState(() {
                 _focusedDay = _focusedDay.add(const Duration(days: 30));
               });
-              _getTransactionsListCubit.nextPage();
-              final int index = _getTransactionsListCubit.state.indexMonth;
-              _getTransactionsListCubit.getTransactions(monthIndex: index);
+              final monthIndex = _transactionsBloc.nextIndex();
+
+              if (monthIndex == null) return;
+
+              _transactionsBloc.add(UpdateMonth(monthIndex: monthIndex));
+              _transactionsBloc
+                  .add(LoadTransactionsByMonth(monthIndex: monthIndex));
             }),
         const SizedBox(height: 20),
         TableCalendar(

@@ -31,7 +31,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, TransactionBalance>> getTransactions(
+  Future<Either<Failure, TransactionBalance>> getTransactionsByMonth(
       {int? monthIndex}) async {
     try {
       final models = await _datasource.getTransactionsModels(

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/di/di.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/screens/home_screen.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_bloc.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({
@@ -19,7 +19,7 @@ class LoginButton extends StatelessWidget {
                   create: (_) => getIt<NavigationCubit>(),
                 ),
                 BlocProvider(
-                  create: (context) => getIt<GetTransactionsListCubit>(),
+                  create: (context) => getIt<TransactionsBloc>(),
                 ),
               ], child: const HomeScreen()))),
       child: Container(
