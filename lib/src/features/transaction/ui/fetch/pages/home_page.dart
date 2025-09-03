@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _calendarBloc = context.read<CalendarBloc>();
     final initialIndexMonth = _transactionsBloc.state.monthIndex;
     _pageController = PageController(initialPage: initialIndexMonth);
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
     _transactionsBloc.add(const LoadTransactionsByMonth());
   }
 
@@ -51,12 +51,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     final date = _calendarBloc.state.focusedDate;
     final focusedDate = date.subtract(const Duration(days: 30));
+    final newMonthIndex = focusedDate.month;
+
     _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
     final titleCalendar = "${focusedDate.monthName} ${focusedDate.year}";
     _calendarBloc.add(UpdateTitleCalendar(titleCalendar: titleCalendar));
 
-    _transactionsBloc.add(UpdateMonth(monthIndex: index));
-    _pageController.jumpToPage(index);
+    _transactionsBloc.add(UpdateMonth(monthIndex: newMonthIndex));
+    _pageController.jumpToPage(newMonthIndex);
   }
 
   void rightTap() {
@@ -66,12 +68,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     final date = _calendarBloc.state.focusedDate;
     final focusedDate = date.add(const Duration(days: 30));
+    final newMonthIndex = focusedDate.month;
+
     _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
     final titleCalendar = "${focusedDate.monthName} ${focusedDate.year}";
     _calendarBloc.add(UpdateTitleCalendar(titleCalendar: titleCalendar));
 
-    _transactionsBloc.add(UpdateMonth(monthIndex: index));
-    _pageController.jumpToPage(index);
+    _transactionsBloc.add(UpdateMonth(monthIndex: newMonthIndex));
+    _pageController.jumpToPage(newMonthIndex);
   }
 
   @override

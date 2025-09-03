@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_event.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transaction_list_container.dart';
 
-class DailyBalancePage extends StatelessWidget {
+class DailyBalancePage extends StatefulWidget {
   const DailyBalancePage({
     super.key,
   });
+
+  @override
+  State<DailyBalancePage> createState() => _DailyBalancePageState();
+}
+
+class _DailyBalancePageState extends State<DailyBalancePage> {
+  late TransactionsBloc _transactionsBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _transactionsBloc = context.read<TransactionsBloc>();
+    final monthIndex = _transactionsBloc.state.monthIndex;
+    _transactionsBloc.add(LoadTransactionsByMonth(monthIndex: monthIndex));
+  }
 
   @override
   Widget build(BuildContext context) {
