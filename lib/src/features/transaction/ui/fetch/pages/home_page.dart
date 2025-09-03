@@ -78,6 +78,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   itemCount: 13,
                   controller: _pageController,
                   onPageChanged: (index) {
+                    print("updated");
                     _getTransactionsListCubit.updateIndex(index);
 
                     _getTransactionsListCubit.getTransactions(
