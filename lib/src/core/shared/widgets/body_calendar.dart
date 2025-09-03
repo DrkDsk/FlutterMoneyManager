@@ -54,6 +54,12 @@ class _BodyCalendarState extends State<BodyCalendar> {
     _transactionsBloc.add(LoadTransactionsByMonth(monthIndex: monthIndex));
   }
 
+  void onDaySelected(DateTime selectedDate, DateTime focusedDate) {
+    _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
+    _calendarBloc.add(UpdateSelectedDate(selectedDate: selectedDate));
+    _transactionsBloc.add(FilterTransactionsByDay(selectedDate));
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -78,11 +84,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
               },
               onDayLongPressed: (selectedDay, focusedDay) {},
               calendarFormat: CalendarFormat.month,
-              onDaySelected: (selectedDate, focusedDate) {
-                _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
-                _calendarBloc
-                    .add(UpdateSelectedDate(selectedDate: selectedDate));
-              },
+              onDaySelected: onDaySelected,
               daysOfWeekStyle: DaysOfWeekStyle(
                 dowTextFormatter: (date, locale) {
                   return date.dayName.substring(0, 3);

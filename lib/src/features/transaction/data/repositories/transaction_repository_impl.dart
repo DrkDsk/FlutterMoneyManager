@@ -99,4 +99,67 @@ class TransactionRepositoryImpl implements TransactionRepository {
       return Left(GenericFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, TransactionBalance>> getTransactionsByDate(
+      {required DateTime date}) async {
+    final models = await _datasource.getTransactionsModelsByDate(date: date);
+
+    final rawModels = models.map((element) => element.toJson()).toList();
+
+    final balance = await Isolate.run(() {
+      int income = 0;
+      int expense = 0;
+
+      final grouped = <DateTime, List<Map<String, dynamic>>>{};
+
+      for (final raw in rawModels) {
+        final date =
+            DateTime.fromMillisecondsSinceEpoch(raw['transactionDate']);
+        grouped.putIfAbsent(date, () => []).add(raw);
+      }
+
+      final transactionsData = grouped.entries.map((entry) {
+        final transactions = entry.value.map((raw) {
+          final id = raw["id"] as String;
+          final amount = (raw["amount"] as num).toInt();
+
+          final transactionType = raw['type'] as String;
+          final categoryType = raw["categoryType"] as String;
+          final sourceType = raw["categoryType"] as String;
+          final transactionDate = DateTime.fromMillisecondsSinceEpoch(
+              raw['transactionDate'] as int);
+
+          return Transaction(
+              id: id,
+              type: transactionType,
+              amount: amount,
+              transactionDate: transactionDate,
+              categoryType: categoryType,
+              sourceType: sourceType);
+        }).toList();
+
+        for (final transaction in transactions) {
+          if (transaction.type == kIncomeType) {
+            income += transaction.amount;
+          } else {
+            expense += transaction.amount;
+          }
+        }
+
+        return TransactionsData(
+          transactions: transactions,
+          date: entry.key,
+        );
+      }).toList();
+
+      return TransactionBalance(
+          transactionsData: transactionsData,
+          income: income,
+          expense: expense,
+          total: income - expense);
+    });
+
+    return Right(balance);
+  }
 }

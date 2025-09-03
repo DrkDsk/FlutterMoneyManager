@@ -11,6 +11,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
       : _repository = repository,
         super(TransactionsListState.initial()) {
     on<LoadTransactionsByMonth>(getTransactionsByMonth);
+    on<FilterTransactionsByDay>(getTransactionsByDate);
     on<UpdateMonth>(updateMonth);
   }
 
@@ -48,6 +49,29 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
 
     final request =
         await _repository.getTransactionsByMonth(monthIndex: monthIndex);
+
+    request.fold((left) {
+      emit(state.copyWith(
+          status: TransactionTypeStatus.error, message: left.message));
+    }, (right) {
+      final data = right;
+
+      emit(state.copyWith(
+          transactions: data.transactionsData,
+          income: data.income,
+          expense: data.expense,
+          total: data.total,
+          status: TransactionTypeStatus.success));
+    });
+  }
+
+  Future<void> getTransactionsByDate(FilterTransactionsByDay event,
+      Emitter<TransactionsListState> emit) async {
+    emit(state.copyWith(status: TransactionTypeStatus.loading));
+
+    final selectedDate = event.selectedDay;
+
+    final request = await _repository.getTransactionsByDate(date: selectedDate);
 
     request.fold((left) {
       emit(state.copyWith(

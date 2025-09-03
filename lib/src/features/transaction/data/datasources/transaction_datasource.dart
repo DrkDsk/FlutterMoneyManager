@@ -5,4 +5,7 @@ abstract interface class TransactionDatasource {
   Future<bool> saveTransaction(Transaction transaction);
   Future<List<TransactionHiveModel>> getTransactionsModels(
       {required int monthIndex});
+
+  Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
+      {required DateTime date});
 }
