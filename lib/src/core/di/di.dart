@@ -6,6 +6,7 @@ import 'package:flutter_money_manager/src/features/transaction/data/datasources/
 import 'package:flutter_money_manager/src/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
 import 'package:get_it/get_it.dart';
 
@@ -29,4 +30,7 @@ Future<void> initDependencies() async {
 
   getIt.registerFactory<GetTransactionsListCubit>(() =>
       GetTransactionsListCubit(repository: getIt<TransactionRepository>()));
+
+  getIt.registerFactory<TransactionsBloc>(
+      () => TransactionsBloc(repository: getIt<TransactionRepository>()));
 }

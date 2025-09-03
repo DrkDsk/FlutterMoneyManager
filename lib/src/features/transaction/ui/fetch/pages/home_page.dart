@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/add_transaction_button.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/calendar_page.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_event.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/daily_balance_page_widget.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/header_balance_scroll_page.dart';
@@ -20,18 +22,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController _tabController;
   late PageController _pageController;
   late GetTransactionsListCubit _getTransactionsListCubit;
+  late TransactionsBloc transactionsBloc;
 
   @override
   void initState() {
     super.initState();
     _getTransactionsListCubit = context.read<GetTransactionsListCubit>();
+    transactionsBloc = context.read<TransactionsBloc>();
+    transactionsBloc.add(const LoadTransactionsByMonth());
     final initialIndexMonth = _getTransactionsListCubit.state.indexMonth;
     _pageController = PageController(initialPage: initialIndexMonth);
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
-
-    Future.microtask(() {
-      _getTransactionsListCubit.getTransactions();
-    });
   }
 
   @override
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              BlocBuilder<GetTransactionsListCubit, GetTransactionListState>(
+              BlocBuilder<TransactionsBloc, TransactionsListState>(
                 builder: (context, state) {
                   return HeaderBalanceScrollPage(
                     monthName: state.monthName,
@@ -78,7 +79,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   itemCount: 13,
                   controller: _pageController,
                   onPageChanged: (index) {
-                    print("updated");
                     _getTransactionsListCubit.updateIndex(index);
 
                     _getTransactionsListCubit.getTransactions(
