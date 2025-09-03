@@ -6,6 +6,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   CalendarBloc() : super(CalendarState.initial()) {
     on<UpdateFocusedDate>(updateFocusedDate);
     on<UpdateSelectedDate>(updateSelectedDate);
+    on<UpdateTitleCalendar>(updateTitleCalendar);
   }
 
   Future<void> updateFocusedDate(
@@ -20,5 +21,12 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     final date = event.selectedDate;
 
     emit(state.copyWith(selectedDate: date));
+  }
+
+  Future<void> updateTitleCalendar(
+      UpdateTitleCalendar event, Emitter<CalendarState> emit) async {
+    final titleCalendar = event.titleCalendar;
+
+    emit(state.copyWith(titleCalendar: titleCalendar));
   }
 }

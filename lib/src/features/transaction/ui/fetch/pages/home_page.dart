@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/add_transaction_button.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/calendar_page.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
@@ -51,6 +52,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final date = _calendarBloc.state.focusedDate;
     final focusedDate = date.subtract(const Duration(days: 30));
     _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
+    final titleCalendar = "${focusedDate.monthName} ${focusedDate.year}";
+    _calendarBloc.add(UpdateTitleCalendar(titleCalendar: titleCalendar));
 
     _transactionsBloc.add(UpdateMonth(monthIndex: index));
     _pageController.jumpToPage(index);
@@ -64,6 +67,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final date = _calendarBloc.state.focusedDate;
     final focusedDate = date.add(const Duration(days: 30));
     _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
+    final titleCalendar = "${focusedDate.monthName} ${focusedDate.year}";
+    _calendarBloc.add(UpdateTitleCalendar(titleCalendar: titleCalendar));
 
     _transactionsBloc.add(UpdateMonth(monthIndex: index));
     _pageController.jumpToPage(index);
