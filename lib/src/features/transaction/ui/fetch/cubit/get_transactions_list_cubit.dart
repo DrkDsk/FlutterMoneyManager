@@ -14,7 +14,8 @@ class GetTransactionsListCubit extends Cubit<GetTransactionListState> {
   Future<void> getTransactions({int? monthIndex}) async {
     emit(state.copyWith(status: GetTransactionListStatus.loading));
 
-    final request = await _repository.getTransactions(monthIndex: monthIndex);
+    final request =
+        await _repository.getTransactionsByMonth(monthIndex: monthIndex);
 
     request.fold((left) {
       emit(state.copyWith(
