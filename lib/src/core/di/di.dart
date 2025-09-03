@@ -6,7 +6,8 @@ import 'package:flutter_money_manager/src/features/transaction/data/datasources/
 import 'package:flutter_money_manager/src/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -29,4 +30,6 @@ Future<void> initDependencies() async {
 
   getIt.registerFactory<TransactionsBloc>(
       () => TransactionsBloc(repository: getIt<TransactionRepository>()));
+
+  getIt.registerFactory<CalendarBloc>(() => CalendarBloc());
 }
