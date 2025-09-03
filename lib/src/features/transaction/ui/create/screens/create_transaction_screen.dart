@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
+import 'package:flutter_money_manager/src/core/extensions/string_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_numeric_keyboard.dart';
@@ -92,7 +93,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     );
   }
 
-  _showTransactionSources(BuildContext context) {
+  void _showTransactionSources(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -114,7 +115,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     );
   }
 
-  _showTransactionsCategories(BuildContext context,
+  void _showTransactionsCategories(BuildContext context,
       {required List<TransactionCategory> items}) {
     showModalBottomSheet(
       context: context,
@@ -206,7 +207,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     tabController: _transactionTypeTabController,
                     tabs: [
                       ...kDefaultTransactionTypes.map((transactionType) {
-                        return Tab(text: transactionType.name);
+                        return Tab(text: transactionType.name.firstUpper());
                       })
                     ]);
               },
