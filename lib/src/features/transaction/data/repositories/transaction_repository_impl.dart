@@ -46,8 +46,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
         final grouped = <DateTime, List<Map<String, dynamic>>>{};
 
         for (final raw in rawModels) {
-          final date =
+          final dateFromMilliseconds =
               DateTime.fromMillisecondsSinceEpoch(raw['transactionDate']);
+
+          final date = DateTime(dateFromMilliseconds.year,
+              dateFromMilliseconds.month, dateFromMilliseconds.day);
           grouped.putIfAbsent(date, () => []).add(raw);
         }
 
@@ -114,8 +117,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final grouped = <DateTime, List<Map<String, dynamic>>>{};
 
       for (final raw in rawModels) {
-        final date =
+        final dateFromMilliseconds =
             DateTime.fromMillisecondsSinceEpoch(raw['transactionDate']);
+
+        final date = DateTime(dateFromMilliseconds.year,
+            dateFromMilliseconds.month, dateFromMilliseconds.day);
         grouped.putIfAbsent(date, () => []).add(raw);
       }
 
