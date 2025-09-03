@@ -42,8 +42,6 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
             if (state.transactions.isNotEmpty) ...[
               Expanded(
                 child: ListView.separated(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
                   itemCount: state.transactions.length,
                   separatorBuilder: (context, index) {
                     return const SizedBox.shrink();
