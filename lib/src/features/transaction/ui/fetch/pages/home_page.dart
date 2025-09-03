@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/add_transaction_button.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/calendar_page.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_event.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_event.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_state.dart';
@@ -21,11 +23,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController _tabController;
   late PageController _pageController;
   late TransactionsBloc _transactionsBloc;
+  late CalendarBloc _calendarBloc;
 
   @override
   void initState() {
     super.initState();
     _transactionsBloc = context.read<TransactionsBloc>();
+    _calendarBloc = context.read<CalendarBloc>();
     _transactionsBloc.add(const LoadTransactionsByMonth());
     final initialIndexMonth = _transactionsBloc.state.monthIndex;
     _pageController = PageController(initialPage: initialIndexMonth);
@@ -44,6 +48,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     if (index == null) return;
 
+    final date = _calendarBloc.state.focusedDate;
+    final focusedDate = date.subtract(const Duration(days: 30));
+    _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
+
     _transactionsBloc.add(UpdateMonth(monthIndex: index));
     _pageController.jumpToPage(index);
   }
@@ -52,6 +60,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final index = _transactionsBloc.nextIndex();
 
     if (index == null) return;
+
+    final date = _calendarBloc.state.focusedDate;
+    final focusedDate = date.add(const Duration(days: 30));
+    _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
 
     _transactionsBloc.add(UpdateMonth(monthIndex: index));
     _pageController.jumpToPage(index);
