@@ -19,8 +19,7 @@ class DayContainer extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
       decoration: backgroundColor != null
           ? BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -32,7 +31,6 @@ class DayContainer extends StatelessWidget {
           "$dayNumber",
           style: theme.textTheme.bodyMedium?.copyWith(
             color: (textColor ?? Colors.black).customOpacity(textOpacity),
-            fontSize: 16,
           ),
         ),
       ),
