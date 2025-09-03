@@ -11,40 +11,31 @@ class CalendarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-              padding: const EdgeInsets.all(4),
-              decoration: kWidgetRoundedDecoration,
-              child: const BodyCalendar()),
-          const SizedBox(height: 20),
-          BlocBuilder<TransactionsBloc, TransactionsListState>(
-            builder: (context, state) {
-              if (state.transactions.isEmpty) {
-                return const Center(
-                    child: Text("Sin transacciones disponibles"));
-              }
-
-              return ListView.separated(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: state.transactions.length,
-                separatorBuilder: (context, index) {
-                  return const SizedBox.shrink();
-                },
-                itemBuilder: (context, index) {
-                  final grouped = state.transactions[index];
-                  final date = grouped.date;
-
-                  return TransactionListContainer(
-                      date: date, transactions: grouped.transactions);
-                },
+    return BlocBuilder<TransactionsBloc, TransactionsListState>(
+      builder: (context, state) {
+        return ListView.separated(
+          padding: const EdgeInsets.all(8),
+          itemCount: state.transactions.length + 1, // +1 para el calendario
+          separatorBuilder: (context, index) => const SizedBox.shrink(),
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return Container(
+                padding: const EdgeInsets.all(4),
+                decoration: kWidgetRoundedDecoration,
+                child: const BodyCalendar(),
               );
-            },
-          )
-        ],
-      ),
+            }
+
+            final grouped = state.transactions[index - 1];
+            final date = grouped.date;
+
+            return TransactionListContainer(
+              date: date,
+              transactions: grouped.transactions,
+            );
+          },
+        );
+      },
     );
   }
 }
