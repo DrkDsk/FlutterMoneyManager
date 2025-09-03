@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_state.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transactions_list.dart';
 
 class DailyBalancePage extends StatelessWidget {
@@ -15,7 +15,7 @@ class DailyBalancePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<GetTransactionsListCubit, GetTransactionListState>(
+    return BlocBuilder<TransactionsBloc, TransactionsListState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

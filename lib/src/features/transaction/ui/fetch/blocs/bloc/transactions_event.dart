@@ -19,3 +19,12 @@ class FilterTransactionsByDay extends TransactionsEvent with EquatableMixin {
   @override
   List<Object?> get props => [selectedDay];
 }
+
+class UpdateMonth extends TransactionsEvent with EquatableMixin {
+  final int monthIndex;
+
+  const UpdateMonth({required this.monthIndex});
+
+  @override
+  List<Object?> get props => [monthIndex];
+}

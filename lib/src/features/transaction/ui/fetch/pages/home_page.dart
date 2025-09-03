@@ -5,7 +5,6 @@ import 'package:flutter_money_manager/src/features/home/ui/widgets/calendar_page
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_event.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_state.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/cubit/get_transactions_list_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/daily_balance_page_widget.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/header_balance_scroll_page.dart';
@@ -21,16 +20,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController _tabController;
   late PageController _pageController;
-  late GetTransactionsListCubit _getTransactionsListCubit;
-  late TransactionsBloc transactionsBloc;
+  late TransactionsBloc _transactionsBloc;
 
   @override
   void initState() {
     super.initState();
-    _getTransactionsListCubit = context.read<GetTransactionsListCubit>();
-    transactionsBloc = context.read<TransactionsBloc>();
-    transactionsBloc.add(const LoadTransactionsByMonth());
-    final initialIndexMonth = _getTransactionsListCubit.state.indexMonth;
+    _transactionsBloc = context.read<TransactionsBloc>();
+    _transactionsBloc.add(const LoadTransactionsByMonth());
+    final initialIndexMonth = _transactionsBloc.state.monthIndex;
     _pageController = PageController(initialPage: initialIndexMonth);
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
   }
@@ -43,14 +40,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void leftTap() {
-    _getTransactionsListCubit.previousPageIndex();
-    final index = _getTransactionsListCubit.state.indexMonth;
+    final index = _transactionsBloc.prevIndex();
+
+    if (index == null) return;
+
+    _transactionsBloc.add(UpdateMonth(monthIndex: index));
     _pageController.jumpToPage(index);
   }
 
   void rightTap() {
-    _getTransactionsListCubit.nextPage();
-    final index = _getTransactionsListCubit.state.indexMonth;
+    final index = _transactionsBloc.nextIndex();
+
+    if (index == null) return;
+
+    _transactionsBloc.add(UpdateMonth(monthIndex: index));
     _pageController.jumpToPage(index);
   }
 
@@ -79,10 +82,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   itemCount: 13,
                   controller: _pageController,
                   onPageChanged: (index) {
-                    _getTransactionsListCubit.updateIndex(index);
-
-                    _getTransactionsListCubit.getTransactions(
-                        monthIndex: index);
+                    _transactionsBloc.add(UpdateMonth(monthIndex: index));
+                    _transactionsBloc
+                        .add(LoadTransactionsByMonth(monthIndex: index));
                   },
                   itemBuilder: (context, index) {
                     return Column(
