@@ -60,6 +60,15 @@ class _BodyCalendarState extends State<BodyCalendar> {
     _transactionsBloc.add(FilterTransactionsByDay(selectedDate));
   }
 
+  void onPageChanged(DateTime focusedDay) {
+    final titleCalendar = "${focusedDay.monthName} ${focusedDay.year}";
+    final monthIndex = focusedDay.month;
+    _calendarBloc.add(UpdateTitleCalendar(titleCalendar: titleCalendar));
+    _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDay));
+    _transactionsBloc.add(UpdateMonth(monthIndex: monthIndex));
+    _transactionsBloc.add(LoadTransactionsByMonth(monthIndex: monthIndex));
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -69,7 +78,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
         return Column(
           children: [
             HeaderCalendar(
-                focusedDate: state.focusedDate,
+                titleCalendar: state.titleCalendar,
                 onLeftTap: () => onLeftTap(date: state.focusedDate),
                 onRightTap: () => onRighTap(date: state.focusedDate)),
             const SizedBox(height: 20),
@@ -85,6 +94,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
               onDayLongPressed: (selectedDay, focusedDay) {},
               calendarFormat: CalendarFormat.month,
               onDaySelected: onDaySelected,
+              onPageChanged: onPageChanged,
               daysOfWeekStyle: DaysOfWeekStyle(
                 dowTextFormatter: (date, locale) {
                   return date.dayName.substring(0, 3);

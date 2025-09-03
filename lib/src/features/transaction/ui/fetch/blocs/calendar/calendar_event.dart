@@ -21,3 +21,12 @@ class UpdateSelectedDate extends CalendarEvent with EquatableMixin {
   @override
   List<Object?> get props => [selectedDate];
 }
+
+class UpdateTitleCalendar extends CalendarEvent with EquatableMixin {
+  final String titleCalendar;
+
+  const UpdateTitleCalendar({required this.titleCalendar});
+
+  @override
+  List<Object?> get props => [titleCalendar];
+}
