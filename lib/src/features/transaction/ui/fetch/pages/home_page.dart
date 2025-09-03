@@ -30,10 +30,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
     _transactionsBloc = context.read<TransactionsBloc>();
     _calendarBloc = context.read<CalendarBloc>();
-    _transactionsBloc.add(const LoadTransactionsByMonth());
     final initialIndexMonth = _transactionsBloc.state.monthIndex;
     _pageController = PageController(initialPage: initialIndexMonth);
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    _transactionsBloc.add(const LoadTransactionsByMonth());
   }
 
   @override
