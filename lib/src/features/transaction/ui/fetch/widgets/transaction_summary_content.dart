@@ -3,8 +3,8 @@ import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/string_extension.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/summary_text.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_bloc.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/bloc/transactions_state.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TransactionSummaryContent extends StatelessWidget {
