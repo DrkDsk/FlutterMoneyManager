@@ -28,4 +28,19 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
     return filtered;
   }
+
+  @override
+  Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
+      {required DateTime date}) async {
+    final values = _box.values.toList();
+
+    final filtered = values.where((transaction) {
+      final tDate = transaction.transactionDate;
+      return tDate.year == date.year &&
+          tDate.month == date.month &&
+          tDate.day == date.day;
+    }).toList();
+
+    return filtered;
+  }
 }
