@@ -33,18 +33,17 @@ class CreateTransactionTabview extends StatelessWidget {
       decoration: defaultBorder,
       child: BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
         builder: (context, state) {
-          final paymentSourceType = state.transaction.sourceType;
-          final transactionCategoryType = state.transaction.categoryType;
+          final sourceName = state.transaction.sourceType;
+          final categoryName = state.transaction.categoryType;
           TransactionSource? transactionSource;
           TransactionCategory? transactionCategory;
 
-          if (paymentSourceType != null) {
-            transactionSource = TransactionSource.fromString(paymentSourceType);
+          if (sourceName != null && sourceName.isNotEmpty) {
+            transactionSource = TransactionSource.fromString(sourceName);
           }
 
-          if (transactionCategoryType != null) {
-            transactionCategory =
-                TransactionCategory.fromString(transactionCategoryType);
+          if (categoryName != null && categoryName.isNotEmpty) {
+            transactionCategory = TransactionCategory.fromString(categoryName);
           }
 
           return SingleChildScrollView(
