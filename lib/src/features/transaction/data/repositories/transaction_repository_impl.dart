@@ -63,7 +63,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
             final transactionType = raw['type'] as String;
             final categoryType = raw["categoryType"] as String;
-            final sourceType = raw["categoryType"] as String;
+            final sourceType = raw["sourceType"] as String;
             final transactionDate = DateTime.fromMillisecondsSinceEpoch(
                 raw['transactionDate'] as int);
 
@@ -134,7 +134,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
           final transactionType = raw['type'] as String;
           final categoryType = raw["categoryType"] as String;
-          final sourceType = raw["categoryType"] as String;
+          final sourceType = raw["sourceType"] as String;
           final transactionDate = DateTime.fromMillisecondsSinceEpoch(
               raw['transactionDate'] as int);
 
