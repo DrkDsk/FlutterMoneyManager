@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 class TransactionSource with EquatableMixin {
+  final String? id;
   final String name;
   final String icon;
 
-  const TransactionSource({required this.name, required this.icon});
+  const TransactionSource({required this.name, required this.icon, this.id});
 
   factory TransactionSource.fromString(String value) {
     switch (value.toLowerCase()) {
