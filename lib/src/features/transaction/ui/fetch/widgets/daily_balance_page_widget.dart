@@ -31,35 +31,29 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
 
     return BlocBuilder<TransactionsBloc, TransactionsListState>(
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Transacciones de ${state.monthName}",
-              style: theme.textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 10),
-            if (state.transactions.isNotEmpty) ...[
-              Expanded(
-                child: ListView.separated(
-                  itemCount: state.transactions.length,
-                  separatorBuilder: (context, index) {
-                    return const SizedBox.shrink();
-                  },
-                  itemBuilder: (context, index) {
-                    final grouped = state.transactions[index];
-                    final date = grouped.date;
+        if (state.transactions.isEmpty) {
+          return const Center(child: Text("Sin transacciones disponibles"));
+        }
 
-                    return TransactionListContainer(
-                        date: date, transactions: grouped.transactions);
-                  },
-                ),
-              ),
-            ] else ...[
-              const Expanded(
-                  child: Center(child: Text("Sin transacciones disponibles")))
-            ]
-          ],
+        return ListView.separated(
+          itemCount: state.transactions.length + 1,
+          separatorBuilder: (context, index) {
+            return const SizedBox(height: 10);
+          },
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return Text(
+                "Transacciones de ${state.monthName}",
+                style: theme.textTheme.bodyLarge,
+              );
+            }
+
+            final grouped = state.transactions[index - 1];
+            final date = grouped.date;
+
+            return TransactionListContainer(
+                date: date, transactions: grouped.transactions);
+          },
         );
       },
     );

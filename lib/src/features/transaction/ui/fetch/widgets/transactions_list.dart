@@ -15,6 +15,7 @@ class TransactionsList extends StatelessWidget {
     return ListView.separated(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: transactions.length,
       separatorBuilder: (_, index) => const CustomDivider(),
       itemBuilder: (context, index) {
