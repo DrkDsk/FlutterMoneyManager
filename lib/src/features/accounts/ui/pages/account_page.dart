@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_divider.dart';
+import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
+import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_event.dart';
+import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_state.dart';
+import 'package:flutter_money_manager/src/features/accounts/ui/widgets/account_transaction_row.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/widgets/info_bloc.dart';
 
 class AccountPage extends StatefulWidget {
@@ -12,9 +16,13 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  late AccountBloc _accountBloc;
+
   @override
   void initState() {
     super.initState();
+    _accountBloc = context.read<AccountBloc>();
+    _accountBloc.add(LoadTransactionsSource());
   }
 
   @override
@@ -62,28 +70,23 @@ class _AccountPageState extends State<AccountPage> {
             ),
           ),
           const SizedBox(height: 20),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 10,
-            separatorBuilder: (context, index) => const CustomDivider(),
-            itemBuilder: (context, index) {
-              return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.rocket),
-                        const SizedBox(width: 10),
-                        Text("Car Loan",
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.w300, fontSize: 20))
-                      ],
-                    ),
-                    Text("\$ 0.00",
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                            color: AppColors.expenseColor, fontSize: 20))
-                  ]);
+          BlocBuilder<AccountBloc, AccountState>(
+            builder: (context, state) {
+              return ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.accountBalances.length,
+                separatorBuilder: (context, index) => const CustomDivider(),
+                itemBuilder: (context, index) {
+                  final accountBalance = state.accountBalances[index];
+
+                  return AccountTransactionRow(
+                    account: accountBalance.transactionSource.name,
+                    icon: accountBalance.transactionSource.icon,
+                    amount: accountBalance.amount,
+                  );
+                },
+              );
             },
           )
         ],

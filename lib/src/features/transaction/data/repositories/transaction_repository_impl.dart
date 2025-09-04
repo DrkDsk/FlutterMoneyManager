@@ -5,8 +5,10 @@ import 'package:flutter_money_manager/src/core/constants/transactions_constants.
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
+import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_balance.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_balance.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
@@ -167,5 +169,37 @@ class TransactionRepositoryImpl implements TransactionRepository {
     });
 
     return Right(balance);
+  }
+
+  @override
+  Future<Either<Failure, List<AccountBalance>>> getTransactionSources() async {
+    final transactionsSourceModels = await _datasource.getTransactionSources();
+
+    final modelsRaw =
+        transactionsSourceModels.map((model) => model.toJson()).toList();
+
+    final result = await Isolate.run(() {
+      final data = modelsRaw.map((source) {
+        final name = source["name"] as String;
+        final icon = source["icon"] as String;
+
+        final transactionSource = TransactionSource(name: name, icon: icon);
+        const amount = 0;
+
+        return AccountBalance(
+            transactionSource: transactionSource, amount: amount);
+      }).toList();
+
+      return data;
+    });
+
+    final defaultTransactionSource = kDefaultTransactionSources
+        .map((transactionSource) =>
+            AccountBalance(transactionSource: transactionSource, amount: 0))
+        .toList();
+
+    result.addAll(defaultTransactionSource);
+
+    return Right(result);
   }
 }

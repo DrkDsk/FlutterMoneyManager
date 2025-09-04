@@ -1,4 +1,5 @@
 import 'package:flutter_money_manager/src/core/helpers/hive_initializer.dart';
+import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/home_redirection_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
@@ -13,23 +14,35 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 Future<void> initDependencies() async {
-  final box = await HiveInitializer.init();
+  await HiveInitializer.init();
 
-  getIt.registerSingleton(box);
+  final transactionsBox = await HiveInitializer.getTransactionsBox();
 
-  getIt.registerLazySingleton<TransactionDatasource>(
-      () => TransactionDatasourceImpl(box: box));
+  final transactionsSourceBox =
+      await HiveInitializer.getTransactionsSourceBox();
+
+  getIt.registerSingleton(transactionsBox);
+  getIt.registerSingleton(transactionsSourceBox);
+
+  getIt.registerLazySingleton<TransactionDatasource>(() =>
+      TransactionDatasourceImpl(
+          transactionBox: transactionsBox,
+          transactionSourceBox: transactionsSourceBox));
 
   getIt.registerLazySingleton<TransactionRepository>(() =>
       TransactionRepositoryImpl(datasource: getIt<TransactionDatasource>()));
 
+  final transactionRepositoyInst = getIt<TransactionRepository>();
+
   getIt.registerFactory<NavigationCubit>(() => NavigationCubit());
   getIt.registerFactory<HomeRedirectionCubit>(() => HomeRedirectionCubit());
   getIt.registerFactory<CreateTransactionCubit>(
-      () => CreateTransactionCubit(repository: getIt<TransactionRepository>()));
+      () => CreateTransactionCubit(repository: transactionRepositoyInst));
 
   getIt.registerFactory<TransactionsBloc>(
-      () => TransactionsBloc(repository: getIt<TransactionRepository>()));
+      () => TransactionsBloc(repository: transactionRepositoyInst));
 
   getIt.registerFactory<CalendarBloc>(() => CalendarBloc());
+  getIt.registerFactory<AccountBloc>(
+      () => AccountBloc(transactionRepository: transactionRepositoyInst));
 }
