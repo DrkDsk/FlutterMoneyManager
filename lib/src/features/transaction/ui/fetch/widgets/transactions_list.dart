@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_money_manager/src/core/shared/widgets/custom_divider.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
@@ -15,10 +16,7 @@ class TransactionsList extends StatelessWidget {
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       itemCount: transactions.length,
-      separatorBuilder: (_, index) => const Divider(
-        color: Colors.grey,
-        thickness: 0.5,
-      ),
+      separatorBuilder: (_, index) => const CustomDivider(),
       itemBuilder: (context, index) {
         final transaction = transactions[index];
 

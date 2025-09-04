@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
+import 'package:flutter_money_manager/src/core/shared/widgets/custom_divider.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
@@ -57,7 +58,7 @@ class CreateTransactionTabview extends StatelessWidget {
                     onTap: onSelectTransactionDate,
                   ),
                 ),
-                const Divider(height: 20, color: Colors.grey, thickness: 0.2),
+                const CustomDivider(),
                 SizedBox(
                   height: 100,
                   child: CreateTransactionItem(
@@ -66,7 +67,7 @@ class CreateTransactionTabview extends StatelessWidget {
                       value: "\$ ${state.transaction.amount}",
                       onTap: onTapAmount),
                 ),
-                const Divider(height: 20, color: Colors.grey, thickness: 0.2),
+                const CustomDivider(),
                 SizedBox(
                   height: 100,
                   child: CreateTransactionItem(
@@ -87,7 +88,7 @@ class CreateTransactionTabview extends StatelessWidget {
                               ],
                             )),
                 ),
-                const Divider(height: 20, color: Colors.grey, thickness: 0.2),
+                const CustomDivider(),
                 SizedBox(
                   height: 100,
                   child: CreateTransactionItem(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/shared/builders/home/home_builder.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
+import 'package:flutter_money_manager/src/features/accounts/ui/pages/account_page.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/pages/home_page.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
               physics: const NeverScrollableScrollPhysics(),
               onPageChanged: onTapBottomNavigationBar,
               controller: _pageController,
-              children: const [HomePage(), Text("Acounts"), StatsPage()],
+              children: const [HomePage(), AccountPage(), StatsPage()],
             )),
           ],
         ),
