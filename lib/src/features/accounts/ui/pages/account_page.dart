@@ -72,20 +72,33 @@ class _AccountPageState extends State<AccountPage> {
           const SizedBox(height: 20),
           BlocBuilder<AccountBloc, AccountState>(
             builder: (context, state) {
-              return ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.accountBalances.length,
-                separatorBuilder: (context, index) => const CustomDivider(),
-                itemBuilder: (context, index) {
-                  final accountBalance = state.accountBalances[index];
+              return Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                    boxShadow: [
+                      BoxShadow(
+                        spreadRadius: 0.4,
+                        color: Colors.grey.shade400,
+                      )
+                    ]),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: state.accountBalances.length,
+                  separatorBuilder: (context, index) => const CustomDivider(),
+                  itemBuilder: (context, index) {
+                    final accountBalance = state.accountBalances[index];
 
-                  return AccountTransactionRow(
-                    account: accountBalance.transactionSource.name,
-                    icon: accountBalance.transactionSource.icon,
-                    amount: accountBalance.amount,
-                  );
-                },
+                    return AccountTransactionRow(
+                      account: accountBalance.transactionSource.name,
+                      icon: accountBalance.transactionSource.icon,
+                      amount: accountBalance.amount,
+                    );
+                  },
+                ),
               );
             },
           )

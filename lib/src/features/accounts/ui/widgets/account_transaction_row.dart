@@ -21,8 +21,8 @@ class AccountTransactionRow extends StatelessWidget {
         children: [
           Image.asset(
             icon,
-            height: 35,
-            width: 35,
+            height: 30,
+            width: 30,
           ),
           const SizedBox(width: 10),
           Text(account,
