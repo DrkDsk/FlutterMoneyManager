@@ -42,7 +42,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
     _transactionsBloc.add(LoadTransactionsByMonth(monthIndex: monthIndex));
   }
 
-  void onRighTap({required DateTime date}) {
+  void onRightTap({required DateTime date}) {
     final focusedDate = date.add(const Duration(days: 30));
     _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
 
@@ -80,7 +80,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
             HeaderCalendar(
                 titleCalendar: state.titleCalendar,
                 onLeftTap: () => onLeftTap(date: state.focusedDate),
-                onRightTap: () => onRighTap(date: state.focusedDate)),
+                onRightTap: () => onRightTap(date: state.focusedDate)),
             const SizedBox(height: 20),
             TableCalendar(
               headerVisible: false,
