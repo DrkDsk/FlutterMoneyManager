@@ -73,15 +73,13 @@ class CustomNumericKeyboard extends StatelessWidget {
             _buildButton(
               "OK",
               onTap: () => onOkSubmit(),
-              decoration: BoxDecoration(
-                  color: AppColors.expenseColor.customOpacity(0.90)),
+              decoration: BoxDecoration(color: AppColors.turquoise),
             ),
             _buildButton("0", onTap: () => onNumberTap("0")),
             _buildButton("⌫",
                 onTap: onBackspace,
                 style: const TextStyle(fontSize: 40, color: Colors.white),
-                decoration: BoxDecoration(
-                    color: AppColors.secondary.customOpacity(0.50))),
+                decoration: BoxDecoration(color: AppColors.expenseColor)),
           ]),
         ),
       ],
