@@ -30,9 +30,12 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     return true;
   }
 
-  Future<void> _updateGlobalBalanceRegister(
-      {required Transaction transaction}) async {
+  Future<void> _updateGlobalBalanceRegister({
+    required Transaction transaction,
+  }) async {
     final isIncome = transaction.type == kIncomeType;
+    final source = transaction.sourceType ?? "Unknown";
+
     final currentModel = _globalBalanceBox.get("summary");
 
     final baseBalance = currentModel ??
@@ -41,13 +44,39 @@ class TransactionDatasourceImpl implements TransactionDatasource {
           expense: 0,
           total: 0,
           asset: 0,
+          balancesBySource: {},
         );
 
     final amount = transaction.amount;
-    final newTotal = baseBalance.total + (isIncome ? amount : -amount);
-    final updatedBalance = baseBalance.copyWith(total: newTotal);
 
-    _globalBalanceBox.put("summary", updatedBalance);
+    final newIncome = baseBalance.income + (isIncome ? amount : 0);
+    final newExpense = baseBalance.expense + (!isIncome ? amount : 0);
+
+    final newTotal = baseBalance.total + (isIncome ? amount : -amount);
+
+    final Map<String, int> updatedSources =
+        Map.from(baseBalance.balancesBySource);
+
+    final currentSourceBalance = updatedSources[source] ?? 0;
+    final newSourceBalance =
+        currentSourceBalance + (isIncome ? amount : -amount);
+
+    updatedSources[source] = newSourceBalance;
+
+    final positiveSources = ["Cash", "Bank", "Investments", "Electronic Money"];
+    final newAsset = updatedSources.entries
+        .where((entry) => positiveSources.contains(entry.key))
+        .fold<int>(0, (sum, entry) => sum + entry.value);
+
+    final updatedBalance = baseBalance.copyWith(
+      income: newIncome,
+      expense: newExpense,
+      total: newTotal,
+      asset: newAsset,
+      balancesBySource: updatedSources,
+    );
+
+    await _globalBalanceBox.put("summary", updatedBalance);
   }
 
   @override
