@@ -18,15 +18,15 @@ class GlobalBalanceHiveModel extends HiveObject {
   final int asset;
 
   @HiveField(4)
-  final Map<String, int>? balancesBySource;
+  final Map<String, int> balancesBySource;
 
   GlobalBalanceHiveModel({
     required this.income,
     required this.expense,
     required this.total,
     required this.asset,
-    Map<String, int>? balancesBySource,
-  }) : balancesBySource = balancesBySource ?? {};
+    required this.balancesBySource,
+  });
 
   GlobalBalanceHiveModel copyWith({
     int? income,
@@ -60,6 +60,6 @@ class GlobalBalanceHiveModel extends HiveObject {
         expense: expense,
         asset: asset,
         total: total,
-        balancesBySource: balancesBySource ?? {});
+        balancesBySource: balancesBySource);
   }
 }
