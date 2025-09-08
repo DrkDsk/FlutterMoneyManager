@@ -8,7 +8,7 @@ import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/ca
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_event.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_state.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/daily_balance_page_widget.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/daily_balance_page.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/header_balance_scroll_page.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transaction_summary_content.dart';

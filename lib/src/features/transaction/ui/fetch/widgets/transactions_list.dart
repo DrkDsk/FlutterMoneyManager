@@ -43,7 +43,7 @@ class TransactionsList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: TransactionListItem(
             type: transaction.type,
-            amuount: transaction.amount,
+            amount: transaction.amount,
             source: transactionCategory.name,
             transactionSource: transactionSource.name,
             iconAssetCategory: transactionCategory.icon,

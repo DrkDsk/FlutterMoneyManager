@@ -6,13 +6,13 @@ import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 class TransactionListItem extends StatelessWidget {
   const TransactionListItem(
       {super.key,
-      required this.amuount,
+      required this.amount,
       required this.source,
       required this.transactionSource,
       required this.iconAssetCategory,
       required this.type});
 
-  final int amuount;
+  final int amount;
   final String source;
   final String transactionSource;
   final String type;
@@ -51,7 +51,7 @@ class TransactionListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              "\$ $amuount",
+              "\$ $amount",
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: transactionTypeColor),
             ),
