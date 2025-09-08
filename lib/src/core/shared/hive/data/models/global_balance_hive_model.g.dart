@@ -23,13 +23,14 @@ class GlobalBalanceHiveModelAdapter
       total: fields[2] as int,
       asset: fields[3] as int,
       balancesBySource: (fields[4] as Map).cast<String, int>(),
+      debt: fields[5] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, GlobalBalanceHiveModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.income)
       ..writeByte(1)
@@ -39,7 +40,9 @@ class GlobalBalanceHiveModelAdapter
       ..writeByte(3)
       ..write(obj.asset)
       ..writeByte(4)
-      ..write(obj.balancesBySource);
+      ..write(obj.balancesBySource)
+      ..writeByte(5)
+      ..write(obj.debt);
   }
 
   @override

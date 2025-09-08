@@ -44,6 +44,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
           expense: 0,
           total: 0,
           asset: 0,
+          debt: 0,
           balancesBySource: {},
         );
 
@@ -65,13 +66,22 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
     final newAsset = updatedSources.entries
         .where((entry) => kPositiveTransactionSources.contains(entry.key))
-        .fold<int>(0, (sum, entry) => sum + entry.value);
+        .fold<int>(
+            0, (sum, entry) => sum + (entry.value < 0 ? 0 : entry.value));
+
+    final newDebt = updatedSources.entries
+        .where((entry) => kNegativeTransactionSources.contains(entry.key))
+        .fold<int>(
+            0,
+            (sum, entry) =>
+                sum + (entry.value < 0 ? -entry.value : entry.value));
 
     final updatedBalance = baseBalance.copyWith(
       income: newIncome,
       expense: newExpense,
       total: newTotal,
       asset: newAsset,
+      debt: newDebt,
       balancesBySource: updatedSources,
     );
 

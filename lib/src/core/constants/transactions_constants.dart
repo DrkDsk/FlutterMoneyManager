@@ -58,5 +58,11 @@ const kPositiveTransactionSources = [
   "Cash",
   "Bank",
   "Investments",
-  "Electronic Money"
+  "Electronic Money",
+  "Debit Card"
+];
+
+const kNegativeTransactionSources = [
+  "Car Loan",
+  "Credit Card",
 ];

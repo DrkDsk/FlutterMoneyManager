@@ -26,6 +26,7 @@ class AccountState with EquatableMixin {
       expense: 0,
       total: 0,
       asset: 0,
+      debt: 0,
       balancesBySource: {},
     ));
   }
