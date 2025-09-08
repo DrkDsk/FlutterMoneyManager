@@ -45,7 +45,8 @@ Future<void> initDependencies() async {
   getIt.registerFactory<TransactionsBloc>(
       () => TransactionsBloc(repository: transactionRepositoyInst));
 
-  getIt.registerFactory<CalendarBloc>(() => CalendarBloc());
+  getIt.registerFactory<CalendarBloc>(
+      () => CalendarBloc(repository: transactionRepositoyInst));
   getIt.registerFactory<AccountBloc>(
       () => AccountBloc(transactionRepository: transactionRepositoyInst));
 }

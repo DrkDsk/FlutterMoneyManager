@@ -17,4 +17,6 @@ abstract interface class TransactionRepository {
   Future<Either<Failure, List<AccountBalance>>> getTransactionSources();
 
   Future<GlobalBalance?> getGlobalTransactionsBalance();
+
+  Stream<TransactionBalance> transactionsStream();
 }

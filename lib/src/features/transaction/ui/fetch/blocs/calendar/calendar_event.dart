@@ -30,3 +30,12 @@ class UpdateTitleCalendar extends CalendarEvent with EquatableMixin {
   @override
   List<Object?> get props => [titleCalendar];
 }
+
+class FilterTransactionsByDay extends CalendarEvent with EquatableMixin {
+  final DateTime selectedDay;
+
+  FilterTransactionsByDay(this.selectedDay);
+
+  @override
+  List<Object?> get props => [selectedDay];
+}
