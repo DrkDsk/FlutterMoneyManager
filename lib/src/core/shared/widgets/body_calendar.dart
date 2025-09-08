@@ -57,7 +57,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
   void onDaySelected(DateTime selectedDate, DateTime focusedDate) {
     _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDate));
     _calendarBloc.add(UpdateSelectedDate(selectedDate: selectedDate));
-    _transactionsBloc.add(FilterTransactionsByDay(selectedDate));
+    _calendarBloc.add(FilterTransactionsByDay(selectedDate));
   }
 
   void onPageChanged(DateTime focusedDay) {

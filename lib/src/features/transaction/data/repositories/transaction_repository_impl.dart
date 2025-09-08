@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 
 import 'package:dartz/dartz.dart';
@@ -16,8 +17,10 @@ import 'package:flutter_money_manager/src/features/transaction/domain/repositori
 
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionDatasource _datasource;
+  final _transactionsController =
+      StreamController<TransactionBalance>.broadcast();
 
-  const TransactionRepositoryImpl({required TransactionDatasource datasource})
+  TransactionRepositoryImpl({required TransactionDatasource datasource})
       : _datasource = datasource;
 
   @override
@@ -31,6 +34,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
     } catch (e) {
       return Left(GenericFailure());
     }
+  }
+
+  @override
+  Stream<TransactionBalance> transactionsStream() {
+    return _transactionsController.stream;
   }
 
   @override
@@ -168,6 +176,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
           expense: expense,
           total: income - expense);
     });
+
+    _transactionsController.add(balance);
 
     return Right(balance);
   }
