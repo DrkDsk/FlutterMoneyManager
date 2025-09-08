@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_divider.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
@@ -99,10 +101,16 @@ class _AccountPageState extends State<AccountPage> {
                     final accountSummaryAmount =
                         balancesBySource[transactionSourceName];
 
+                    final isPositiveSource = kPositiveTransactionSources
+                        .contains(transactionSourceName);
+
                     return AccountTransactionRow(
-                      account: accountBalance.transactionSource.name,
+                      account: transactionSourceName,
                       icon: accountBalance.transactionSource.icon,
                       amount: accountSummaryAmount ?? 0,
+                      textColor: isPositiveSource
+                          ? AppColors.incomeColor
+                          : AppColors.expenseColor,
                     );
                   },
                 ),

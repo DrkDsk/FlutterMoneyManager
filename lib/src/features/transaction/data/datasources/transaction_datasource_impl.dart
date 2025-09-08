@@ -63,9 +63,8 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
     updatedSources[source] = newSourceBalance;
 
-    final positiveSources = ["Cash", "Bank", "Investments", "Electronic Money"];
     final newAsset = updatedSources.entries
-        .where((entry) => positiveSources.contains(entry.key))
+        .where((entry) => kPositiveTransactionSources.contains(entry.key))
         .fold<int>(0, (sum, entry) => sum + entry.value);
 
     final updatedBalance = baseBalance.copyWith(

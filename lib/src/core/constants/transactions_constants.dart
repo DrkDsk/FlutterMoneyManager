@@ -53,3 +53,10 @@ const kDefaultTransactionTypes = [
   TransactionType(name: kIncomeType),
   TransactionType(name: kExpenseType)
 ];
+
+const kPositiveTransactionSources = [
+  "Cash",
+  "Bank",
+  "Investments",
+  "Electronic Money"
+];
