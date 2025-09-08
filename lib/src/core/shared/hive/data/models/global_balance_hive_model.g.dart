@@ -1,39 +1,42 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction_source_hive_model.dart';
+part of 'global_balance_hive_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionSourceHiveModelAdapter
-    extends TypeAdapter<TransactionSourceHiveModel> {
+class GlobalBalanceHiveModelAdapter
+    extends TypeAdapter<GlobalBalanceHiveModel> {
   @override
-  final int typeId = 1;
+  final int typeId = 2;
 
   @override
-  TransactionSourceHiveModel read(BinaryReader reader) {
+  GlobalBalanceHiveModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TransactionSourceHiveModel(
-      id: fields[0] as String,
-      name: fields[1] as String,
-      icon: fields[2] as String,
+    return GlobalBalanceHiveModel(
+      income: fields[0] as int,
+      expense: fields[1] as int,
+      total: fields[2] as int,
+      asset: fields[3] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, TransactionSourceHiveModel obj) {
+  void write(BinaryWriter writer, GlobalBalanceHiveModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.id)
+      ..write(obj.income)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.expense)
       ..writeByte(2)
-      ..write(obj.icon);
+      ..write(obj.total)
+      ..writeByte(3)
+      ..write(obj.asset);
   }
 
   @override
@@ -42,7 +45,7 @@ class TransactionSourceHiveModelAdapter
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TransactionSourceHiveModelAdapter &&
+      other is GlobalBalanceHiveModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

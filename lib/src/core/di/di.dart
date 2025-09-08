@@ -21,13 +21,16 @@ Future<void> initDependencies() async {
   final transactionsSourceBox =
       await HiveInitializer.getTransactionsSourceBox();
 
+  final globalBalanceBox = await HiveInitializer.getGloTransactionHiveModel();
+
   getIt.registerSingleton(transactionsBox);
   getIt.registerSingleton(transactionsSourceBox);
 
   getIt.registerLazySingleton<TransactionDatasource>(() =>
       TransactionDatasourceImpl(
           transactionBox: transactionsBox,
-          transactionSourceBox: transactionsSourceBox));
+          transactionSourceBox: transactionsSourceBox,
+          globalBalanceModel: globalBalanceBox));
 
   getIt.registerLazySingleton<TransactionRepository>(() =>
       TransactionRepositoryImpl(datasource: getIt<TransactionDatasource>()));
