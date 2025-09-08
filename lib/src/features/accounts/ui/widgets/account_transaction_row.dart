@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 
 class AccountTransactionRow extends StatelessWidget {
   const AccountTransactionRow(

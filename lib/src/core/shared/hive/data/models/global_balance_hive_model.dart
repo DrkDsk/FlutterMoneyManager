@@ -20,13 +20,16 @@ class GlobalBalanceHiveModel extends HiveObject {
   @HiveField(4)
   final Map<String, int> balancesBySource;
 
-  GlobalBalanceHiveModel({
-    required this.income,
-    required this.expense,
-    required this.total,
-    required this.asset,
-    required this.balancesBySource,
-  });
+  @HiveField(5)
+  final int debt;
+
+  GlobalBalanceHiveModel(
+      {required this.income,
+      required this.expense,
+      required this.total,
+      required this.asset,
+      required this.balancesBySource,
+      required this.debt});
 
   GlobalBalanceHiveModel copyWith({
     int? income,
@@ -34,24 +37,25 @@ class GlobalBalanceHiveModel extends HiveObject {
     int? total,
     int? asset,
     Map<String, int>? balancesBySource,
+    int? debt,
   }) {
     return GlobalBalanceHiveModel(
-      income: income ?? this.income,
-      expense: expense ?? this.expense,
-      total: total ?? this.total,
-      asset: asset ?? this.asset,
-      balancesBySource: balancesBySource ?? this.balancesBySource,
-    );
+        income: income ?? this.income,
+        expense: expense ?? this.expense,
+        total: total ?? this.total,
+        asset: asset ?? this.asset,
+        balancesBySource: balancesBySource ?? this.balancesBySource,
+        debt: debt ?? this.debt);
   }
 
   factory GlobalBalanceHiveModel.fromEntity(GlobalBalance entity) {
     return GlobalBalanceHiveModel(
-      income: entity.income,
-      expense: entity.expense,
-      total: entity.total,
-      asset: entity.asset,
-      balancesBySource: entity.balancesBySource,
-    );
+        income: entity.income,
+        expense: entity.expense,
+        total: entity.total,
+        asset: entity.asset,
+        balancesBySource: entity.balancesBySource,
+        debt: entity.debt);
   }
 
   GlobalBalance toEntity() {
@@ -60,6 +64,7 @@ class GlobalBalanceHiveModel extends HiveObject {
         expense: expense,
         asset: asset,
         total: total,
+        debt: debt,
         balancesBySource: balancesBySource);
   }
 }

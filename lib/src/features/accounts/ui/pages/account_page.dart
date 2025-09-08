@@ -65,9 +65,9 @@ class _AccountPageState extends State<AccountPage> {
                           title: "Total Assets",
                           value: "\$ ${state.globalBalance.asset}",
                         ),
-                        const InfoBloc(
+                        InfoBloc(
                           title: "Debt",
-                          value: "\$ 0.00",
+                          value: "\$ ${state.globalBalance.debt}",
                         ),
                       ],
                     )
