@@ -55,7 +55,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     final newTotal = baseBalance.total + (isIncome ? amount : -amount);
 
     final Map<String, int> updatedSources =
-        Map.from(baseBalance.balancesBySource);
+        Map.from(baseBalance.balancesBySource ?? {});
 
     final currentSourceBalance = updatedSources[source] ?? 0;
     final newSourceBalance =
