@@ -23,6 +23,7 @@ class _AccountPageState extends State<AccountPage> {
     super.initState();
     _accountBloc = context.read<AccountBloc>();
     _accountBloc.add(LoadTransactionsSource());
+    _accountBloc.add(const GetGlobalBalance());
   }
 
   @override
@@ -32,47 +33,47 @@ class _AccountPageState extends State<AccountPage> {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       scrollDirection: Axis.vertical,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Colors.cyan.shade800.customOpacity(0.70)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: InfoBloc(
-                      title: "Net Worth",
-                      value: "\$ 0.00",
-                      titleStyle: theme.textTheme.titleLarge?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w600)),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: BlocBuilder<AccountBloc, AccountState>(
+        builder: (context, state) {
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.cyan.shade800.customOpacity(0.70)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InfoBloc(
-                      title: "Total Assets",
-                      value: "\$ 0.00",
+                    Center(
+                      child: InfoBloc(
+                          title: "Net Worth",
+                          value: "\$ ${state.globalBalance.total}",
+                          titleStyle: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w600)),
                     ),
-                    InfoBloc(
-                      title: "Debt",
-                      value: "\$ 0.00",
+                    const SizedBox(
+                      height: 10,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        InfoBloc(
+                          title: "Total Assets",
+                          value: "\$ ${state.globalBalance.asset}",
+                        ),
+                        const InfoBloc(
+                          title: "Debt",
+                          value: "\$ 0.00",
+                        ),
+                      ],
+                    )
                   ],
-                )
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          BlocBuilder<AccountBloc, AccountState>(
-            builder: (context, state) {
-              return Container(
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
@@ -91,18 +92,24 @@ class _AccountPageState extends State<AccountPage> {
                   separatorBuilder: (context, index) => const CustomDivider(),
                   itemBuilder: (context, index) {
                     final accountBalance = state.accountBalances[index];
+                    final transactionSourceName =
+                        accountBalance.transactionSource.name;
+                    final balancesBySource =
+                        state.globalBalance.balancesBySource;
+                    final accountSummaryAmount =
+                        balancesBySource[transactionSourceName];
 
                     return AccountTransactionRow(
                       account: accountBalance.transactionSource.name,
                       icon: accountBalance.transactionSource.icon,
-                      amount: accountBalance.amount,
+                      amount: accountSummaryAmount ?? 0,
                     );
                   },
                 ),
-              );
-            },
-          )
-        ],
+              )
+            ],
+          );
+        },
       ),
     );
   }

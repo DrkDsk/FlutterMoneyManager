@@ -5,6 +5,7 @@ import 'package:flutter_money_manager/src/core/constants/transactions_constants.
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/global_balance.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_balance.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_balance.dart';
@@ -201,5 +202,13 @@ class TransactionRepositoryImpl implements TransactionRepository {
     result.addAll(defaultTransactionSource);
 
     return Right(result);
+  }
+
+  @override
+  Future<GlobalBalance?> getGlobalTransactionsBalance() async {
+    final globalTransactionBalanceModel =
+        await _datasource.getTransactionGlobalBalance();
+
+    return globalTransactionBalanceModel?.toEntity();
   }
 }

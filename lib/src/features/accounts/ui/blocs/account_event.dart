@@ -3,3 +3,7 @@ sealed class AccountEvent {
 }
 
 class LoadTransactionsSource extends AccountEvent {}
+
+class GetGlobalBalance extends AccountEvent {
+  const GetGlobalBalance();
+}

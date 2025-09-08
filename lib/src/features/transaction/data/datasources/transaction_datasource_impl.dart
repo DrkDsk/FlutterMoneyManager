@@ -55,7 +55,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     final newTotal = baseBalance.total + (isIncome ? amount : -amount);
 
     final Map<String, int> updatedSources =
-        Map.from(baseBalance.balancesBySource ?? {});
+        Map.from(baseBalance.balancesBySource);
 
     final currentSourceBalance = updatedSources[source] ?? 0;
     final newSourceBalance =
@@ -109,5 +109,12 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   @override
   Future<List<TransactionSourceHiveModel>> getTransactionSources() async {
     return _transactionSourceBox.values.toList();
+  }
+
+  @override
+  Future<GlobalBalanceHiveModel?> getTransactionGlobalBalance() async {
+    final globalTransactionBalance = _globalBalanceBox.get("summary");
+
+    return globalTransactionBalance;
   }
 }
