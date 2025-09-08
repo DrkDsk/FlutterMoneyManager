@@ -8,11 +8,12 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   AccountBloc({required TransactionRepository transactionRepository})
       : _transactionRepository = transactionRepository,
-        super(const AccountState()) {
-    on<LoadTransactionsSource>(loadTransactionsSource);
+        super(AccountState.initial()) {
+    on<LoadTransactionsSource>(_loadTransactionsSource);
+    on<GetGlobalBalance>(_getGlobalBalance);
   }
 
-  Future<void> loadTransactionsSource(
+  Future<void> _loadTransactionsSource(
       LoadTransactionsSource event, Emitter<AccountState> emit) async {
     final result = await _transactionRepository.getTransactionSources();
 
@@ -21,5 +22,12 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
       emit(state.copyWith(accountBalances: accountBalances));
     });
+  }
+
+  Future<void> _getGlobalBalance(
+      GetGlobalBalance event, Emitter<AccountState> emit) async {
+    final result = await _transactionRepository.getGlobalTransactionsBalance();
+
+    emit(state.copyWith(globalBalance: result));
   }
 }

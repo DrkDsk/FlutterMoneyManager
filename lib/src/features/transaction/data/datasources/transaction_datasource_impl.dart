@@ -112,16 +112,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<GlobalBalanceHiveModel> getTransactionGlobalBalance() async {
+  Future<GlobalBalanceHiveModel?> getTransactionGlobalBalance() async {
     final globalTransactionBalance = _globalBalanceBox.get("summary");
 
-    return globalTransactionBalance ??
-        GlobalBalanceHiveModel(
-          income: 0,
-          expense: 0,
-          total: 0,
-          asset: 0,
-          balancesBySource: {},
-        );
+    return globalTransactionBalance;
   }
 }

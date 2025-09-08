@@ -205,10 +205,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<GlobalBalance> getTransactionBalance() async {
+  Future<GlobalBalance?> getGlobalTransactionsBalance() async {
     final globalTransactionBalanceModel =
         await _datasource.getTransactionGlobalBalance();
 
-    return globalTransactionBalanceModel.toEntity();
+    return globalTransactionBalanceModel?.toEntity();
   }
 }

@@ -14,5 +14,5 @@ abstract interface class TransactionDatasource {
 
   Future<List<TransactionSourceHiveModel>> getTransactionSources();
 
-  Future<GlobalBalanceHiveModel> getTransactionGlobalBalance();
+  Future<GlobalBalanceHiveModel?> getTransactionGlobalBalance();
 }
