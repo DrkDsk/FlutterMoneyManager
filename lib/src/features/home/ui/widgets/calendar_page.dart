@@ -15,7 +15,7 @@ class CalendarPage extends StatelessWidget {
       builder: (context, state) {
         return ListView.separated(
           padding: const EdgeInsets.all(8),
-          itemCount: state.transactions.length + 1, // +1 para el calendario
+          itemCount: state.transactions.length + 1,
           separatorBuilder: (context, index) => const SizedBox.shrink(),
           itemBuilder: (context, index) {
             if (index == 0) {
