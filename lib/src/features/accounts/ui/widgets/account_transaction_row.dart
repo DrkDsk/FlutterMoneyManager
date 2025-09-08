@@ -6,11 +6,13 @@ class AccountTransactionRow extends StatelessWidget {
       {super.key,
       required this.account,
       required this.icon,
-      required this.amount});
+      required this.amount,
+      required this.textColor});
 
   final String account;
   final String icon;
   final int amount;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class AccountTransactionRow extends StatelessWidget {
       ),
       Text("\$ $amount",
           style: theme.textTheme.bodyMedium
-              ?.copyWith(color: AppColors.expenseColor, fontSize: 20))
+              ?.copyWith(color: textColor, fontSize: 20))
     ]);
   }
 }
