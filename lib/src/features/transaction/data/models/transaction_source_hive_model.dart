@@ -5,7 +5,7 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 
 part 'transaction_source_hive_model.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 1)
 class TransactionSourceHiveModel extends HiveObject {
   @HiveField(0)
   final String id;

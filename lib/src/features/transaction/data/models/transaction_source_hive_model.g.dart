@@ -9,7 +9,7 @@ part of 'transaction_source_hive_model.dart';
 class TransactionSourceHiveModelAdapter
     extends TypeAdapter<TransactionSourceHiveModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
   TransactionSourceHiveModel read(BinaryReader reader) {
