@@ -1,7 +1,6 @@
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/income_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/expense_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_type.dart';
 
 const String kIncomeType = "income";
 const String kExpenseType = "expense";
@@ -47,11 +46,6 @@ const kDefaultIncomeCategories = [
   IncomeCategory(
       name: "Investments",
       icon: "assets/icons/payment_sources/investments.png"),
-];
-
-const kDefaultTransactionTypes = [
-  TransactionType(name: kIncomeType),
-  TransactionType(name: kExpenseType)
 ];
 
 const kPositiveTransactionSources = [

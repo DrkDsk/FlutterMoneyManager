@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
@@ -70,7 +71,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
             final id = raw["id"] as String;
             final amount = (raw["amount"] as num).toInt();
 
-            final transactionType = raw['type'] as String;
+            final transactionTypeName = raw['type'] as String;
+            final transactionType = transactionTypeName == kIncomeType
+                ? TransactionTypEnum.income
+                : TransactionTypEnum.expense;
             final categoryType = raw["categoryType"] as String;
             final sourceType = raw["sourceType"] as String;
             final transactionDate = DateTime.fromMillisecondsSinceEpoch(
@@ -86,7 +90,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
           }).toList();
 
           for (final transaction in transactions) {
-            if (transaction.type == kIncomeType) {
+            if (transaction.type == TransactionTypEnum.income) {
               income += transaction.amount;
             } else {
               expense += transaction.amount;
@@ -141,7 +145,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
           final id = raw["id"] as String;
           final amount = (raw["amount"] as num).toInt();
 
-          final transactionType = raw['type'] as String;
+          final transactionTypeName = raw['type'] as String;
+          final transactionType = transactionTypeName == kIncomeType
+              ? TransactionTypEnum.income
+              : TransactionTypEnum.expense;
           final categoryType = raw["categoryType"] as String;
           final sourceType = raw["sourceType"] as String;
           final transactionDate = DateTime.fromMillisecondsSinceEpoch(
@@ -157,7 +164,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
         }).toList();
 
         for (final transaction in transactions) {
-          if (transaction.type == kIncomeType) {
+          if (transaction.type == TransactionTypEnum.income) {
             income += transaction.amount;
           } else {
             expense += transaction.amount;

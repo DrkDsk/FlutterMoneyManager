@@ -1,3 +1,5 @@
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
@@ -55,7 +57,7 @@ class TransactionHiveModel extends HiveObject {
   factory TransactionHiveModel.fromEntity(Transaction entity) {
     return TransactionHiveModel(
       id: entity.id ?? const Uuid().v4(),
-      type: entity.type,
+      type: entity.type.name,
       transactionDate: entity.transactionDate,
       amount: entity.amount,
       categoryType: entity.categoryType!,
@@ -75,7 +77,9 @@ class TransactionHiveModel extends HiveObject {
   Transaction toEntity() {
     return Transaction(
         id: id,
-        type: type,
+        type: type == kIncomeType
+            ? TransactionTypEnum.income
+            : TransactionTypEnum.expense,
         transactionDate: transactionDate,
         amount: amount,
         categoryType: categoryType,

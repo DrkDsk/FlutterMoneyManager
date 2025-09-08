@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
-import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 
 class TransactionListItem extends StatelessWidget {
@@ -15,15 +15,16 @@ class TransactionListItem extends StatelessWidget {
   final int amount;
   final String source;
   final String transactionSource;
-  final String type;
+  final TransactionTypEnum type;
   final String iconAssetCategory;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final transactionTypeColor =
-        type == kIncomeType ? AppColors.incomeColor : AppColors.expenseColor;
+    final transactionTypeColor = type == TransactionTypEnum.income
+        ? AppColors.incomeColor
+        : AppColors.expenseColor;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

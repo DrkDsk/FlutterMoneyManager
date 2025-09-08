@@ -1,4 +1,5 @@
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/global_balance_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
@@ -33,7 +34,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   Future<void> _updateGlobalBalanceRegister({
     required Transaction transaction,
   }) async {
-    final isIncome = transaction.type == kIncomeType;
+    final isIncome = transaction.type == TransactionTypEnum.income;
     final source = transaction.sourceType ?? "Unknown";
 
     final currentModel = _globalBalanceBox.get("summary");
