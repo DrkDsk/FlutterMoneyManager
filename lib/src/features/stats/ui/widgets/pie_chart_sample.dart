@@ -30,7 +30,6 @@ class PieChartSampleState extends State {
             ],
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.turquoise.customOpacity(0.8))),
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           children: <Widget>[
             const SizedBox(
