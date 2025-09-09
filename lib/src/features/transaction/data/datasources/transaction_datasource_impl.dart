@@ -3,9 +3,11 @@ import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart'
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/global_balance_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/month_balance_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_month_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/year_balance_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_year_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/balance_year_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:hive/hive.dart';
 
@@ -13,25 +15,49 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   final Box<TransactionHiveModel> _transactionBox;
   final Box<TransactionSourceHiveModel> _transactionSourceBox;
   final Box<GlobalBalanceHiveModel> _globalBalanceBox;
-  final Box<YearBalanceHiveModel> _yearBalanceBox;
+  final Box<BalanceYearHiveModel> _yearBalanceBox;
+  final Box<TransactionsYearHiveModel> _transactionsYearBox;
 
   const TransactionDatasourceImpl(
       {required Box<TransactionHiveModel> transactionBox,
       required Box<TransactionSourceHiveModel> transactionSourceBox,
       required Box<GlobalBalanceHiveModel> globalBalanceBox,
-      required Box<YearBalanceHiveModel> yearBalanceBox})
+      required Box<BalanceYearHiveModel> yearBalanceBox,
+      required Box<TransactionsYearHiveModel> transactionsYearBox})
       : _transactionBox = transactionBox,
         _transactionSourceBox = transactionSourceBox,
         _globalBalanceBox = globalBalanceBox,
+        _transactionsYearBox = transactionsYearBox,
         _yearBalanceBox = yearBalanceBox;
 
   @override
   Future<bool> saveTransaction(Transaction transaction) async {
     final hiveModel = TransactionHiveModel.fromEntity(transaction);
 
-    await _transactionBox.add(hiveModel);
+    final year = transaction.transactionDate.year;
+    final month = transaction.transactionDate.month;
+    final transactionKey = "$year-$month";
 
-    _updateGlobalBalanceRegister(transaction: transaction);
+    final transactionsYear = _transactionsYearBox.get(transactionKey) ??
+        TransactionsYearHiveModel(year: year, months: []);
+
+    final exitsMonthRegisteredIndex = transactionsYear.months
+        .indexWhere((currentMonth) => currentMonth.month == month);
+
+    if (exitsMonthRegisteredIndex != 1) {
+      final monthTransactions =
+          transactionsYear.months[exitsMonthRegisteredIndex];
+      monthTransactions.transactions.add(hiveModel);
+    } else {
+      final TransactionsMonthHiveModel monthTransactionHiveModel =
+          TransactionsMonthHiveModel(month: month, transactions: []);
+      monthTransactionHiveModel.transactions.add(hiveModel);
+      transactionsYear.months.add(monthTransactionHiveModel);
+    }
+
+    /*await _transactionsYearBox.put(transactionKey, transactionsYear);*/
+
+    /*_updateGlobalBalanceRegister(transaction: transaction);*/
 
     return true;
   }
@@ -45,9 +71,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     final monthIndex = transactionDate.month;
     final year = transactionDate.year;
 
-    YearBalanceHiveModel yearCurrentModel =
+    BalanceYearHiveModel yearCurrentModel =
         _yearBalanceBox.get(year.toString()) ??
-            YearBalanceHiveModel(year: year, months: []);
+            BalanceYearHiveModel(year: year, months: []);
 
     final listMonthsSaved = yearCurrentModel.months
         .where((model) => model.month == monthIndex)
@@ -155,7 +181,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<YearBalanceHiveModel?> getTransactionsByYear({int? year}) async {
+  Future<BalanceYearHiveModel?> getTransactionsByYear({int? year}) async {
     final selectedYear = year ?? DateTime.now().year;
 
     final yearTransactions = _yearBalanceBox.get(selectedYear.toString());
