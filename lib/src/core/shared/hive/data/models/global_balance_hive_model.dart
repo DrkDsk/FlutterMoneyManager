@@ -58,6 +58,16 @@ class GlobalBalanceHiveModel extends HiveObject {
         debt: entity.debt);
   }
 
+  factory GlobalBalanceHiveModel.initial() {
+    return GlobalBalanceHiveModel(
+        income: 0,
+        expense: 0,
+        total: 0,
+        asset: 0,
+        debt: 0,
+        balancesBySource: {});
+  }
+
   GlobalBalance toEntity() {
     return GlobalBalance(
         income: income,
