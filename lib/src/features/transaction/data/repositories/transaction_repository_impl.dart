@@ -55,13 +55,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final rawModels = models.map((element) => element.toJson()).toList();
 
-      final balance = await _datasource.getYearBalances(
+      final monthBalance = await _datasource.getMonthBalances(
           month: defaultMonth, year: defaultYear);
 
-      /*final balance = await Isolate.run(() {
-        int income = 0;
-        int expense = 0;
-
+      final balance = await Isolate.run(() {
         final grouped = <DateTime, List<Map<String, dynamic>>>{};
 
         for (final raw in rawModels) {
@@ -96,14 +93,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
                 sourceType: sourceType);
           }).toList();
 
-          for (final transaction in transactions) {
-            if (transaction.type == TransactionTypEnum.income) {
-              income += transaction.amount;
-            } else {
-              expense += transaction.amount;
-            }
-          }
-
           return TransactionsData(
             transactions: transactions,
             date: entry.key,
@@ -112,15 +101,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
         return TransactionBalance(
             transactionsData: transactionsData,
-            income: income,
-            expense: expense,
-            total: income - expense);
-      });*/
+            income: monthBalance.income,
+            expense: monthBalance.expense,
+            total: monthBalance.income - monthBalance.expense);
+      });
 
-      const updatedBalance = TransactionBalance(
-          transactionsData: [], income: 0, total: 0, expense: 0);
-
-      return const Right(updatedBalance);
+      return Right(balance);
     } on UnknownException catch (_) {
       return Left(GenericFailure());
     } catch (e) {
@@ -242,7 +228,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, Map<int, GlobalBalance>?>> getTransactionsByYear(
       {int? year}) async {
-    final model = await _datasource.getYearBalances(year: year);
+    final model = await _datasource.getBalancesByYear(year: year);
 
     return Right(model?.toEntityMap());
   }

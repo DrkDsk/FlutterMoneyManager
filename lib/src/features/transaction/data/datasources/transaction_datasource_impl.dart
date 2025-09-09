@@ -159,7 +159,16 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<GlobalBalanceHiveModel> getYearBalances(
+  Future<BalanceYearHiveModel?> getBalancesByYear({int? year}) async {
+    final selectedYear = year ?? DateTime.now().year;
+
+    final yearTransactions = _yearBalanceBox.get(selectedYear.toString());
+
+    return yearTransactions;
+  }
+
+  @override
+  Future<GlobalBalanceHiveModel> getMonthBalances(
       {int? year, int? month}) async {
     final defaultValue = DateTime.now();
     final selectedYear = year ?? defaultValue.year;
