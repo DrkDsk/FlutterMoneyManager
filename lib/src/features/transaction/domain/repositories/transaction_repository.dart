@@ -9,7 +9,7 @@ abstract interface class TransactionRepository {
   Future<Either<Failure, bool>> saveTransaction(Transaction transaction);
 
   Future<Either<Failure, TransactionBalance>> getTransactionsByMonth(
-      {int? monthIndex});
+      {int? month, int? year});
 
   Future<Either<Failure, TransactionBalance>> getTransactionsByDate(
       {required DateTime date});

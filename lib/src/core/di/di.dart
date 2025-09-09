@@ -2,6 +2,7 @@ import 'package:flutter_money_manager/src/core/helpers/hive_initializer.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/home_redirection_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource_impl.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/repositories/transaction_repository_impl.dart';
@@ -20,36 +21,35 @@ Future<void> initDependencies() async {
 
   final transactionsSourceBox =
       await HiveInitializer.getTransactionsSourceBox();
-
-  final globalBalanceBox = await HiveInitializer.getGloTransactionHiveModel();
-
-  final yearBalanceBox = await HiveInitializer.getYearHiveModel();
-
-  getIt.registerSingleton(transactionsBox);
-  getIt.registerSingleton(transactionsSourceBox);
+  final globalBalanceBox = await HiveInitializer.getGlobalTransactionHiveBox();
+  final yearBalanceBox = await HiveInitializer.getBalanceYearHiveBox();
+  final transactionsYearBox = await HiveInitializer.getTransactionYearHiveBox();
 
   getIt.registerLazySingleton<TransactionDatasource>(() =>
       TransactionDatasourceImpl(
           transactionBox: transactionsBox,
           transactionSourceBox: transactionsSourceBox,
           globalBalanceBox: globalBalanceBox,
+          transactionsYearBox: transactionsYearBox,
           yearBalanceBox: yearBalanceBox));
 
   getIt.registerLazySingleton<TransactionRepository>(() =>
       TransactionRepositoryImpl(datasource: getIt<TransactionDatasource>()));
 
-  final transactionRepositoyInst = getIt<TransactionRepository>();
+  final transactionRepositoryInst = getIt<TransactionRepository>();
 
   getIt.registerFactory<NavigationCubit>(() => NavigationCubit());
   getIt.registerFactory<HomeRedirectionCubit>(() => HomeRedirectionCubit());
   getIt.registerFactory<CreateTransactionCubit>(
-      () => CreateTransactionCubit(repository: transactionRepositoyInst));
+      () => CreateTransactionCubit(repository: transactionRepositoryInst));
 
   getIt.registerFactory<TransactionsBloc>(
-      () => TransactionsBloc(repository: transactionRepositoyInst));
+      () => TransactionsBloc(repository: transactionRepositoryInst));
 
   getIt.registerFactory<CalendarBloc>(
-      () => CalendarBloc(repository: transactionRepositoyInst));
+      () => CalendarBloc(repository: transactionRepositoryInst));
   getIt.registerFactory<AccountBloc>(
-      () => AccountBloc(transactionRepository: transactionRepositoyInst));
+      () => AccountBloc(transactionRepository: transactionRepositoryInst));
+  getIt.registerFactory<StatsBloc>(
+      () => StatsBloc(repository: transactionRepositoryInst));
 }

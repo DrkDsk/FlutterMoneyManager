@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
 enum CreateTransactionStatus { initial, loading, error, success }
@@ -9,15 +8,14 @@ class CreateTransactionState with EquatableMixin {
   final bool formIsValidated;
   final CreateTransactionStatus status;
 
-  CreateTransactionState(
-      {Transaction? transaction,
-      this.formIsValidated = false,
-      this.status = CreateTransactionStatus.initial})
-      : transaction = transaction ??
-            Transaction(
-              amount: 0,
-              type: kIncomeType,
-            );
+  const CreateTransactionState(
+      {this.formIsValidated = false,
+      this.status = CreateTransactionStatus.initial,
+      required this.transaction});
+
+  factory CreateTransactionState.initial() {
+    return CreateTransactionState(transaction: Transaction.initial());
+  }
 
   CreateTransactionState copyWith(
       {Transaction? transaction,

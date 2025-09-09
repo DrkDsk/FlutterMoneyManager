@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/extensions/string_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
@@ -188,7 +189,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
             BlocSelector<CreateTransactionCubit, CreateTransactionState,
                 Decoration?>(
               selector: (state) {
-                if (state.transaction.type == kIncomeType) {
+                if (state.transaction.type == TransactionTypEnum.income) {
                   return BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: AppColors.incomeColor,
@@ -206,9 +207,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     onTap: _createTransactionCubit.updateTransactionType,
                     tabController: _transactionTypeTabController,
                     tabs: [
-                      ...kDefaultTransactionTypes.map((transactionType) {
-                        return Tab(text: transactionType.name.firstUpper());
-                      })
+                      Tab(text: kIncomeType.firstUpper()),
+                      Tab(text: kExpenseType.firstUpper())
                     ]);
               },
             ),

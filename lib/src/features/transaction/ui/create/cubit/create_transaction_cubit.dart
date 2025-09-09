@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
@@ -11,7 +11,7 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
   CreateTransactionCubit({required TransactionRepository repository})
       : _repository = repository,
-        super(CreateTransactionState());
+        super(CreateTransactionState.initial());
 
   void updateAmountDate(DateTime? time) {
     final transaction = state.transaction.copyWith(transactionDate: time);
@@ -64,9 +64,10 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
   void updateTransactionType(int index) {
     final transaction = state.transaction;
 
-    final transactionSelected = kDefaultTransactionTypes[index];
+    final transactionSelected =
+        index == 0 ? TransactionTypEnum.income : TransactionTypEnum.expense;
     final newTransactionState = transaction.copyWith(
-        type: transactionSelected.name, categoryType: "", sourceType: "");
+        type: transactionSelected, categoryType: "", sourceType: "");
 
     emit(state.copyWith(transaction: newTransactionState));
   }

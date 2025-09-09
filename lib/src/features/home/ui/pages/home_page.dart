@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   onPageChanged: (index) {
                     _transactionsBloc.add(UpdateMonth(monthIndex: index));
                     _transactionsBloc
-                        .add(LoadTransactionsByMonth(monthIndex: index));
+                        .add(LoadTransactionsByMonth(month: index));
                   },
                   itemBuilder: (context, index) {
                     return Column(

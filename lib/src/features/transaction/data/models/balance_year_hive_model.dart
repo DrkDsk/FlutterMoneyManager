@@ -3,17 +3,17 @@ import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/globa
 import 'package:flutter_money_manager/src/features/transaction/data/models/month_balance_hive_model.dart';
 import 'package:hive/hive.dart';
 
-part 'year_balance_hive_model.g.dart';
+part 'balance_year_hive_model.g.dart';
 
 @HiveType(typeId: 4)
-class YearBalanceHiveModel extends HiveObject {
+class BalanceYearHiveModel extends HiveObject {
   @HiveField(0)
   final int year;
 
   @HiveField(1)
   final List<MonthBalanceHiveModel> months;
 
-  YearBalanceHiveModel({
+  BalanceYearHiveModel({
     required this.year,
     required this.months,
   });
@@ -39,11 +39,11 @@ class YearBalanceHiveModel extends HiveObject {
         .balance;
   }
 
-  YearBalanceHiveModel copyWith({
+  BalanceYearHiveModel copyWith({
     int? year,
     List<MonthBalanceHiveModel>? months,
   }) {
-    return YearBalanceHiveModel(
+    return BalanceYearHiveModel(
       year: year ?? this.year,
       months: months ?? this.months,
     );

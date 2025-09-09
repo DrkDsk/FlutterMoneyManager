@@ -86,7 +86,10 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
             scrollDirection: Axis.horizontal,
             itemCount: 13,
             controller: _pageController,
-            onPageChanged: (value) {},
+            onPageChanged: (index) {
+              _transactionsBloc.add(UpdateMonth(monthIndex: index));
+              _transactionsBloc.add(LoadTransactionsByMonth(month: index));
+            },
             itemBuilder: (context, index) {
               return Column(
                 children: [

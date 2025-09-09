@@ -39,7 +39,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
     if (monthIndex == null) return;
 
     _transactionsBloc.add(UpdateMonth(monthIndex: monthIndex));
-    _transactionsBloc.add(LoadTransactionsByMonth(monthIndex: monthIndex));
+    _transactionsBloc.add(LoadTransactionsByMonth(month: monthIndex));
   }
 
   void onRightTap({required DateTime date}) {
@@ -51,7 +51,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
     if (monthIndex == null) return;
 
     _transactionsBloc.add(UpdateMonth(monthIndex: monthIndex));
-    _transactionsBloc.add(LoadTransactionsByMonth(monthIndex: monthIndex));
+    _transactionsBloc.add(LoadTransactionsByMonth(month: monthIndex));
   }
 
   void onDaySelected(DateTime selectedDate, DateTime focusedDate) {
@@ -66,7 +66,7 @@ class _BodyCalendarState extends State<BodyCalendar> {
     _calendarBloc.add(UpdateTitleCalendar(titleCalendar: titleCalendar));
     _calendarBloc.add(UpdateFocusedDate(focusedDate: focusedDay));
     _transactionsBloc.add(UpdateMonth(monthIndex: monthIndex));
-    _transactionsBloc.add(LoadTransactionsByMonth(monthIndex: monthIndex));
+    _transactionsBloc.add(LoadTransactionsByMonth(month: monthIndex));
   }
 
   @override
