@@ -4,6 +4,7 @@ import 'package:flutter_money_manager/src/core/di/di.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/screens/home_screen.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
 
@@ -21,13 +22,16 @@ class LoginButton extends StatelessWidget {
                   create: (_) => getIt<NavigationCubit>(),
                 ),
                 BlocProvider(
-                  create: (context) => getIt<TransactionsBloc>(),
+                  create: (_) => getIt<TransactionsBloc>(),
                 ),
                 BlocProvider(
-                  create: (context) => getIt<CalendarBloc>(),
+                  create: (_) => getIt<CalendarBloc>(),
                 ),
                 BlocProvider(
-                  create: (context) => getIt<AccountBloc>(),
+                  create: (_) => getIt<AccountBloc>(),
+                ),
+                BlocProvider(
+                  create: (_) => getIt<StatsBloc>(),
                 ),
               ], child: const HomeScreen()))),
       child: Container(
