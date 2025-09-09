@@ -6,12 +6,13 @@ sealed class TransactionsEvent {
 }
 
 class LoadTransactionsByMonth extends TransactionsEvent with EquatableMixin {
-  final int? monthIndex;
+  final int? month;
+  final int? year;
 
-  const LoadTransactionsByMonth({this.monthIndex});
+  const LoadTransactionsByMonth({this.month, this.year});
 
   @override
-  List<Object?> get props => [monthIndex];
+  List<Object?> get props => [month, year];
 }
 
 class UpdateMonth extends TransactionsEvent with EquatableMixin {

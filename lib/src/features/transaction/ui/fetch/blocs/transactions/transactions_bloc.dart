@@ -62,10 +62,11 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
       Emitter<TransactionsListState> emit) async {
     emit(state.copyWith(status: TransactionTypeStatus.loading));
 
-    final monthIndex = event.monthIndex;
+    final month = event.month;
+    final year = event.year;
 
     final request =
-        await _repository.getTransactionsByMonth(monthIndex: monthIndex);
+        await _repository.getTransactionsByMonth(month: month, year: year);
 
     request.fold((left) {
       emit(state.copyWith(
