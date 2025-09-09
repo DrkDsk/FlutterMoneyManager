@@ -88,7 +88,7 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
             controller: _pageController,
             onPageChanged: (index) {
               _transactionsBloc.add(UpdateMonth(monthIndex: index));
-              _transactionsBloc.add(LoadTransactionsByMonth(monthIndex: index));
+              _transactionsBloc.add(LoadTransactionsByMonth(month: index));
             },
             itemBuilder: (context, index) {
               return Column(
