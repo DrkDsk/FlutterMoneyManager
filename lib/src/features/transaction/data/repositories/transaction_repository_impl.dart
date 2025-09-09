@@ -221,4 +221,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
     return globalTransactionBalanceModel?.toEntity();
   }
+
+  @override
+  Future<Either<Failure, Map<int, GlobalBalance>?>> getTransactionsByYear(
+      {int? year}) async {
+    final model = await _datasource.getTransactionsByYear(year: year);
+
+    return Right(model?.toEntityMap());
+  }
 }
