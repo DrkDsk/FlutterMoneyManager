@@ -7,6 +7,7 @@ import 'package:flutter_money_manager/src/features/transaction/data/models/month
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/year_balance_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/services/balance_calculator_service.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:hive/hive.dart';
 
@@ -42,9 +43,8 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }) async {
     final isIncome = transaction.type == kIncomeType;
     final source = transaction.sourceType ?? "Unknown";
-    final transactionDate = transaction.transactionDate;
-    final monthIndex = transactionDate.month;
-    final year = transactionDate.year;
+    final year = transaction.transactionDate.year;
+    final month = transaction.transactionDate.month;
 
     YearBalanceHiveModel yearCurrentModel =
         _yearBalanceBox.get(year.toString()) ??
@@ -52,69 +52,32 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
     final yearModelAsMap = yearCurrentModel.toEntityMap();
 
-    int monthIndexOfCurrentTransaction =
-        yearCurrentModel.months.indexWhere((m) => m.month == monthIndex);
+    final monthIndexOfCurrentTransaction =
+        yearCurrentModel.months.indexWhere((m) => m.month == month);
 
-    final updatedMonthBalance = await Isolate.run(() {
-      final baseBalance = yearModelAsMap[monthIndex] ??
-          GlobalBalanceHiveModel(
-            income: 0,
-            expense: 0,
-            total: 0,
-            asset: 0,
-            debt: 0,
-            balancesBySource: {},
-          ).toEntity();
+    final monthBalance = await Isolate.run(() {
+      final baseBalance =
+          yearModelAsMap[month] ?? GlobalBalanceHiveModel.initial().toEntity();
 
-      final amount = transaction.amount;
-      final newIncome = baseBalance.income + (isIncome ? amount : 0);
-      final newExpense = baseBalance.expense + (!isIncome ? amount : 0);
-      final newTotal = baseBalance.total + (isIncome ? amount : -amount);
-
-      final Map<String, int> updatedSources =
-          Map.from(baseBalance.balancesBySource);
-
-      final currentSourceBalance = updatedSources[source] ?? 0;
-      final newSourceBalance =
-          currentSourceBalance + (isIncome ? amount : -amount);
-
-      updatedSources[source] = newSourceBalance;
-
-      final newAsset = updatedSources.entries
-          .where((entry) => kPositiveTransactionSources.contains(entry.key))
-          .fold<int>(
-              0, (sum, entry) => sum + (entry.value < 0 ? 0 : entry.value));
-
-      final newDebt = updatedSources.entries
-          .where((entry) => kNegativeTransactionSources.contains(entry.key))
-          .fold<int>(
-              0,
-              (sum, entry) =>
-                  sum + (entry.value < 0 ? -entry.value : entry.value));
-
-      final updatedBalance = baseBalance.copyWith(
-        income: newIncome,
-        expense: newExpense,
-        total: newTotal,
-        asset: newAsset,
-        debt: newDebt,
-        balancesBySource: updatedSources,
+      final calculator = BalanceCalculatorService(
+        isIncome: isIncome,
+        source: source,
+        amount: transaction.amount,
+        balancesBySource: baseBalance.balancesBySource,
       );
 
-      final updatedBalanceHiveModel =
-          GlobalBalanceHiveModel.fromEntity(updatedBalance);
+      final updatedBalance = calculator.calculateUpdatedBalance(baseBalance);
 
-      final monthBalanceHiveModel = MonthBalanceHiveModel(
-          month: monthIndex, balance: updatedBalanceHiveModel);
-
-      return monthBalanceHiveModel;
+      return MonthBalanceHiveModel(
+        month: month,
+        balance: GlobalBalanceHiveModel.fromEntity(updatedBalance),
+      );
     });
 
     if (monthIndexOfCurrentTransaction != -1) {
-      yearCurrentModel.months[monthIndexOfCurrentTransaction] =
-          updatedMonthBalance;
+      yearCurrentModel.months[monthIndexOfCurrentTransaction] = monthBalance;
     } else {
-      yearCurrentModel.months.add(updatedMonthBalance);
+      yearCurrentModel.months.add(monthBalance);
     }
 
     await _yearBalanceBox.put(year.toString(), yearCurrentModel);
