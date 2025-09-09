@@ -65,7 +65,7 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
     final transaction = state.transaction;
 
     final transactionSelected =
-        index == 1 ? TransactionTypEnum.income : TransactionTypEnum.expense;
+        index == 0 ? TransactionTypEnum.income : TransactionTypEnum.expense;
     final newTransactionState = transaction.copyWith(
         type: transactionSelected, categoryType: "", sourceType: "");
 
