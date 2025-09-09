@@ -47,13 +47,18 @@ class TransactionRepositoryImpl implements TransactionRepository {
       {int? month, int? year}) async {
     try {
       final defaultDate = DateTime.now();
+      final defaultMonth = month ?? defaultDate.month;
+      final defaultYear = year ?? defaultDate.year;
 
       final models = await _datasource.getTransactionsModels(
-          month: month ?? defaultDate.month, year: year ?? defaultDate.year);
+          month: defaultMonth, year: defaultYear);
 
       final rawModels = models.map((element) => element.toJson()).toList();
 
-      final balance = await Isolate.run(() {
+      final balance = await _datasource.getYearBalances(
+          month: defaultMonth, year: defaultYear);
+
+      /*final balance = await Isolate.run(() {
         int income = 0;
         int expense = 0;
 
@@ -110,9 +115,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
             income: income,
             expense: expense,
             total: income - expense);
-      });
+      });*/
 
-      return Right(balance);
+      const updatedBalance = TransactionBalance(
+          transactionsData: [], income: 0, total: 0, expense: 0);
+
+      return const Right(updatedBalance);
     } on UnknownException catch (_) {
       return Left(GenericFailure());
     } catch (e) {
@@ -234,7 +242,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, Map<int, GlobalBalance>?>> getTransactionsByYear(
       {int? year}) async {
-    final model = await _datasource.getTransactionsByYear(year: year);
+    final model = await _datasource.getYearBalances(year: year);
 
     return Right(model?.toEntityMap());
   }

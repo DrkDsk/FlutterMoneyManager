@@ -1,6 +1,5 @@
 import 'dart:isolate';
 
-import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/global_balance_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
@@ -160,11 +159,23 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<BalanceYearHiveModel?> getTransactionsByYear({int? year}) async {
-    final selectedYear = year ?? DateTime.now().year;
+  Future<GlobalBalanceHiveModel> getYearBalances(
+      {int? year, int? month}) async {
+    final defaultValue = DateTime.now();
+    final selectedYear = year ?? defaultValue.year;
+    final selectedMonth = month ?? defaultValue.month;
 
-    final yearTransactions = _yearBalanceBox.get(selectedYear.toString());
+    final yearBalances = _yearBalanceBox.get(selectedYear.toString()) ??
+        BalanceYearHiveModel.initial(year: selectedYear);
 
-    return yearTransactions;
+    final balances = yearBalances.months
+        .where((monthBalance) => monthBalance.month == selectedMonth)
+        .toList();
+
+    if (balances.isEmpty) {
+      return GlobalBalanceHiveModel.initial();
+    }
+
+    return balances.first.balance;
   }
 }

@@ -24,6 +24,10 @@ class BalanceYearHiveModel extends HiveObject {
     );
   }
 
+  factory BalanceYearHiveModel.initial({required int year}) {
+    return BalanceYearHiveModel(year: year, months: const []);
+  }
+
   GlobalBalanceHiveModel? getByMonth(int month) {
     return months
         .firstWhere((m) => m.month == month,
