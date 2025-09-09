@@ -1,4 +1,5 @@
 import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_month_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_year.dart';
 import 'package:hive/hive.dart';
 
 part 'transactions_year_hive_model.g.dart';
@@ -21,5 +22,14 @@ class TransactionsYearHiveModel extends HiveObject {
       year: year ?? this.year,
       months: months ?? this.months,
     );
+  }
+
+  TransactionYear toEntity() {
+    return TransactionYear(
+        year: year, months: months.map((month) => month.toEntity()).toList());
+  }
+
+  factory TransactionsYearHiveModel.initial({required int year}) {
+    return TransactionsYearHiveModel(year: year, months: const []);
   }
 }

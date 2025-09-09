@@ -44,10 +44,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
   @override
   Future<Either<Failure, TransactionBalance>> getTransactionsByMonth(
-      {int? monthIndex}) async {
+      {int? month, int? year}) async {
     try {
+      final defaultDate = DateTime.now();
+
       final models = await _datasource.getTransactionsModels(
-          monthIndex: monthIndex ?? DateTime.now().month);
+          month: month ?? defaultDate.month, year: year ?? defaultDate.year);
 
       final rawModels = models.map((element) => element.toJson()).toList();
 

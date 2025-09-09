@@ -8,7 +8,7 @@ abstract interface class TransactionDatasource {
   Future<bool> saveTransaction(Transaction transaction);
 
   Future<List<TransactionHiveModel>> getTransactionsModels(
-      {required int monthIndex});
+      {required int month, required int year});
 
   Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
       {required DateTime date});

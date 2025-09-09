@@ -36,7 +36,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
     final year = transaction.transactionDate.year;
     final month = transaction.transactionDate.month;
-    final transactionKey = "$year-$month";
+    final transactionKey = "$year";
 
     final transactionsYear = _transactionsYearBox.get(transactionKey) ??
         TransactionsYearHiveModel(year: year, months: []);
@@ -44,20 +44,21 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     final exitsMonthRegisteredIndex = transactionsYear.months
         .indexWhere((currentMonth) => currentMonth.month == month);
 
-    if (exitsMonthRegisteredIndex != 1) {
+    if (exitsMonthRegisteredIndex != -1) {
       final monthTransactions =
           transactionsYear.months[exitsMonthRegisteredIndex];
       monthTransactions.transactions.add(hiveModel);
     } else {
       final TransactionsMonthHiveModel monthTransactionHiveModel =
           TransactionsMonthHiveModel(month: month, transactions: []);
+
       monthTransactionHiveModel.transactions.add(hiveModel);
       transactionsYear.months.add(monthTransactionHiveModel);
     }
 
-    /*await _transactionsYearBox.put(transactionKey, transactionsYear);*/
+    await _transactionsYearBox.put(transactionKey, transactionsYear);
 
-    /*_updateGlobalBalanceRegister(transaction: transaction);*/
+    _updateGlobalBalanceRegister(transaction: transaction);
 
     return true;
   }
@@ -143,14 +144,23 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
   @override
   Future<List<TransactionHiveModel>> getTransactionsModels(
-      {required int monthIndex}) async {
-    final values = _transactionBox.values.toList();
+      {required int month, required int year}) async {
+    final transactionYearKey = "$year";
+    final yearTransactions = _transactionsYearBox.get(transactionYearKey);
 
-    final filtered = values.where((transaction) {
-      return transaction.transactionDate.month == monthIndex;
-    }).toList();
+    if (yearTransactions == null) {
+      return [];
+    }
 
-    return filtered;
+    final monthTransactions = yearTransactions.months
+        .where((monthTransaction) => monthTransaction.month == month)
+        .toList();
+
+    if (monthTransactions.isEmpty) {
+      return [];
+    }
+
+    return monthTransactions.first.transactions;
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_month.dart';
 import 'package:hive/hive.dart';
 
 part 'transactions_month_hive_model.g.dart';
@@ -21,5 +22,12 @@ class TransactionsMonthHiveModel extends HiveObject {
       month: month ?? this.month,
       transactions: transactions ?? this.transactions,
     );
+  }
+
+  TransactionsMonth toEntity() {
+    return TransactionsMonth(
+        month: month,
+        transactions:
+            transactions.map((transaction) => transaction.toEntity()).toList());
   }
 }
