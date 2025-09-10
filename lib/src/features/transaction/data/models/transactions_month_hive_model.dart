@@ -39,4 +39,11 @@ class TransactionsMonthHiveModel extends HiveObject {
       ),
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'month': month,
+      'transactions': transactions,
+    };
+  }
 }

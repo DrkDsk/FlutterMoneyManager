@@ -15,20 +15,17 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:hive/hive.dart';
 
 class TransactionDatasourceImpl implements TransactionDatasource {
-  final Box<TransactionHiveModel> _transactionBox;
   final Box<TransactionSourceHiveModel> _transactionSourceBox;
   final Box<GlobalBalanceHiveModel> _globalBalanceBox;
   final Box<BalanceYearHiveModel> _yearBalanceBox;
   final Box<TransactionsYearHiveModel> _transactionsYearBox;
 
   const TransactionDatasourceImpl(
-      {required Box<TransactionHiveModel> transactionBox,
-      required Box<TransactionSourceHiveModel> transactionSourceBox,
+      {required Box<TransactionSourceHiveModel> transactionSourceBox,
       required Box<GlobalBalanceHiveModel> globalBalanceBox,
       required Box<BalanceYearHiveModel> yearBalanceBox,
       required Box<TransactionsYearHiveModel> transactionsYearBox})
-      : _transactionBox = transactionBox,
-        _transactionSourceBox = transactionSourceBox,
+      : _transactionSourceBox = transactionSourceBox,
         _globalBalanceBox = globalBalanceBox,
         _transactionsYearBox = transactionsYearBox,
         _yearBalanceBox = yearBalanceBox;

@@ -1,8 +1,8 @@
 import 'package:flutter_money_manager/src/core/constants/hive_constants.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/global_balance_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/month_balance_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_month_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_month_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_year_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/balance_year_hive_model.dart';
@@ -19,10 +19,6 @@ class HiveHelper {
     Hive.registerAdapter(BalanceYearHiveModelAdapter());
     Hive.registerAdapter(TransactionsMonthHiveModelAdapter());
     Hive.registerAdapter(TransactionsYearHiveModelAdapter());
-  }
-
-  static Future<Box<TransactionHiveModel>> getTransactionsBox() async {
-    return await Hive.openBox<TransactionHiveModel>(hiveTransactionBoxName);
   }
 
   static Future<Box<TransactionSourceHiveModel>>
