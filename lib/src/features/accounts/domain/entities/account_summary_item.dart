@@ -1,11 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 
-class AccountBalance with EquatableMixin {
+class AccountSummaryItem with EquatableMixin {
   final TransactionSource transactionSource;
   final int amount;
 
-  const AccountBalance({required this.transactionSource, required this.amount});
+  const AccountSummaryItem(
+      {required this.transactionSource, required this.amount});
 
   @override
   List<Object?> get props => [transactionSource, amount];
