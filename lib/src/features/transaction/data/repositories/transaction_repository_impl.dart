@@ -57,24 +57,28 @@ class TransactionRepositoryImpl implements TransactionRepository {
         year: defaultYear,
       );
 
-      final transactionsData =
-          transactionsModelsMonth.transactions.entries.map((entry) {
-        final date = DatetimeHelper.parse(input: entry.key);
-        final transactions = entry.value.map((t) => t.toEntity()).toList();
-        return TransactionsData(transactions: transactions, date: date);
-      }).toList();
-
       final monthBalance = await _datasource.getBalancesMonth(
         month: defaultMonth,
         year: defaultYear,
       );
 
-      final transactionsBalance = TransactionBalance(
-        transactionsData: transactionsData,
-        income: monthBalance.income,
-        total: monthBalance.total,
-        expense: monthBalance.expense,
-      );
+      final transactionsBalance = await Isolate.run(() {
+        final transactionsData =
+            transactionsModelsMonth.transactions.entries.map((entry) {
+          final date = DatetimeHelper.parse(input: entry.key);
+          final transactions = entry.value.map((t) => t.toEntity()).toList();
+          return TransactionsData(transactions: transactions, date: date);
+        }).toList();
+
+        final transactionsBalance = TransactionBalance(
+          transactionsData: transactionsData,
+          income: monthBalance.income,
+          total: monthBalance.total,
+          expense: monthBalance.expense,
+        );
+
+        return transactionsBalance;
+      });
 
       return Right(transactionsBalance);
     } on UnknownException catch (_) {
