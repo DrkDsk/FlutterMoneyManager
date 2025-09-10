@@ -36,37 +36,44 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
     final date = transaction.transactionDate;
     final year = date.year;
-    final monthNumber = date.month;
+    final month = date.month;
 
     final transactionKey = HiveHelper.generateTransactionYearKey(date: date);
-    final dayTransactionKey = HiveHelper.generateTransactionDayKey(date: date);
+    final dayKey = HiveHelper.generateTransactionDayKey(date: date);
 
     final transactionsYear = _transactionsYearBox.get(transactionKey) ??
         TransactionsYearHiveModel(year: year, months: []);
 
-    final exitsMonthRegisteredIndex = transactionsYear.months
-        .indexWhere((currentMonth) => currentMonth.month == monthNumber);
+    final monthIndex =
+        transactionsYear.months.indexWhere((m) => m.month == month);
 
-    if (exitsMonthRegisteredIndex != -1) {
-      final monthTransactions =
-          transactionsYear.months[exitsMonthRegisteredIndex];
+    TransactionsMonthHiveModel monthModel;
 
-      final arrayOfTransactionsByDay =
-          monthTransactions.transactions[dayTransactionKey] ?? [];
-
-      arrayOfTransactionsByDay.add(hiveModel);
-
-      monthTransactions.transactions[dayTransactionKey] =
-          arrayOfTransactionsByDay;
-
-      transactionsYear.months[exitsMonthRegisteredIndex] = monthTransactions
-          .copyWith(transactions: monthTransactions.transactions);
+    if (monthIndex != -1) {
+      monthModel = transactionsYear.months[monthIndex];
     } else {
-      final TransactionsMonthHiveModel monthTransactionHiveModel =
-          TransactionsMonthHiveModel(month: monthNumber, transactions: {});
+      monthModel = TransactionsMonthHiveModel.initial(month: month);
+      transactionsYear.months.add(monthModel);
+    }
 
-      monthTransactionHiveModel.transactions[dayTransactionKey] = [hiveModel];
-      transactionsYear.months.add(monthTransactionHiveModel);
+    final transactionsByDay = List<TransactionHiveModel>.from(
+      monthModel.transactions[dayKey] ?? [],
+    );
+
+    transactionsByDay.add(hiveModel);
+
+    monthModel = monthModel.copyWith(
+      transactions: {
+        ...monthModel.transactions,
+        dayKey: transactionsByDay,
+      },
+    );
+
+    if (monthIndex != -1) {
+      transactionsYear.months[monthIndex] = monthModel;
+    } else {
+      final lastIndex = transactionsYear.months.length - 1;
+      transactionsYear.months[lastIndex] = monthModel;
     }
 
     await _transactionsYearBox.put(transactionKey, transactionsYear);
