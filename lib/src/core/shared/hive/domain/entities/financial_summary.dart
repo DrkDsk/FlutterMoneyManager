@@ -37,4 +37,14 @@ class FinancialSummary with EquatableMixin {
       balancesBySource: balancesBySource ?? this.balancesBySource,
     );
   }
+
+  factory FinancialSummary.initial() {
+    return const FinancialSummary(
+        income: 0,
+        expense: 0,
+        netWorth: 0,
+        asset: 0,
+        debt: 0,
+        balancesBySource: {});
+  }
 }

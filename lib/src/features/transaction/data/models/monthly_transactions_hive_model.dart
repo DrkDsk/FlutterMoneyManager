@@ -47,4 +47,18 @@ class MonthlyTransactionsHiveModel extends HiveObject {
       'transactions': transactions,
     };
   }
+
+  factory MonthlyTransactionsHiveModel.fromEntity(
+    MonthlyTransactions entity,
+  ) {
+    return MonthlyTransactionsHiveModel(
+      month: entity.month,
+      transactions: entity.transactions.map(
+        (key, value) => MapEntry(
+          key,
+          value.map((t) => TransactionHiveModel.fromEntity(t)).toList(),
+        ),
+      ),
+    );
+  }
 }
