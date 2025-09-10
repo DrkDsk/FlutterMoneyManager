@@ -1,4 +1,4 @@
-import 'package:flutter_money_manager/src/core/helpers/hive_initializer.dart';
+import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/home_redirection_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
@@ -15,15 +15,14 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 Future<void> initDependencies() async {
-  await HiveInitializer.init();
+  await HiveHelper.init();
 
-  final transactionsBox = await HiveInitializer.getTransactionsBox();
+  final transactionsBox = await HiveHelper.getTransactionsBox();
 
-  final transactionsSourceBox =
-      await HiveInitializer.getTransactionsSourceBox();
-  final globalBalanceBox = await HiveInitializer.getGlobalTransactionHiveBox();
-  final yearBalanceBox = await HiveInitializer.getBalanceYearHiveBox();
-  final transactionsYearBox = await HiveInitializer.getTransactionYearHiveBox();
+  final transactionsSourceBox = await HiveHelper.getTransactionsSourceBox();
+  final globalBalanceBox = await HiveHelper.getGlobalTransactionHiveBox();
+  final yearBalanceBox = await HiveHelper.getBalanceYearHiveBox();
+  final transactionsYearBox = await HiveHelper.getTransactionYearHiveBox();
 
   getIt.registerLazySingleton<TransactionDatasource>(() =>
       TransactionDatasourceImpl(
