@@ -47,72 +47,38 @@ class TransactionRepositoryImpl implements TransactionRepository {
       {int? month, int? year}) async {
     try {
       final defaultDate = DateTime.now();
+      final defaultMonth = month ?? defaultDate.month;
+      final defaultYear = year ?? defaultDate.year;
 
       final models = await _datasource.getTransactionsModels(
-          month: month ?? defaultDate.month, year: year ?? defaultDate.year);
+          month: defaultMonth, year: defaultYear);
 
-      final rawModels = models.map((element) => element.toJson()).toList();
+      final transactionsData = models.transactions.entries.map((entry) {
+        final dateSplit = entry.key.split("-");
+        final year = int.tryParse(dateSplit[2]) ?? defaultYear;
+        final month = int.tryParse(dateSplit[1]) ?? defaultMonth;
+        final day = int.tryParse(dateSplit[0]) ?? defaultDate.day;
 
-      final balance = await Isolate.run(() {
-        int income = 0;
-        int expense = 0;
+        final date = DateTime(year, month, day);
 
-        final grouped = <DateTime, List<Map<String, dynamic>>>{};
+        final transactions =
+            entry.value.map((transaction) => transaction.toEntity()).toList();
 
-        for (final raw in rawModels) {
-          final dateFromMilliseconds =
-              DateTime.fromMillisecondsSinceEpoch(raw['transactionDate']);
+        final data = TransactionsData(transactions: transactions, date: date);
 
-          final date = DateTime(dateFromMilliseconds.year,
-              dateFromMilliseconds.month, dateFromMilliseconds.day);
-          grouped.putIfAbsent(date, () => []).add(raw);
-        }
+        return data;
+      }).toList();
 
-        final transactionsData = grouped.entries.map((entry) {
-          final transactions = entry.value.map((raw) {
-            final id = raw["id"] as String;
-            final amount = (raw["amount"] as num).toInt();
+      final monthBalance = await _datasource.getMonthBalances(
+          month: defaultMonth, year: defaultYear);
 
-            final transactionTypeName = raw['type'] as String;
-            final transactionType = transactionTypeName == kIncomeType
-                ? TransactionTypEnum.income
-                : TransactionTypEnum.expense;
-            final categoryType = raw["categoryType"] as String;
-            final sourceType = raw["sourceType"] as String;
-            final transactionDate = DateTime.fromMillisecondsSinceEpoch(
-                raw['transactionDate'] as int);
+      final transactionsBalance = TransactionBalance(
+          transactionsData: transactionsData,
+          income: monthBalance.income,
+          total: monthBalance.total,
+          expense: monthBalance.expense);
 
-            return Transaction(
-                id: id,
-                type: transactionType,
-                amount: amount,
-                transactionDate: transactionDate,
-                categoryType: categoryType,
-                sourceType: sourceType);
-          }).toList();
-
-          for (final transaction in transactions) {
-            if (transaction.type == TransactionTypEnum.income) {
-              income += transaction.amount;
-            } else {
-              expense += transaction.amount;
-            }
-          }
-
-          return TransactionsData(
-            transactions: transactions,
-            date: entry.key,
-          );
-        }).toList();
-
-        return TransactionBalance(
-            transactionsData: transactionsData,
-            income: income,
-            expense: expense,
-            total: income - expense);
-      });
-
-      return Right(balance);
+      return Right(transactionsBalance);
     } on UnknownException catch (_) {
       return Left(GenericFailure());
     } catch (e) {
@@ -234,7 +200,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, Map<int, GlobalBalance>?>> getTransactionsByYear(
       {int? year}) async {
-    final model = await _datasource.getTransactionsByYear(year: year);
+    final model = await _datasource.getBalancesByYear(year: year);
 
     return Right(model?.toEntityMap());
   }

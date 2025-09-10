@@ -10,13 +10,13 @@ class TransactionsMonthHiveModel extends HiveObject {
   final int month;
 
   @HiveField(1)
-  final List<TransactionHiveModel> transactions;
+  final Map<String, List<TransactionHiveModel>> transactions;
 
   TransactionsMonthHiveModel({required this.month, required this.transactions});
 
   TransactionsMonthHiveModel copyWith({
     int? month,
-    List<TransactionHiveModel>? transactions,
+    Map<String, List<TransactionHiveModel>>? transactions,
   }) {
     return TransactionsMonthHiveModel(
       month: month ?? this.month,
@@ -26,8 +26,13 @@ class TransactionsMonthHiveModel extends HiveObject {
 
   TransactionsMonth toEntity() {
     return TransactionsMonth(
-        month: month,
-        transactions:
-            transactions.map((transaction) => transaction.toEntity()).toList());
+      month: month,
+      transactions: transactions.map(
+        (key, list) => MapEntry(
+          key,
+          list.map((transaction) => transaction.toEntity()).toList(),
+        ),
+      ),
+    );
   }
 }

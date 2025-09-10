@@ -4,13 +4,13 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 class TransactionsMonth with EquatableMixin {
   final int month;
 
-  final List<Transaction> transactions;
+  final Map<String, List<Transaction>> transactions;
 
   const TransactionsMonth({required this.month, required this.transactions});
 
   TransactionsMonth copyWith({
     int? month,
-    List<Transaction>? transactions,
+    Map<String, List<Transaction>>? transactions,
   }) {
     return TransactionsMonth(
       month: month ?? this.month,

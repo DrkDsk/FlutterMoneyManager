@@ -19,7 +19,8 @@ class TransactionsMonthHiveModelAdapter
     };
     return TransactionsMonthHiveModel(
       month: fields[0] as int,
-      transactions: (fields[1] as List).cast<TransactionHiveModel>(),
+      transactions: (fields[1] as Map).map((dynamic k, dynamic v) =>
+          MapEntry(k as String, (v as List).cast<TransactionHiveModel>())),
     );
   }
 
