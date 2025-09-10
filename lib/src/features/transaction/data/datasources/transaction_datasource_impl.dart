@@ -147,9 +147,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
       return const {};
     }
 
-    final transactions = monthTransactions.first.transactions;
-
-    return transactions;
+    return monthTransactions.first.transactions;
   }
 
   @override

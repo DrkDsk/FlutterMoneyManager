@@ -11,6 +11,7 @@ import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/global_balance.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_balance.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_balance.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
@@ -91,68 +92,40 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<Either<Failure, TransactionBalance>> getTransactionsByDate(
       {required DateTime date}) async {
     final models = await _datasource.getTransactionsModelsByDate(date: date);
+    final rawModels = models.map((model) => model.toMap()).toList();
+    final grouped = {date: rawModels};
 
-    final rawModels = models.map((model) => model.toJson()).toList();
     int income = 0;
     int expense = 0;
 
-    final balance = await Isolate.run(() {
-      final grouped = <DateTime, List<Map<String, dynamic>>>{};
+    final transactionData = await Isolate.run(() {
+      final transactionsModelsRaw = (grouped[date] ?? []).toList();
 
-      for (final raw in rawModels) {
-        final dateFromMilliseconds =
-            DateTime.fromMillisecondsSinceEpoch(raw['transactionDate']);
-
-        final date = DateTime(dateFromMilliseconds.year,
-            dateFromMilliseconds.month, dateFromMilliseconds.day);
-        grouped.putIfAbsent(date, () => []).add(raw);
-      }
-
-      final transactionsData = grouped.entries.map((entry) {
-        final transactions = entry.value.map((raw) {
-          final id = raw["id"] as String;
-          final amount = (raw["amount"] as num).toInt();
-
-          final transactionTypeName = raw['type'] as String;
-          final transactionType =
-              transactionTypeName == TransactionsConstants.kIncomeType
-                  ? TransactionTypEnum.income
-                  : TransactionTypEnum.expense;
-          final categoryType = raw["categoryType"] as String;
-          final sourceType = raw["sourceType"] as String;
-          final transactionDate = DateTime.fromMillisecondsSinceEpoch(
-              raw['transactionDate'] as int);
-
-          return Transaction(
-              id: id,
-              type: transactionType,
-              amount: amount,
-              transactionDate: transactionDate,
-              categoryType: categoryType,
-              sourceType: sourceType);
-        }).toList();
-
-        for (final transaction in transactions) {
-          if (transaction.type == TransactionTypEnum.income) {
-            income += transaction.amount;
-          } else {
-            expense += transaction.amount;
-          }
-        }
-
-        return TransactionsData(transactions: transactions, date: date);
+      final transactions = transactionsModelsRaw.map((entry) {
+        final transactionModel = TransactionHiveModel.fromMap(entry);
+        return transactionModel.toEntity();
       }).toList();
 
-      return TransactionBalance(
-          transactionsData: transactionsData,
-          income: income,
-          total: income - expense,
-          expense: expense);
+      return TransactionsData(transactions: transactions, date: date);
     });
 
-    _transactionsController.add(balance);
+    for (final transaction in transactionData.transactions) {
+      if (transaction.type == TransactionTypEnum.income) {
+        income += transaction.amount;
+      } else {
+        expense += transaction.amount;
+      }
+    }
 
-    return Right(balance);
+    final TransactionBalance transactionBalance = TransactionBalance(
+        transactionsData: [transactionData],
+        income: income,
+        total: income - expense,
+        expense: expense);
+
+    _transactionsController.add(transactionBalance);
+
+    return Right(transactionBalance);
   }
 
   @override
