@@ -20,13 +20,12 @@ class CustomTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final indicatorDecoration = decoration ?? kTabBarDecoration;
+    final indicatorDecoration = decoration ?? ContainerStyles.kTabBarDecoration;
 
     return Container(
         height: 40,
-        margin: margin,
         padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),
-        decoration: kTabBarContainerDecoration,
+        decoration: ContainerStyles.kTabBarContainerDecoration,
         child: TabBar(
             onTap: onTap,
             dividerColor: Colors.transparent,

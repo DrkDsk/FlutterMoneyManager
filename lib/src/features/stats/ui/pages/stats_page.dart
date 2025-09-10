@@ -95,17 +95,10 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
                 children: [
                   const TransactionSummaryContent(),
                   const SizedBox(height: 10),
-                  CustomTabBar(
-                      tabController: _tabController,
-                      margin: EdgeInsets.zero,
-                      tabs: [
-                        Tab(
-                            text:
-                                TransactionsConstants.kIncomeType.firstUpper()),
-                        Tab(
-                            text:
-                                TransactionsConstants.kExpenseType.firstUpper())
-                      ]),
+                  CustomTabBar(tabController: _tabController, tabs: [
+                    Tab(text: TransactionsConstants.kIncomeType.firstUpper()),
+                    Tab(text: TransactionsConstants.kExpenseType.firstUpper())
+                  ]),
                   const SizedBox(height: 10),
                   Expanded(
                     child: TabBarView(
