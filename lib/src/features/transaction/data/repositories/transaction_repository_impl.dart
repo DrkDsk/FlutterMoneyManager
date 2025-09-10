@@ -7,6 +7,7 @@ import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart'
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
+import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/global_balance.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_balance.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
@@ -56,17 +57,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
         year: defaultYear,
       );
 
-      DateTime _parseDate(String key) {
-        final parts = key.split('-');
-        final day = int.tryParse(parts[0]) ?? now.day;
-        final month = int.tryParse(parts[1]) ?? defaultMonth;
-        final year = int.tryParse(parts[2]) ?? defaultYear;
-        return DateTime(year, month, day);
-      }
-
       final transactionsData =
           transactionsModelsMonth.transactions.entries.map((entry) {
-        final date = _parseDate(entry.key);
+        final date = DatetimeHelper.parse(input: entry.key);
         final transactions = entry.value.map((t) => t.toEntity()).toList();
         return TransactionsData(transactions: transactions, date: date);
       }).toList();
