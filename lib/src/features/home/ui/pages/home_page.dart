@@ -105,15 +105,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             tabController: _tabController,
                             margin: EdgeInsets.zero,
                             tabs: const [
-                              Text(
-                                "Daily",
-                              ),
-                              Text(
-                                "Calendar",
-                              ),
-                              Text(
-                                "Summary",
-                              ),
+                              Tab(text: "Daily"),
+                              Tab(text: "Calendar"),
+                              Tab(text: "Summary"),
                             ]),
                         const SizedBox(height: 20),
                         Expanded(
