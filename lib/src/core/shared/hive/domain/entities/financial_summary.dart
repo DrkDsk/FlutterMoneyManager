@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class GlobalBalance with EquatableMixin {
+class FinancialSummary with EquatableMixin {
   final int income;
   final int expense;
   final int total;
@@ -8,7 +8,7 @@ class GlobalBalance with EquatableMixin {
   final int debt;
   final Map<String, int> balancesBySource;
 
-  const GlobalBalance(
+  const FinancialSummary(
       {required this.income,
       required this.expense,
       required this.asset,
@@ -20,7 +20,7 @@ class GlobalBalance with EquatableMixin {
   List<Object?> get props =>
       [income, expense, asset, total, debt, balancesBySource];
 
-  GlobalBalance copyWith({
+  FinancialSummary copyWith({
     int? income,
     int? expense,
     int? total,
@@ -28,7 +28,7 @@ class GlobalBalance with EquatableMixin {
     int? debt,
     Map<String, int>? balancesBySource,
   }) {
-    return GlobalBalance(
+    return FinancialSummary(
       income: income ?? this.income,
       expense: expense ?? this.expense,
       total: total ?? this.total,

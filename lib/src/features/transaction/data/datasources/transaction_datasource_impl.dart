@@ -2,29 +2,29 @@ import 'dart:isolate';
 
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/global_balance_hive_model.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/month_balance_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_month_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_financial_summary_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_year_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/balance_year_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/services/balance_calculator_service.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:hive/hive.dart';
 
 class TransactionDatasourceImpl implements TransactionDatasource {
   final Box<TransactionSourceHiveModel> _transactionSourceBox;
-  final Box<GlobalBalanceHiveModel> _globalBalanceBox;
-  final Box<BalanceYearHiveModel> _yearBalanceBox;
-  final Box<TransactionsYearHiveModel> _transactionsYearBox;
+  final Box<FinancialSummaryHiveModel> _globalBalanceBox;
+  final Box<YearlyFinancialSummaryHiveModel> _yearBalanceBox;
+  final Box<YearlyTransactionsHiveModel> _transactionsYearBox;
 
   const TransactionDatasourceImpl(
       {required Box<TransactionSourceHiveModel> transactionSourceBox,
-      required Box<GlobalBalanceHiveModel> globalBalanceBox,
-      required Box<BalanceYearHiveModel> yearBalanceBox,
-      required Box<TransactionsYearHiveModel> transactionsYearBox})
+      required Box<FinancialSummaryHiveModel> globalBalanceBox,
+      required Box<YearlyFinancialSummaryHiveModel> yearBalanceBox,
+      required Box<YearlyTransactionsHiveModel> transactionsYearBox})
       : _transactionSourceBox = transactionSourceBox,
         _globalBalanceBox = globalBalanceBox,
         _transactionsYearBox = transactionsYearBox,
@@ -42,17 +42,17 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     final dayKey = HiveHelper.generateTransactionDayKey(date: date);
 
     final transactionsYear = _transactionsYearBox.get(transactionKey) ??
-        TransactionsYearHiveModel.initial(year: year);
+        YearlyTransactionsHiveModel.initial(year: year);
 
     final monthIndex =
         transactionsYear.months.indexWhere((m) => m.month == month);
 
-    TransactionsMonthHiveModel monthModel;
+    MonthlyTransactionsHiveModel monthModel;
 
     if (monthIndex != -1) {
       monthModel = transactionsYear.months[monthIndex];
     } else {
-      monthModel = TransactionsMonthHiveModel.initial(month: month);
+      monthModel = MonthlyTransactionsHiveModel.initial(month: month);
       transactionsYear.months.add(monthModel);
     }
 
@@ -92,9 +92,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     final year = date.year;
     final month = date.month;
 
-    BalanceYearHiveModel yearCurrentModel =
+    YearlyFinancialSummaryHiveModel yearCurrentModel =
         _yearBalanceBox.get(year.toString()) ??
-            BalanceYearHiveModel(year: year, months: []);
+            YearlyFinancialSummaryHiveModel(year: year, months: []);
 
     final yearModelAsMap = yearCurrentModel.toEntityMap();
 
@@ -102,8 +102,8 @@ class TransactionDatasourceImpl implements TransactionDatasource {
         yearCurrentModel.months.indexWhere((m) => m.month == month);
 
     final monthBalance = await Isolate.run(() {
-      final baseBalance =
-          yearModelAsMap[month] ?? GlobalBalanceHiveModel.initial().toEntity();
+      final baseBalance = yearModelAsMap[month] ??
+          FinancialSummaryHiveModel.initial().toEntity();
 
       final calculator = BalanceCalculatorService(
         isIncome: isIncome,
@@ -114,9 +114,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
       final updatedBalance = calculator.calculateUpdatedBalance(baseBalance);
 
-      return MonthBalanceHiveModel(
+      return MonthlyFinancialSummaryHiveModel(
         month: month,
-        balance: GlobalBalanceHiveModel.fromEntity(updatedBalance),
+        summary: FinancialSummaryHiveModel.fromEntity(updatedBalance),
       );
     });
 
@@ -182,37 +182,38 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<GlobalBalanceHiveModel?> getGlobalBalance() async {
+  Future<FinancialSummaryHiveModel?> getGlobalBalance() async {
     final globalTransactionBalance = _globalBalanceBox.get("summary");
 
     return globalTransactionBalance;
   }
 
   @override
-  Future<BalanceYearHiveModel?> getBalancesByYear({int? year}) async {
+  Future<YearlyFinancialSummaryHiveModel?> getBalancesByYear(
+      {int? year}) async {
     final balanceYearKey = (year ?? DateTime.now().year).toString();
 
     return _yearBalanceBox.get(balanceYearKey);
   }
 
   @override
-  Future<GlobalBalanceHiveModel> getBalancesMonth(
+  Future<FinancialSummaryHiveModel> getBalancesMonth(
       {int? year, int? month}) async {
     final defaultValue = DateTime.now();
     final selectedYear = year ?? defaultValue.year;
     final selectedMonth = month ?? defaultValue.month;
 
     final yearBalances = _yearBalanceBox.get(selectedYear.toString()) ??
-        BalanceYearHiveModel.initial(year: selectedYear);
+        YearlyFinancialSummaryHiveModel.initial(year: selectedYear);
 
     final balances = yearBalances.months
         .where((monthBalance) => monthBalance.month == selectedMonth)
         .toList();
 
     if (balances.isEmpty) {
-      return GlobalBalanceHiveModel.initial();
+      return FinancialSummaryHiveModel.initial();
     }
 
-    return balances.first.balance;
+    return balances.first.summary;
   }
 }

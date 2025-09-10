@@ -1,11 +1,11 @@
 import 'package:flutter_money_manager/src/core/constants/hive_constants.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/global_balance_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/month_balance_hive_model.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_month_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_year_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/balance_year_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveHelper {
@@ -14,11 +14,11 @@ class HiveHelper {
 
     Hive.registerAdapter(TransactionHiveModelAdapter());
     Hive.registerAdapter(TransactionSourceHiveModelAdapter());
-    Hive.registerAdapter(GlobalBalanceHiveModelAdapter());
-    Hive.registerAdapter(MonthBalanceHiveModelAdapter());
-    Hive.registerAdapter(BalanceYearHiveModelAdapter());
-    Hive.registerAdapter(TransactionsMonthHiveModelAdapter());
-    Hive.registerAdapter(TransactionsYearHiveModelAdapter());
+    Hive.registerAdapter(FinancialSummaryHiveModelAdapter());
+    Hive.registerAdapter(MonthlyFinancialSummaryHiveModelAdapter());
+    Hive.registerAdapter(YearlyFinancialSummaryHiveModelAdapter());
+    Hive.registerAdapter(MonthlyTransactionsHiveModelAdapter());
+    Hive.registerAdapter(YearlyTransactionsHiveModelAdapter());
   }
 
   static Future<Box<TransactionSourceHiveModel>>
@@ -27,20 +27,21 @@ class HiveHelper {
         HiveConstants.hiveTransactionSourceBoxName);
   }
 
-  static Future<Box<GlobalBalanceHiveModel>>
+  static Future<Box<FinancialSummaryHiveModel>>
       getGlobalTransactionHiveBox() async {
-    return await Hive.openBox<GlobalBalanceHiveModel>(
+    return await Hive.openBox<FinancialSummaryHiveModel>(
         HiveConstants.hiveGlobalBalanceBoxName);
   }
 
-  static Future<Box<BalanceYearHiveModel>> getBalanceYearHiveBox() async {
-    return await Hive.openBox<BalanceYearHiveModel>(
+  static Future<Box<YearlyFinancialSummaryHiveModel>>
+      getBalanceYearHiveBox() async {
+    return await Hive.openBox<YearlyFinancialSummaryHiveModel>(
         HiveConstants.hiveYearBalanceBoxName);
   }
 
-  static Future<Box<TransactionsYearHiveModel>>
+  static Future<Box<YearlyTransactionsHiveModel>>
       getTransactionYearHiveBox() async {
-    return await Hive.openBox<TransactionsYearHiveModel>(
+    return await Hive.openBox<YearlyTransactionsHiveModel>(
         HiveConstants.hiveYearTransactionsBoxName);
   }
 

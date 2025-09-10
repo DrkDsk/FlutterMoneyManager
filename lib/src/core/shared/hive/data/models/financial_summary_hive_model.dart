@@ -1,10 +1,10 @@
-import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/global_balance.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:hive/hive.dart';
 
-part 'global_balance_hive_model.g.dart';
+part 'financial_summary_hive_model.g.dart';
 
 @HiveType(typeId: 2)
-class GlobalBalanceHiveModel extends HiveObject {
+class FinancialSummaryHiveModel extends HiveObject {
   @HiveField(0)
   final int income;
 
@@ -12,7 +12,7 @@ class GlobalBalanceHiveModel extends HiveObject {
   final int expense;
 
   @HiveField(2)
-  final int total;
+  final int netWorth;
 
   @HiveField(3)
   final int asset;
@@ -23,15 +23,15 @@ class GlobalBalanceHiveModel extends HiveObject {
   @HiveField(5)
   final int debt;
 
-  GlobalBalanceHiveModel(
+  FinancialSummaryHiveModel(
       {required this.income,
       required this.expense,
-      required this.total,
+      required this.netWorth,
       required this.asset,
       required this.balancesBySource,
       required this.debt});
 
-  GlobalBalanceHiveModel copyWith({
+  FinancialSummaryHiveModel copyWith({
     int? income,
     int? expense,
     int? total,
@@ -39,41 +39,41 @@ class GlobalBalanceHiveModel extends HiveObject {
     Map<String, int>? balancesBySource,
     int? debt,
   }) {
-    return GlobalBalanceHiveModel(
+    return FinancialSummaryHiveModel(
         income: income ?? this.income,
         expense: expense ?? this.expense,
-        total: total ?? this.total,
+        netWorth: total ?? this.netWorth,
         asset: asset ?? this.asset,
         balancesBySource: balancesBySource ?? this.balancesBySource,
         debt: debt ?? this.debt);
   }
 
-  factory GlobalBalanceHiveModel.fromEntity(GlobalBalance entity) {
-    return GlobalBalanceHiveModel(
+  factory FinancialSummaryHiveModel.fromEntity(FinancialSummary entity) {
+    return FinancialSummaryHiveModel(
         income: entity.income,
         expense: entity.expense,
-        total: entity.total,
+        netWorth: entity.total,
         asset: entity.asset,
         balancesBySource: entity.balancesBySource,
         debt: entity.debt);
   }
 
-  factory GlobalBalanceHiveModel.initial() {
-    return GlobalBalanceHiveModel(
+  factory FinancialSummaryHiveModel.initial() {
+    return FinancialSummaryHiveModel(
         income: 0,
         expense: 0,
-        total: 0,
+        netWorth: 0,
         asset: 0,
         debt: 0,
         balancesBySource: {});
   }
 
-  GlobalBalance toEntity() {
-    return GlobalBalance(
+  FinancialSummary toEntity() {
+    return FinancialSummary(
         income: income,
         expense: expense,
         asset: asset,
-        total: total,
+        total: netWorth,
         debt: debt,
         balancesBySource: balancesBySource);
   }
