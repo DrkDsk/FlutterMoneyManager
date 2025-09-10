@@ -1,28 +1,28 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
-import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_balance.dart';
+import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 
 class AccountState with EquatableMixin {
-  final List<AccountBalance> accountBalances;
-  final FinancialSummary globalBalance;
+  final List<AccountSummaryItem> accountSummaries;
+  final FinancialSummary financialSummary;
 
   const AccountState(
-      {this.accountBalances = const [], required this.globalBalance});
+      {this.accountSummaries = const [], required this.financialSummary});
 
   @override
-  List<Object> get props => [accountBalances, globalBalance];
+  List<Object> get props => [accountSummaries, financialSummary];
 
   AccountState copyWith(
-      {List<AccountBalance>? accountBalances,
-      FinancialSummary? globalBalance}) {
+      {List<AccountSummaryItem>? accountSummaries,
+      FinancialSummary? financialSummary}) {
     return AccountState(
-        accountBalances: accountBalances ?? this.accountBalances,
-        globalBalance: globalBalance ?? this.globalBalance);
+        accountSummaries: accountSummaries ?? this.accountSummaries,
+        financialSummary: financialSummary ?? this.financialSummary);
   }
 
   factory AccountState.initial() {
     return const AccountState(
-        globalBalance: FinancialSummary(
+        financialSummary: FinancialSummary(
       income: 0,
       expense: 0,
       total: 0,

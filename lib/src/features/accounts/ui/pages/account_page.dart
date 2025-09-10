@@ -50,7 +50,7 @@ class _AccountPageState extends State<AccountPage> {
                     Center(
                       child: InfoBloc(
                           title: "Net Worth",
-                          value: "\$ ${state.globalBalance.total}",
+                          value: "\$ ${state.financialSummary.total}",
                           titleStyle: theme.textTheme.titleLarge?.copyWith(
                               color: theme.colorScheme.primary,
                               fontWeight: FontWeight.w600)),
@@ -63,11 +63,11 @@ class _AccountPageState extends State<AccountPage> {
                       children: [
                         InfoBloc(
                           title: "Total Assets",
-                          value: "\$ ${state.globalBalance.asset}",
+                          value: "\$ ${state.financialSummary.asset}",
                         ),
                         InfoBloc(
                           title: "Debt",
-                          value: "\$ ${state.globalBalance.debt}",
+                          value: "\$ ${state.financialSummary.debt}",
                         ),
                       ],
                     )
@@ -90,14 +90,14 @@ class _AccountPageState extends State<AccountPage> {
                 child: ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.accountBalances.length,
+                  itemCount: state.accountSummaries.length,
                   separatorBuilder: (context, index) => const CustomDivider(),
                   itemBuilder: (context, index) {
-                    final accountBalance = state.accountBalances[index];
+                    final accountBalance = state.accountSummaries[index];
                     final transactionSourceName =
                         accountBalance.transactionSource.name;
                     final balancesBySource =
-                        state.globalBalance.balancesBySource;
+                        state.financialSummary.balancesBySource;
                     final accountSummaryAmount =
                         balancesBySource[transactionSourceName];
 

@@ -9,7 +9,7 @@ import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exceptio
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
-import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_balance.dart';
+import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
@@ -129,7 +129,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, List<AccountBalance>>> getTransactionSources() async {
+  Future<Either<Failure, List<AccountSummaryItem>>>
+      getTransactionSources() async {
     final transactionsSourceModels = await _datasource.getTransactionSources();
 
     final modelsRaw =
@@ -143,7 +144,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
         final transactionSource = TransactionSource(name: name, icon: icon);
         const amount = 0;
 
-        return AccountBalance(
+        return AccountSummaryItem(
             transactionSource: transactionSource, amount: amount);
       }).toList();
 
@@ -153,7 +154,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
     final defaultTransactionSource = TransactionsConstants
         .kDefaultTransactionSources
         .map((transactionSource) =>
-            AccountBalance(transactionSource: transactionSource, amount: 0))
+            AccountSummaryItem(transactionSource: transactionSource, amount: 0))
         .toList();
 
     result.addAll(defaultTransactionSource);

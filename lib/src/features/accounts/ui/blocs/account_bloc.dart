@@ -20,7 +20,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     result.fold((left) {}, (right) {
       final accountBalances = right;
 
-      emit(state.copyWith(accountBalances: accountBalances));
+      emit(state.copyWith(accountSummaries: accountBalances));
     });
   }
 
