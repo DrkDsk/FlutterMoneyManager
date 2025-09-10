@@ -65,7 +65,7 @@ class TransactionHiveModel extends HiveObject {
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         "id": id,
         "type": type,
         "transactionDate": transactionDate.millisecondsSinceEpoch,
@@ -84,5 +84,24 @@ class TransactionHiveModel extends HiveObject {
         amount: amount,
         categoryType: categoryType,
         sourceType: sourceType);
+  }
+
+  factory TransactionHiveModel.fromMap(Map<String, dynamic> map) {
+    final amountString = map['amount'].toString();
+    final amount = int.tryParse(amountString) ?? 0;
+    final dateString = map['transactionDate'].toString();
+    final dateMilliseconds =
+        int.tryParse(dateString) ?? DateTime.now().millisecondsSinceEpoch;
+
+    final date = DateTime.fromMillisecondsSinceEpoch(dateMilliseconds);
+
+    return TransactionHiveModel(
+      id: map['id'].toString(),
+      type: map['type'].toString(),
+      transactionDate: date,
+      amount: amount,
+      categoryType: map['categoryType'].toString(),
+      sourceType: map['sourceType'].toString(),
+    );
   }
 }
