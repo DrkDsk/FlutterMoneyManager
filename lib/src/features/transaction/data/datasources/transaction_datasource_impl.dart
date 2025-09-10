@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
+import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
@@ -32,55 +33,59 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
   @override
   Future<bool> saveTransaction(Transaction transaction) async {
-    final hiveModel = TransactionHiveModel.fromEntity(transaction);
+    try {
+      final hiveModel = TransactionHiveModel.fromEntity(transaction);
 
-    final date = transaction.transactionDate;
-    final year = date.year;
-    final month = date.month;
+      final date = transaction.transactionDate;
+      final year = date.year;
+      final month = date.month;
 
-    final transactionKey = HiveHelper.generateTransactionYearKey(date: date);
-    final dayKey = HiveHelper.generateTransactionDayKey(date: date);
+      final transactionKey = HiveHelper.generateTransactionYearKey(date: date);
+      final dayKey = HiveHelper.generateTransactionDayKey(date: date);
 
-    final transactionsYear = _transactionsYearBox.get(transactionKey) ??
-        YearlyTransactionsHiveModel.initial(year: year);
+      final transactionsYear = _transactionsYearBox.get(transactionKey) ??
+          YearlyTransactionsHiveModel.initial(year: year);
 
-    final monthIndex =
-        transactionsYear.months.indexWhere((m) => m.month == month);
+      final monthIndex =
+          transactionsYear.months.indexWhere((m) => m.month == month);
 
-    MonthlyTransactionsHiveModel monthModel;
+      MonthlyTransactionsHiveModel monthModel;
 
-    if (monthIndex != -1) {
-      monthModel = transactionsYear.months[monthIndex];
-    } else {
-      monthModel = MonthlyTransactionsHiveModel.initial(month: month);
-      transactionsYear.months.add(monthModel);
+      if (monthIndex != -1) {
+        monthModel = transactionsYear.months[monthIndex];
+      } else {
+        monthModel = MonthlyTransactionsHiveModel.initial(month: month);
+        transactionsYear.months.add(monthModel);
+      }
+
+      final transactionsByDay = List<TransactionHiveModel>.from(
+        monthModel.transactions[dayKey] ?? [],
+      );
+
+      transactionsByDay.add(hiveModel);
+
+      monthModel = monthModel.copyWith(
+        transactions: {
+          ...monthModel.transactions,
+          dayKey: transactionsByDay,
+        },
+      );
+
+      if (monthIndex != -1) {
+        transactionsYear.months[monthIndex] = monthModel;
+      } else {
+        final lastIndex = transactionsYear.months.length - 1;
+        transactionsYear.months[lastIndex] = monthModel;
+      }
+
+      await _transactionsYearBox.put(transactionKey, transactionsYear);
+
+      _updateGlobalBalanceRegister(transaction: transaction);
+
+      return true;
+    } catch (e) {
+      throw UnknownException(message: e.toString());
     }
-
-    final transactionsByDay = List<TransactionHiveModel>.from(
-      monthModel.transactions[dayKey] ?? [],
-    );
-
-    transactionsByDay.add(hiveModel);
-
-    monthModel = monthModel.copyWith(
-      transactions: {
-        ...monthModel.transactions,
-        dayKey: transactionsByDay,
-      },
-    );
-
-    if (monthIndex != -1) {
-      transactionsYear.months[monthIndex] = monthModel;
-    } else {
-      final lastIndex = transactionsYear.months.length - 1;
-      transactionsYear.months[lastIndex] = monthModel;
-    }
-
-    await _transactionsYearBox.put(transactionKey, transactionsYear);
-
-    _updateGlobalBalanceRegister(transaction: transaction);
-
-    return true;
   }
 
   Future<void> _updateGlobalBalanceRegister({

@@ -30,6 +30,6 @@ class YearlyTransactionsHiveModel extends HiveObject {
   }
 
   factory YearlyTransactionsHiveModel.initial({required int year}) {
-    return YearlyTransactionsHiveModel(year: year, months: const []);
+    return YearlyTransactionsHiveModel(year: year, months: []);
   }
 }
