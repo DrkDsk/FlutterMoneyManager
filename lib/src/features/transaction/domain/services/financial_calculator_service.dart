@@ -3,12 +3,12 @@ import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart'
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_financial_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_financial_summary.dart';
 
 class FinancialCalculatorService {
   final bool isIncome;
@@ -57,20 +57,16 @@ class FinancialCalculatorService {
     );
   }
 
-  static YearlyFinancialSummaryHiveModel updateYearlyFinancialSummary(
+  static YearlyFinancialSummary updateYearlyFinancialSummary(
       {required Transaction transaction,
-      YearlyFinancialSummaryHiveModel? yearlyCurrentModel}) {
+      required YearlyFinancialSummary yearlyFinancialSummary}) {
     final date = transaction.transactionDate;
-    final year = date.year;
     final month = date.month;
 
-    yearlyCurrentModel = yearlyCurrentModel ??
-        YearlyFinancialSummaryHiveModel(year: year, months: []);
-
-    final yearModelAsMap = yearlyCurrentModel.toEntityMap();
+    final yearModelAsMap = yearlyFinancialSummary.toEntityMap();
 
     final monthIndexOfCurrentTransaction =
-        yearlyCurrentModel.months.indexWhere((m) => m.month == month);
+        yearlyFinancialSummary.months.indexWhere((m) => m.month == month);
 
     final baseBalance =
         yearModelAsMap[month] ?? FinancialSummaryHiveModel.initial().toEntity();
@@ -81,18 +77,19 @@ class FinancialCalculatorService {
 
     final updatedBalance = calculator.calculateUpdatedSummary(baseBalance);
 
-    final monthBalance = MonthlyFinancialSummaryHiveModel(
+    final monthBalance = MonthlyFinancialSummary(
       month: month,
-      summary: FinancialSummaryHiveModel.fromEntity(updatedBalance),
+      summary: updatedBalance,
     );
 
     if (monthIndexOfCurrentTransaction != -1) {
-      yearlyCurrentModel.months[monthIndexOfCurrentTransaction] = monthBalance;
+      yearlyFinancialSummary.months[monthIndexOfCurrentTransaction] =
+          monthBalance;
     } else {
-      yearlyCurrentModel.months.add(monthBalance);
+      yearlyFinancialSummary.months.add(monthBalance);
     }
 
-    return yearlyCurrentModel;
+    return yearlyFinancialSummary;
   }
 
   factory FinancialCalculatorService.fromTransaction(
