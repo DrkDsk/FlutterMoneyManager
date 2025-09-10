@@ -22,7 +22,7 @@ class TransactionSummaryContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SummaryText(
-              summaryLabel: kIncomeType.firstUpper(),
+              summaryLabel: TransactionsConstants.kIncomeType.firstUpper(),
               summaryValue: "${state.income}",
               textValueColor: AppColors.incomeColor,
             ),
@@ -30,7 +30,7 @@ class TransactionSummaryContent extends StatelessWidget {
               width: 10,
             ),
             SummaryText(
-              summaryLabel: kExpenseType.firstUpper(),
+              summaryLabel: TransactionsConstants.kExpenseType.firstUpper(),
               summaryValue: "${state.expense}",
               textValueColor: AppColors.expenseColor,
             ),

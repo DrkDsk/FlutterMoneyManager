@@ -42,7 +42,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     final dayKey = HiveHelper.generateTransactionDayKey(date: date);
 
     final transactionsYear = _transactionsYearBox.get(transactionKey) ??
-        TransactionsYearHiveModel(year: year, months: []);
+        TransactionsYearHiveModel.initial(year: year);
 
     final monthIndex =
         transactionsYear.months.indexWhere((m) => m.month == month);
@@ -130,16 +130,13 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<TransactionsMonthHiveModel> getTransactionsModelsMonth(
+  Future<Map<String, List<TransactionHiveModel>>> getTransactionsModelsMonth(
       {required int month, required int year}) async {
     final transactionYearKey = "$year";
     final yearTransactions = _transactionsYearBox.get(transactionYearKey);
 
-    final emptyTransactionsMonthModel =
-        TransactionsMonthHiveModel(month: month, transactions: {});
-
     if (yearTransactions == null) {
-      return emptyTransactionsMonthModel;
+      return const {};
     }
 
     final monthTransactions = yearTransactions.months
@@ -147,10 +144,12 @@ class TransactionDatasourceImpl implements TransactionDatasource {
         .toList();
 
     if (monthTransactions.isEmpty) {
-      return emptyTransactionsMonthModel;
+      return const {};
     }
 
-    return monthTransactions.first;
+    final transactions = monthTransactions.first.transactions;
+
+    return transactions;
   }
 
   @override
@@ -193,11 +192,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
   @override
   Future<BalanceYearHiveModel?> getBalancesByYear({int? year}) async {
-    final selectedYear = year ?? DateTime.now().year;
+    final balanceYearKey = (year ?? DateTime.now().year).toString();
 
-    final yearTransactions = _yearBalanceBox.get(selectedYear.toString());
-
-    return yearTransactions;
+    return _yearBalanceBox.get(balanceYearKey);
   }
 
   @override

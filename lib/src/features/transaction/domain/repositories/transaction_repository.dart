@@ -20,6 +20,6 @@ abstract interface class TransactionRepository {
 
   Stream<TransactionBalance> transactionsStream();
 
-  Future<Either<Failure, Map<int, GlobalBalance>?>> getTransactionsByYear(
+  Future<Either<Failure, Map<int, GlobalBalance>?>> getBalanceByYear(
       {int? year});
 }

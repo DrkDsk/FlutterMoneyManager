@@ -101,7 +101,8 @@ class _AccountPageState extends State<AccountPage> {
                     final accountSummaryAmount =
                         balancesBySource[transactionSourceName];
 
-                    final isPositiveSource = kPositiveTransactionSources
+                    final isPositiveSource = TransactionsConstants
+                        .kPositiveTransactionSources
                         .contains(transactionSourceName);
 
                     return AccountTransactionRow(

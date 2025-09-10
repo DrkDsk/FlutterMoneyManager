@@ -24,22 +24,24 @@ class HiveHelper {
   static Future<Box<TransactionSourceHiveModel>>
       getTransactionsSourceBox() async {
     return await Hive.openBox<TransactionSourceHiveModel>(
-        hiveTransactionSourceBoxName);
+        HiveConstants.hiveTransactionSourceBoxName);
   }
 
   static Future<Box<GlobalBalanceHiveModel>>
       getGlobalTransactionHiveBox() async {
-    return await Hive.openBox<GlobalBalanceHiveModel>(hiveGlobalBalanceBoxName);
+    return await Hive.openBox<GlobalBalanceHiveModel>(
+        HiveConstants.hiveGlobalBalanceBoxName);
   }
 
   static Future<Box<BalanceYearHiveModel>> getBalanceYearHiveBox() async {
-    return await Hive.openBox<BalanceYearHiveModel>(hiveYearBalanceBoxName);
+    return await Hive.openBox<BalanceYearHiveModel>(
+        HiveConstants.hiveYearBalanceBoxName);
   }
 
   static Future<Box<TransactionsYearHiveModel>>
       getTransactionYearHiveBox() async {
     return await Hive.openBox<TransactionsYearHiveModel>(
-        hiveYearTransactionsBoxName);
+        HiveConstants.hiveYearTransactionsBoxName);
   }
 
   static String generateTransactionDayKey({required DateTime date}) {
