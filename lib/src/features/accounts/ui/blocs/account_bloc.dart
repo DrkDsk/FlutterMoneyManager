@@ -26,11 +26,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   Future<void> _getGlobalBalance(
       GetGlobalBalance event, Emitter<AccountState> emit) async {
-    final result = await _transactionRepository.getBalanceByYear();
+    final result = await _transactionRepository.getGlobalFinancialSummary();
 
-    result.fold((left) {}, (right) {
-      print("result: $right");
-    });
+    print("result: $result");
     /*emit(state.copyWith(globalBalance: result));*/
   }
 }

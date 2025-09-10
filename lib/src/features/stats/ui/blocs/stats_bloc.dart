@@ -14,6 +14,6 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
   Future<void> _loadStats(
       LoadStatsEvent event, Emitter<StatsState> emit) async {
-    final request = await _transactionRepository.getGlobalTransactionsBalance();
+    final request = await _transactionRepository.getGlobalFinancialSummary();
   }
 }
