@@ -1,6 +1,5 @@
 import 'dart:isolate';
 
-import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
@@ -11,7 +10,7 @@ import 'package:flutter_money_manager/src/features/transaction/data/models/trans
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/services/balance_calculator_service.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/services/financial_calculator_service.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:hive/hive.dart';
 
@@ -91,8 +90,6 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   Future<void> _updateGlobalBalanceRegister({
     required Transaction transaction,
   }) async {
-    final isIncome = transaction.type == TransactionTypEnum.income;
-    final source = transaction.sourceType ?? "Unknown";
     final date = transaction.transactionDate;
     final year = date.year;
     final month = date.month;
@@ -110,14 +107,11 @@ class TransactionDatasourceImpl implements TransactionDatasource {
       final baseBalance = yearModelAsMap[month] ??
           FinancialSummaryHiveModel.initial().toEntity();
 
-      final calculator = BalanceCalculatorService(
-        isIncome: isIncome,
-        source: source,
-        amount: transaction.amount,
-        balancesBySource: baseBalance.balancesBySource,
-      );
+      final calculator = FinancialCalculatorService.fromTransaction(
+          transaction: transaction,
+          balancesBySource: baseBalance.balancesBySource);
 
-      final updatedBalance = calculator.calculateUpdatedBalance(baseBalance);
+      final updatedBalance = calculator.calculateUpdatedSummary(baseBalance);
 
       return MonthlyFinancialSummaryHiveModel(
         month: month,
@@ -130,6 +124,8 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     } else {
       yearCurrentModel.months.add(monthBalance);
     }
+
+    _updateGlobalSummary(transaction: transaction);
 
     await _yearBalanceBox.put(year.toString(), yearCurrentModel);
   }
@@ -187,10 +183,11 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<FinancialSummaryHiveModel?> getGlobalBalance() async {
-    final globalTransactionBalance = _globalBalanceBox.get("summary");
+  Future<FinancialSummaryHiveModel> getGlobalFinancialSummary() async {
+    final globalTransactionBalance =
+        _globalBalanceBox.get(HiveHelper.globalSummaryKey);
 
-    return globalTransactionBalance;
+    return globalTransactionBalance ?? FinancialSummaryHiveModel.initial();
   }
 
   @override
@@ -220,5 +217,21 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     }
 
     return balances.first.summary;
+  }
+
+  Future<void> _updateGlobalSummary({required Transaction transaction}) async {
+    final globalSummaryEntity =
+        _globalBalanceBox.get(HiveHelper.globalSummaryKey) ??
+            FinancialSummaryHiveModel.initial();
+
+    final updatedGlobalSummary = FinancialCalculatorService.fromTransaction(
+      transaction: transaction,
+      balancesBySource: globalSummaryEntity.balancesBySource,
+    ).calculateUpdatedSummary(globalSummaryEntity.toEntity());
+
+    await _globalBalanceBox.put(
+      HiveHelper.globalSummaryKey,
+      FinancialSummaryHiveModel.fromEntity(updatedGlobalSummary),
+    );
   }
 }
