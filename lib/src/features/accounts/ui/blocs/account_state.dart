@@ -25,7 +25,7 @@ class AccountState with EquatableMixin {
         financialSummary: FinancialSummary(
       income: 0,
       expense: 0,
-      total: 0,
+      netWorth: 0,
       asset: 0,
       debt: 0,
       balancesBySource: {},

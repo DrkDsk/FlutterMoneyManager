@@ -61,4 +61,6 @@ class HiveHelper {
 
     return "$year";
   }
+
+  static const String globalSummaryKey = "global_summary_key";
 }
