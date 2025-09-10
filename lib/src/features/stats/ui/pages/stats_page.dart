@@ -99,8 +99,12 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
                       tabController: _tabController,
                       margin: EdgeInsets.zero,
                       tabs: [
-                        Tab(text: kIncomeType.firstUpper()),
-                        Tab(text: kExpenseType.firstUpper())
+                        Tab(
+                            text:
+                                TransactionsConstants.kIncomeType.firstUpper()),
+                        Tab(
+                            text:
+                                TransactionsConstants.kExpenseType.firstUpper())
                       ]),
                   const SizedBox(height: 10),
                   Expanded(

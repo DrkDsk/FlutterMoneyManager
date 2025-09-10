@@ -16,9 +16,10 @@ class BottomTransactionSources extends StatelessWidget {
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3, crossAxisSpacing: 10),
-        itemCount: kDefaultTransactionSources.length,
+        itemCount: TransactionsConstants.kDefaultTransactionSources.length,
         itemBuilder: (context, index) {
-          final transactionSource = kDefaultTransactionSources[index];
+          final transactionSource =
+              TransactionsConstants.kDefaultTransactionSources[index];
 
           return GestureDetector(
             onTap: () => onSelectTransactionSource(transactionSource),

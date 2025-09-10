@@ -2,13 +2,12 @@ import 'package:flutter_money_manager/src/core/shared/hive/data/models/global_ba
 import 'package:flutter_money_manager/src/features/transaction/data/models/balance_year_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transactions_month_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
 abstract interface class TransactionDatasource {
   Future<bool> saveTransaction(Transaction transaction);
 
-  Future<TransactionsMonthHiveModel> getTransactionsModelsMonth(
+  Future<Map<String, List<TransactionHiveModel>>> getTransactionsModelsMonth(
       {required int month, required int year});
 
   Future<List<TransactionHiveModel>> getTransactionsModelsByDate(

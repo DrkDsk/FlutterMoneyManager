@@ -57,24 +57,27 @@ class TransactionRepositoryImpl implements TransactionRepository {
         year: defaultYear,
       );
 
-      final transactionsData =
-          transactionsModelsMonth.transactions.entries.map((entry) {
-        final date = DatetimeHelper.parse(input: entry.key);
-        final transactions = entry.value.map((t) => t.toEntity()).toList();
-        return TransactionsData(transactions: transactions, date: date);
-      }).toList();
-
       final monthBalance = await _datasource.getBalancesMonth(
         month: defaultMonth,
         year: defaultYear,
       );
 
-      final transactionsBalance = TransactionBalance(
-        transactionsData: transactionsData,
-        income: monthBalance.income,
-        total: monthBalance.total,
-        expense: monthBalance.expense,
-      );
+      final transactionsBalance = await Isolate.run(() {
+        final transactionsData = transactionsModelsMonth.entries.map((entry) {
+          final date = DatetimeHelper.parse(input: entry.key);
+          final transactions = entry.value.map((t) => t.toEntity()).toList();
+          return TransactionsData(transactions: transactions, date: date);
+        }).toList();
+
+        final transactionsBalance = TransactionBalance(
+          transactionsData: transactionsData,
+          income: monthBalance.income,
+          total: monthBalance.total,
+          expense: monthBalance.expense,
+        );
+
+        return transactionsBalance;
+      });
 
       return Right(transactionsBalance);
     } on UnknownException catch (_) {
@@ -111,9 +114,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
           final amount = (raw["amount"] as num).toInt();
 
           final transactionTypeName = raw['type'] as String;
-          final transactionType = transactionTypeName == kIncomeType
-              ? TransactionTypEnum.income
-              : TransactionTypEnum.expense;
+          final transactionType =
+              transactionTypeName == TransactionsConstants.kIncomeType
+                  ? TransactionTypEnum.income
+                  : TransactionTypEnum.expense;
           final categoryType = raw["categoryType"] as String;
           final sourceType = raw["sourceType"] as String;
           final transactionDate = DateTime.fromMillisecondsSinceEpoch(
@@ -173,7 +177,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
       return data;
     });
 
-    final defaultTransactionSource = kDefaultTransactionSources
+    final defaultTransactionSource = TransactionsConstants
+        .kDefaultTransactionSources
         .map((transactionSource) =>
             AccountBalance(transactionSource: transactionSource, amount: 0))
         .toList();
@@ -191,7 +196,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, Map<int, GlobalBalance>?>> getTransactionsByYear(
+  Future<Either<Failure, Map<int, GlobalBalance>?>> getBalanceByYear(
       {int? year}) async {
     final model = await _datasource.getBalancesByYear(year: year);
 

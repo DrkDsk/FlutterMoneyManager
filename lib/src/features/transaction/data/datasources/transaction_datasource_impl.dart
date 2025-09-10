@@ -15,20 +15,17 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:hive/hive.dart';
 
 class TransactionDatasourceImpl implements TransactionDatasource {
-  final Box<TransactionHiveModel> _transactionBox;
   final Box<TransactionSourceHiveModel> _transactionSourceBox;
   final Box<GlobalBalanceHiveModel> _globalBalanceBox;
   final Box<BalanceYearHiveModel> _yearBalanceBox;
   final Box<TransactionsYearHiveModel> _transactionsYearBox;
 
   const TransactionDatasourceImpl(
-      {required Box<TransactionHiveModel> transactionBox,
-      required Box<TransactionSourceHiveModel> transactionSourceBox,
+      {required Box<TransactionSourceHiveModel> transactionSourceBox,
       required Box<GlobalBalanceHiveModel> globalBalanceBox,
       required Box<BalanceYearHiveModel> yearBalanceBox,
       required Box<TransactionsYearHiveModel> transactionsYearBox})
-      : _transactionBox = transactionBox,
-        _transactionSourceBox = transactionSourceBox,
+      : _transactionSourceBox = transactionSourceBox,
         _globalBalanceBox = globalBalanceBox,
         _transactionsYearBox = transactionsYearBox,
         _yearBalanceBox = yearBalanceBox;
@@ -39,37 +36,44 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
     final date = transaction.transactionDate;
     final year = date.year;
-    final monthNumber = date.month;
+    final month = date.month;
 
     final transactionKey = HiveHelper.generateTransactionYearKey(date: date);
-    final dayTransactionKey = HiveHelper.generateTransactionDayKey(date: date);
+    final dayKey = HiveHelper.generateTransactionDayKey(date: date);
 
     final transactionsYear = _transactionsYearBox.get(transactionKey) ??
-        TransactionsYearHiveModel(year: year, months: []);
+        TransactionsYearHiveModel.initial(year: year);
 
-    final exitsMonthRegisteredIndex = transactionsYear.months
-        .indexWhere((currentMonth) => currentMonth.month == monthNumber);
+    final monthIndex =
+        transactionsYear.months.indexWhere((m) => m.month == month);
 
-    if (exitsMonthRegisteredIndex != -1) {
-      final monthTransactions =
-          transactionsYear.months[exitsMonthRegisteredIndex];
+    TransactionsMonthHiveModel monthModel;
 
-      final arrayOfTransactionsByDay =
-          monthTransactions.transactions[dayTransactionKey] ?? [];
-
-      arrayOfTransactionsByDay.add(hiveModel);
-
-      monthTransactions.transactions[dayTransactionKey] =
-          arrayOfTransactionsByDay;
-
-      transactionsYear.months[exitsMonthRegisteredIndex] = monthTransactions
-          .copyWith(transactions: monthTransactions.transactions);
+    if (monthIndex != -1) {
+      monthModel = transactionsYear.months[monthIndex];
     } else {
-      final TransactionsMonthHiveModel monthTransactionHiveModel =
-          TransactionsMonthHiveModel(month: monthNumber, transactions: {});
+      monthModel = TransactionsMonthHiveModel.initial(month: month);
+      transactionsYear.months.add(monthModel);
+    }
 
-      monthTransactionHiveModel.transactions[dayTransactionKey] = [hiveModel];
-      transactionsYear.months.add(monthTransactionHiveModel);
+    final transactionsByDay = List<TransactionHiveModel>.from(
+      monthModel.transactions[dayKey] ?? [],
+    );
+
+    transactionsByDay.add(hiveModel);
+
+    monthModel = monthModel.copyWith(
+      transactions: {
+        ...monthModel.transactions,
+        dayKey: transactionsByDay,
+      },
+    );
+
+    if (monthIndex != -1) {
+      transactionsYear.months[monthIndex] = monthModel;
+    } else {
+      final lastIndex = transactionsYear.months.length - 1;
+      transactionsYear.months[lastIndex] = monthModel;
     }
 
     await _transactionsYearBox.put(transactionKey, transactionsYear);
@@ -126,16 +130,13 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<TransactionsMonthHiveModel> getTransactionsModelsMonth(
+  Future<Map<String, List<TransactionHiveModel>>> getTransactionsModelsMonth(
       {required int month, required int year}) async {
     final transactionYearKey = "$year";
     final yearTransactions = _transactionsYearBox.get(transactionYearKey);
 
-    final emptyTransactionsMonthModel =
-        TransactionsMonthHiveModel(month: month, transactions: {});
-
     if (yearTransactions == null) {
-      return emptyTransactionsMonthModel;
+      return const {};
     }
 
     final monthTransactions = yearTransactions.months
@@ -143,10 +144,12 @@ class TransactionDatasourceImpl implements TransactionDatasource {
         .toList();
 
     if (monthTransactions.isEmpty) {
-      return emptyTransactionsMonthModel;
+      return const {};
     }
 
-    return monthTransactions.first;
+    final transactions = monthTransactions.first.transactions;
+
+    return transactions;
   }
 
   @override
@@ -189,11 +192,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
   @override
   Future<BalanceYearHiveModel?> getBalancesByYear({int? year}) async {
-    final selectedYear = year ?? DateTime.now().year;
+    final balanceYearKey = (year ?? DateTime.now().year).toString();
 
-    final yearTransactions = _yearBalanceBox.get(selectedYear.toString());
-
-    return yearTransactions;
+    return _yearBalanceBox.get(balanceYearKey);
   }
 
   @override

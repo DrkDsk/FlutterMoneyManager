@@ -207,8 +207,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     onTap: _createTransactionCubit.updateTransactionType,
                     tabController: _transactionTypeTabController,
                     tabs: [
-                      Tab(text: kIncomeType.firstUpper()),
-                      Tab(text: kExpenseType.firstUpper())
+                      Tab(text: TransactionsConstants.kIncomeType.firstUpper()),
+                      Tab(text: TransactionsConstants.kExpenseType.firstUpper())
                     ]);
               },
             ),
@@ -222,7 +222,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
                     onTapCategory: () => _showTransactionsCategories(context,
-                        items: kDefaultIncomeCategories),
+                        items: TransactionsConstants.kDefaultIncomeCategories),
                     onTapTransactionSource: () =>
                         _showTransactionSources(context),
                   ),
@@ -232,7 +232,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                     onSelectTransactionDate: onTransactionDateChanged,
                     onTapAmount: () => _showCustomKeyboard(context),
                     onTapCategory: () => _showTransactionsCategories(context,
-                        items: kDefaultExpenseCategories),
+                        items: TransactionsConstants.kDefaultExpenseCategories),
                     onTapTransactionSource: () =>
                         _showTransactionSources(context),
                   )

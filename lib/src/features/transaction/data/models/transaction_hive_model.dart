@@ -77,7 +77,7 @@ class TransactionHiveModel extends HiveObject {
   Transaction toEntity() {
     return Transaction(
         id: id,
-        type: type == kIncomeType
+        type: type == TransactionsConstants.kIncomeType
             ? TransactionTypEnum.income
             : TransactionTypEnum.expense,
         transactionDate: transactionDate,

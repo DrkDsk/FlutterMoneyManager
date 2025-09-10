@@ -29,11 +29,13 @@ class BalanceCalculatorService {
     final newTotal = baseBalance.total + (isIncome ? amount : -amount);
 
     final newAsset = updatedSources.entries
-        .where((e) => kPositiveTransactionSources.contains(e.key))
+        .where((e) =>
+            TransactionsConstants.kPositiveTransactionSources.contains(e.key))
         .fold<int>(0, (sum, e) => sum + (e.value < 0 ? 0 : e.value));
 
     final newDebt = updatedSources.entries
-        .where((e) => kNegativeTransactionSources.contains(e.key))
+        .where((e) =>
+            TransactionsConstants.kNegativeTransactionSources.contains(e.key))
         .fold<int>(0, (sum, e) => sum + (e.value < 0 ? -e.value : e.value));
 
     return baseBalance.copyWith(
