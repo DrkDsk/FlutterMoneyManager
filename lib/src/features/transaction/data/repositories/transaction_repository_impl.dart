@@ -53,60 +53,32 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final models = await _datasource.getTransactionsModels(
           month: defaultMonth, year: defaultYear);
 
-      final rawModels = models.map((element) => element.toJson()).toList();
+      final transactionsData = models.transactions.entries.map((entry) {
+        final dateSplit = entry.key.split("-");
+        final year = int.tryParse(dateSplit[2]) ?? defaultYear;
+        final month = int.tryParse(dateSplit[1]) ?? defaultMonth;
+        final day = int.tryParse(dateSplit[0]) ?? defaultDate.day;
+
+        final date = DateTime(year, month, day);
+
+        final transactions =
+            entry.value.map((transaction) => transaction.toEntity()).toList();
+
+        final data = TransactionsData(transactions: transactions, date: date);
+
+        return data;
+      }).toList();
 
       final monthBalance = await _datasource.getMonthBalances(
           month: defaultMonth, year: defaultYear);
 
-      final balance = await Isolate.run(() {
-        final grouped = <DateTime, List<Map<String, dynamic>>>{};
+      final transactionsBalance = TransactionBalance(
+          transactionsData: transactionsData,
+          income: monthBalance.income,
+          total: monthBalance.total,
+          expense: monthBalance.expense);
 
-        for (final raw in rawModels) {
-          final dateFromMilliseconds =
-              DateTime.fromMillisecondsSinceEpoch(raw['transactionDate']);
-
-          final date = DateTime(dateFromMilliseconds.year,
-              dateFromMilliseconds.month, dateFromMilliseconds.day);
-          grouped.putIfAbsent(date, () => []).add(raw);
-        }
-
-        final transactionsData = grouped.entries.map((entry) {
-          final transactions = entry.value.map((raw) {
-            final id = raw["id"] as String;
-            final amount = (raw["amount"] as num).toInt();
-
-            final transactionTypeName = raw['type'] as String;
-            final transactionType = transactionTypeName == kIncomeType
-                ? TransactionTypEnum.income
-                : TransactionTypEnum.expense;
-            final categoryType = raw["categoryType"] as String;
-            final sourceType = raw["sourceType"] as String;
-            final transactionDate = DateTime.fromMillisecondsSinceEpoch(
-                raw['transactionDate'] as int);
-
-            return Transaction(
-                id: id,
-                type: transactionType,
-                amount: amount,
-                transactionDate: transactionDate,
-                categoryType: categoryType,
-                sourceType: sourceType);
-          }).toList();
-
-          return TransactionsData(
-            transactions: transactions,
-            date: entry.key,
-          );
-        }).toList();
-
-        return TransactionBalance(
-            transactionsData: transactionsData,
-            income: monthBalance.income,
-            expense: monthBalance.expense,
-            total: monthBalance.income - monthBalance.expense);
-      });
-
-      return Right(balance);
+      return Right(transactionsBalance);
     } on UnknownException catch (_) {
       return Left(GenericFailure());
     } catch (e) {

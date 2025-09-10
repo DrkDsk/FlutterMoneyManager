@@ -37,24 +37,41 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     final hiveModel = TransactionHiveModel.fromEntity(transaction);
 
     final year = transaction.transactionDate.year;
-    final month = transaction.transactionDate.month;
+    final monthNumber = transaction.transactionDate.month;
+    final dayNumber = transaction.transactionDate.day;
+
     final transactionKey = "$year";
+
+    final month = monthNumber < 10 ? "0$monthNumber" : monthNumber;
+    final day = dayNumber < 10 ? "0$dayNumber" : "$dayNumber";
+
+    final dayTransactionKey = "$day-$month-$year";
 
     final transactionsYear = _transactionsYearBox.get(transactionKey) ??
         TransactionsYearHiveModel(year: year, months: []);
 
     final exitsMonthRegisteredIndex = transactionsYear.months
-        .indexWhere((currentMonth) => currentMonth.month == month);
+        .indexWhere((currentMonth) => currentMonth.month == monthNumber);
 
     if (exitsMonthRegisteredIndex != -1) {
       final monthTransactions =
           transactionsYear.months[exitsMonthRegisteredIndex];
-      monthTransactions.transactions.add(hiveModel);
+
+      final arrayOfTransactionsByDay =
+          monthTransactions.transactions[dayTransactionKey] ?? [];
+
+      arrayOfTransactionsByDay.add(hiveModel);
+
+      monthTransactions.transactions[dayTransactionKey] =
+          arrayOfTransactionsByDay;
+
+      transactionsYear.months[exitsMonthRegisteredIndex] = monthTransactions
+          .copyWith(transactions: monthTransactions.transactions);
     } else {
       final TransactionsMonthHiveModel monthTransactionHiveModel =
-          TransactionsMonthHiveModel(month: month, transactions: []);
+          TransactionsMonthHiveModel(month: monthNumber, transactions: {});
 
-      monthTransactionHiveModel.transactions.add(hiveModel);
+      monthTransactionHiveModel.transactions[dayTransactionKey] = [hiveModel];
       transactionsYear.months.add(monthTransactionHiveModel);
     }
 
@@ -111,13 +128,16 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<List<TransactionHiveModel>> getTransactionsModels(
+  Future<TransactionsMonthHiveModel> getTransactionsModels(
       {required int month, required int year}) async {
     final transactionYearKey = "$year";
     final yearTransactions = _transactionsYearBox.get(transactionYearKey);
 
+    final emptyTransactionsMonthModel =
+        TransactionsMonthHiveModel(month: month, transactions: {});
+
     if (yearTransactions == null) {
-      return [];
+      return emptyTransactionsMonthModel;
     }
 
     final monthTransactions = yearTransactions.months
@@ -125,10 +145,10 @@ class TransactionDatasourceImpl implements TransactionDatasource {
         .toList();
 
     if (monthTransactions.isEmpty) {
-      return [];
+      return emptyTransactionsMonthModel;
     }
 
-    return monthTransactions.first.transactions;
+    return monthTransactions.first;
   }
 
   @override
