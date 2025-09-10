@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:isolate';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter_money_manager/src/core/constants/hive_constants.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
+import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
@@ -17,6 +20,7 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/services/financial_calculator_service.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionDatasource _datasource;
@@ -27,11 +31,45 @@ class TransactionRepositoryImpl implements TransactionRepository {
       : _datasource = datasource;
 
   @override
-  Future<Either<Failure, bool>> saveTransaction(Transaction transaction) async {
+  Future<Either<Failure, bool>> save(Transaction transaction) async {
     try {
-      final result = await _datasource.saveTransaction(transaction);
+      final date = transaction.transactionDate;
 
-      return Right(result);
+      final transactionKey = HiveHelper.generateTransactionYearKey(date: date);
+
+      final transactionsYear =
+          await _datasource.getYearlyTransactionsHiveModel(key: transactionKey);
+
+      final yearlyModel =
+          FinancialCalculatorService.updateYearlyTransactionHiveModel(
+              transactionsYear: transactionsYear, transaction: transaction);
+
+      await _datasource.save(model: yearlyModel, key: transactionKey);
+
+      final yearlyCurrentModel =
+          await _datasource.getBalancesByYear(key: date.year.toString());
+
+      final yearlyFinancialSummaryModel =
+          FinancialCalculatorService.updateYearlyFinancialSummary(
+              transaction: transaction, yearlyCurrentModel: yearlyCurrentModel);
+
+      await _datasource.saveYearFinancialSummary(
+          model: yearlyFinancialSummaryModel, key: date.year.toString());
+
+      final financialSummaryModel = await _datasource.getGlobalFinancialSummary(
+          key: HiveConstants.globalSummaryKey);
+
+      final updatedGlobalFinancialModel =
+          FinancialCalculatorService.updateGlobalSummary(
+              transaction: transaction,
+              financialSummaryModel: financialSummaryModel);
+
+      await _datasource.saveFinancialSummary(
+          model:
+              FinancialSummaryHiveModel.fromEntity(updatedGlobalFinancialModel),
+          key: HiveConstants.globalSummaryKey);
+
+      return const Right(true);
     } on UnknownException catch (_) {
       return Left(GenericFailure());
     } catch (e) {
@@ -164,17 +202,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
   @override
   Future<FinancialSummary> getGlobalFinancialSummary() async {
-    final globalTransactionBalanceModel =
-        await _datasource.getGlobalFinancialSummary();
+    final globalTransactionBalanceModel = await _datasource
+            .getGlobalFinancialSummary(key: HiveConstants.globalSummaryKey) ??
+        FinancialSummaryHiveModel.initial();
 
     return globalTransactionBalanceModel.toEntity();
-  }
-
-  @override
-  Future<Either<Failure, Map<int, FinancialSummary>?>> getBalanceByYear(
-      {int? year}) async {
-    final model = await _datasource.getBalancesByYear(year: year);
-
-    return Right(model?.toEntityMap());
   }
 }

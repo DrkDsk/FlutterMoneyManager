@@ -77,7 +77,7 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
     emit(state.copyWith(status: CreateTransactionStatus.loading));
 
-    final result = await _repository.saveTransaction(transaction);
+    final result = await _repository.save(transaction);
 
     result.fold((left) {
       emit(state.copyWith(status: CreateTransactionStatus.error));

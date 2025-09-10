@@ -6,7 +6,7 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
 abstract interface class TransactionRepository {
-  Future<Either<Failure, bool>> saveTransaction(Transaction transaction);
+  Future<Either<Failure, bool>> save(Transaction transaction);
 
   Future<Either<Failure, TransactionsSummary>> getTransactionsByMonth(
       {int? month, int? year});
@@ -19,7 +19,4 @@ abstract interface class TransactionRepository {
   Future<FinancialSummary> getGlobalFinancialSummary();
 
   Stream<TransactionsSummary> transactionsStream();
-
-  Future<Either<Failure, Map<int, FinancialSummary>?>> getBalanceByYear(
-      {int? year});
 }
