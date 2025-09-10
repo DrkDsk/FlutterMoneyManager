@@ -89,12 +89,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
       {required DateTime date}) async {
     final models = await _datasource.getTransactionsModelsByDate(date: date);
 
-    final rawModels = models.map((element) => element.toJson()).toList();
+    final rawModels = models.map((model) => model.toJson()).toList();
+    int income = 0;
+    int expense = 0;
 
     final balance = await Isolate.run(() {
-      int income = 0;
-      int expense = 0;
-
       final grouped = <DateTime, List<Map<String, dynamic>>>{};
 
       for (final raw in rawModels) {
@@ -137,17 +136,14 @@ class TransactionRepositoryImpl implements TransactionRepository {
           }
         }
 
-        return TransactionsData(
-          transactions: transactions,
-          date: entry.key,
-        );
+        return TransactionsData(transactions: transactions, date: date);
       }).toList();
 
       return TransactionBalance(
           transactionsData: transactionsData,
           income: income,
-          expense: expense,
-          total: income - expense);
+          total: income - expense,
+          expense: expense);
     });
 
     _transactionsController.add(balance);

@@ -8,7 +8,7 @@ import 'package:flutter_money_manager/src/features/transaction/data/models/trans
 import 'package:flutter_money_manager/src/features/transaction/data/models/balance_year_hive_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class HiveInitializer {
+class HiveHelper {
   static init() async {
     await Hive.initFlutter();
 
@@ -44,5 +44,22 @@ class HiveInitializer {
       getTransactionYearHiveBox() async {
     return await Hive.openBox<TransactionsYearHiveModel>(
         hiveYearTransactionsBoxName);
+  }
+
+  static String generateTransactionDayKey({required DateTime date}) {
+    final year = date.year;
+    final monthNumber = date.month;
+    final dayNumber = date.day;
+
+    final month = monthNumber < 10 ? "0$monthNumber" : monthNumber;
+    final day = dayNumber < 10 ? "0$dayNumber" : "$dayNumber";
+
+    return "$day-$month-$year";
+  }
+
+  static String generateTransactionYearKey({required DateTime date}) {
+    final year = date.year;
+
+    return "$year";
   }
 }

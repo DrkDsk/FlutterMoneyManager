@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
+import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/global_balance_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/month_balance_hive_model.dart';
@@ -36,16 +37,12 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   Future<bool> saveTransaction(Transaction transaction) async {
     final hiveModel = TransactionHiveModel.fromEntity(transaction);
 
-    final year = transaction.transactionDate.year;
-    final monthNumber = transaction.transactionDate.month;
-    final dayNumber = transaction.transactionDate.day;
+    final date = transaction.transactionDate;
+    final year = date.year;
+    final monthNumber = date.month;
 
-    final transactionKey = "$year";
-
-    final month = monthNumber < 10 ? "0$monthNumber" : monthNumber;
-    final day = dayNumber < 10 ? "0$dayNumber" : "$dayNumber";
-
-    final dayTransactionKey = "$day-$month-$year";
+    final transactionKey = HiveHelper.generateTransactionYearKey(date: date);
+    final dayTransactionKey = HiveHelper.generateTransactionDayKey(date: date);
 
     final transactionsYear = _transactionsYearBox.get(transactionKey) ??
         TransactionsYearHiveModel(year: year, months: []);
@@ -87,8 +84,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }) async {
     final isIncome = transaction.type == TransactionTypEnum.income;
     final source = transaction.sourceType ?? "Unknown";
-    final year = transaction.transactionDate.year;
-    final month = transaction.transactionDate.month;
+    final date = transaction.transactionDate;
+    final year = date.year;
+    final month = date.month;
 
     BalanceYearHiveModel yearCurrentModel =
         _yearBalanceBox.get(year.toString()) ??
@@ -154,16 +152,27 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   @override
   Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
       {required DateTime date}) async {
-    final values = _transactionBox.values.toList();
+    final month = date.month;
 
-    final filtered = values.where((transaction) {
-      final tDate = transaction.transactionDate;
-      return tDate.year == date.year &&
-          tDate.month == date.month &&
-          tDate.day == date.day;
-    }).toList();
+    final transactionYearKey =
+        HiveHelper.generateTransactionYearKey(date: date);
+    final transactionDayKey = HiveHelper.generateTransactionDayKey(date: date);
 
-    return filtered;
+    final yearTransactions = _transactionsYearBox.get(transactionYearKey);
+
+    if (yearTransactions == null) {
+      return const [];
+    }
+
+    final monthTransactions = yearTransactions.months
+        .where((monthTransaction) => monthTransaction.month == month)
+        .toList();
+
+    if (monthTransactions.isEmpty) {
+      return const [];
+    }
+
+    return monthTransactions.first.transactions[transactionDayKey] ?? [];
   }
 
   @override

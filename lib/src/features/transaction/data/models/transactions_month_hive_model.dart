@@ -24,6 +24,10 @@ class TransactionsMonthHiveModel extends HiveObject {
     );
   }
 
+  factory TransactionsMonthHiveModel.initial({required int month}) {
+    return TransactionsMonthHiveModel(month: month, transactions: const {});
+  }
+
   TransactionsMonth toEntity() {
     return TransactionsMonth(
       month: month,
