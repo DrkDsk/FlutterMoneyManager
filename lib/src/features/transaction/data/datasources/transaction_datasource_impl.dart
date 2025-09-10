@@ -128,7 +128,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<TransactionsMonthHiveModel> getTransactionsModels(
+  Future<TransactionsMonthHiveModel> getTransactionsModelsMonth(
       {required int month, required int year}) async {
     final transactionYearKey = "$year";
     final yearTransactions = _transactionsYearBox.get(transactionYearKey);
@@ -172,7 +172,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<GlobalBalanceHiveModel?> getTransactionGlobalBalance() async {
+  Future<GlobalBalanceHiveModel?> getGlobalBalance() async {
     final globalTransactionBalance = _globalBalanceBox.get("summary");
 
     return globalTransactionBalance;
@@ -188,7 +188,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<GlobalBalanceHiveModel> getMonthBalances(
+  Future<GlobalBalanceHiveModel> getBalancesMonth(
       {int? year, int? month}) async {
     final defaultValue = DateTime.now();
     final selectedYear = year ?? defaultValue.year;

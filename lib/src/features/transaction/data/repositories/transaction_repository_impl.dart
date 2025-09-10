@@ -46,37 +46,42 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<Either<Failure, TransactionBalance>> getTransactionsByMonth(
       {int? month, int? year}) async {
     try {
-      final defaultDate = DateTime.now();
-      final defaultMonth = month ?? defaultDate.month;
-      final defaultYear = year ?? defaultDate.year;
+      final now = DateTime.now();
+      final defaultMonth = month ?? now.month;
+      final defaultYear = year ?? now.year;
 
-      final models = await _datasource.getTransactionsModels(
-          month: defaultMonth, year: defaultYear);
+      final transactionsModelsMonth =
+          await _datasource.getTransactionsModelsMonth(
+        month: defaultMonth,
+        year: defaultYear,
+      );
 
-      final transactionsData = models.transactions.entries.map((entry) {
-        final dateSplit = entry.key.split("-");
-        final year = int.tryParse(dateSplit[2]) ?? defaultYear;
-        final month = int.tryParse(dateSplit[1]) ?? defaultMonth;
-        final day = int.tryParse(dateSplit[0]) ?? defaultDate.day;
+      DateTime _parseDate(String key) {
+        final parts = key.split('-');
+        final day = int.tryParse(parts[0]) ?? now.day;
+        final month = int.tryParse(parts[1]) ?? defaultMonth;
+        final year = int.tryParse(parts[2]) ?? defaultYear;
+        return DateTime(year, month, day);
+      }
 
-        final date = DateTime(year, month, day);
-
-        final transactions =
-            entry.value.map((transaction) => transaction.toEntity()).toList();
-
-        final data = TransactionsData(transactions: transactions, date: date);
-
-        return data;
+      final transactionsData =
+          transactionsModelsMonth.transactions.entries.map((entry) {
+        final date = _parseDate(entry.key);
+        final transactions = entry.value.map((t) => t.toEntity()).toList();
+        return TransactionsData(transactions: transactions, date: date);
       }).toList();
 
-      final monthBalance = await _datasource.getMonthBalances(
-          month: defaultMonth, year: defaultYear);
+      final monthBalance = await _datasource.getBalancesMonth(
+        month: defaultMonth,
+        year: defaultYear,
+      );
 
       final transactionsBalance = TransactionBalance(
-          transactionsData: transactionsData,
-          income: monthBalance.income,
-          total: monthBalance.total,
-          expense: monthBalance.expense);
+        transactionsData: transactionsData,
+        income: monthBalance.income,
+        total: monthBalance.total,
+        expense: monthBalance.expense,
+      );
 
       return Right(transactionsBalance);
     } on UnknownException catch (_) {
@@ -191,8 +196,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
   @override
   Future<GlobalBalance?> getGlobalTransactionsBalance() async {
-    final globalTransactionBalanceModel =
-        await _datasource.getTransactionGlobalBalance();
+    final globalTransactionBalanceModel = await _datasource.getGlobalBalance();
 
     return globalTransactionBalanceModel?.toEntity();
   }

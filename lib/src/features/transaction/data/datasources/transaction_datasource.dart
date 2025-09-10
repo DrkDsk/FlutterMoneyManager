@@ -8,7 +8,7 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 abstract interface class TransactionDatasource {
   Future<bool> saveTransaction(Transaction transaction);
 
-  Future<TransactionsMonthHiveModel> getTransactionsModels(
+  Future<TransactionsMonthHiveModel> getTransactionsModelsMonth(
       {required int month, required int year});
 
   Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
@@ -16,10 +16,10 @@ abstract interface class TransactionDatasource {
 
   Future<List<TransactionSourceHiveModel>> getTransactionSources();
 
-  Future<GlobalBalanceHiveModel?> getTransactionGlobalBalance();
+  Future<GlobalBalanceHiveModel?> getGlobalBalance();
 
   Future<BalanceYearHiveModel?> getBalancesByYear({int? year});
 
-  Future<GlobalBalanceHiveModel> getMonthBalances(
+  Future<GlobalBalanceHiveModel> getBalancesMonth(
       {required int month, required int year});
 }
