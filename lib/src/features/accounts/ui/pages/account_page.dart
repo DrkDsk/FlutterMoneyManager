@@ -50,7 +50,7 @@ class _AccountPageState extends State<AccountPage> {
                     Center(
                       child: InfoBloc(
                           title: "Net Worth",
-                          value: "\$ ${state.financialSummary.total}",
+                          value: "\$ ${state.financialSummary.netWorth}",
                           titleStyle: theme.textTheme.titleLarge?.copyWith(
                               color: theme.colorScheme.primary,
                               fontWeight: FontWeight.w600)),

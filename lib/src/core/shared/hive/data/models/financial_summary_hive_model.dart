@@ -52,7 +52,7 @@ class FinancialSummaryHiveModel extends HiveObject {
     return FinancialSummaryHiveModel(
         income: entity.income,
         expense: entity.expense,
-        netWorth: entity.total,
+        netWorth: entity.netWorth,
         asset: entity.asset,
         balancesBySource: entity.balancesBySource,
         debt: entity.debt);
@@ -73,7 +73,7 @@ class FinancialSummaryHiveModel extends HiveObject {
         income: income,
         expense: expense,
         asset: asset,
-        total: netWorth,
+        netWorth: netWorth,
         debt: debt,
         balancesBySource: balancesBySource);
   }
