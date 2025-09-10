@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:flutter_money_manager/src/core/constants/hive_constants.dart';
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
@@ -185,7 +186,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   @override
   Future<FinancialSummaryHiveModel> getGlobalFinancialSummary() async {
     final globalTransactionBalance =
-        _globalBalanceBox.get(HiveHelper.globalSummaryKey);
+        _globalBalanceBox.get(HiveConstants.globalSummaryKey);
 
     return globalTransactionBalance ?? FinancialSummaryHiveModel.initial();
   }
@@ -221,7 +222,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
   Future<void> _updateGlobalSummary({required Transaction transaction}) async {
     final globalSummaryEntity =
-        _globalBalanceBox.get(HiveHelper.globalSummaryKey) ??
+        _globalBalanceBox.get(HiveConstants.globalSummaryKey) ??
             FinancialSummaryHiveModel.initial();
 
     final updatedGlobalSummary = FinancialCalculatorService.fromTransaction(
@@ -230,7 +231,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     ).calculateUpdatedSummary(globalSummaryEntity.toEntity());
 
     await _globalBalanceBox.put(
-      HiveHelper.globalSummaryKey,
+      HiveConstants.globalSummaryKey,
       FinancialSummaryHiveModel.fromEntity(updatedGlobalSummary),
     );
   }
