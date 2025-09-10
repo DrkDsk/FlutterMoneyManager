@@ -1,14 +1,12 @@
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_financial_summary.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_transactions.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_financial_summary.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_transactions.dart';
 
 class FinancialCalculatorService {
   final bool isIncome;
@@ -57,23 +55,18 @@ class FinancialCalculatorService {
     );
   }
 
-  static YearlyFinancialSummaryHiveModel updateYearlyFinancialSummary(
+  static YearlyFinancialSummary updateYearlyFinancialSummary(
       {required Transaction transaction,
-      YearlyFinancialSummaryHiveModel? yearlyCurrentModel}) {
+      required YearlyFinancialSummary yearlyFinancialSummary}) {
     final date = transaction.transactionDate;
-    final year = date.year;
     final month = date.month;
 
-    yearlyCurrentModel = yearlyCurrentModel ??
-        YearlyFinancialSummaryHiveModel(year: year, months: []);
-
-    final yearModelAsMap = yearlyCurrentModel.toEntityMap();
+    final yearModelAsMap = yearlyFinancialSummary.toEntityMap();
 
     final monthIndexOfCurrentTransaction =
-        yearlyCurrentModel.months.indexWhere((m) => m.month == month);
+        yearlyFinancialSummary.months.indexWhere((m) => m.month == month);
 
-    final baseBalance =
-        yearModelAsMap[month] ?? FinancialSummaryHiveModel.initial().toEntity();
+    final baseBalance = yearModelAsMap[month] ?? FinancialSummary.initial();
 
     final calculator = FinancialCalculatorService.fromTransaction(
         transaction: transaction,
@@ -81,18 +74,19 @@ class FinancialCalculatorService {
 
     final updatedBalance = calculator.calculateUpdatedSummary(baseBalance);
 
-    final monthBalance = MonthlyFinancialSummaryHiveModel(
+    final monthBalance = MonthlyFinancialSummary(
       month: month,
-      summary: FinancialSummaryHiveModel.fromEntity(updatedBalance),
+      summary: updatedBalance,
     );
 
     if (monthIndexOfCurrentTransaction != -1) {
-      yearlyCurrentModel.months[monthIndexOfCurrentTransaction] = monthBalance;
+      yearlyFinancialSummary.months[monthIndexOfCurrentTransaction] =
+          monthBalance;
     } else {
-      yearlyCurrentModel.months.add(monthBalance);
+      yearlyFinancialSummary.months.add(monthBalance);
     }
 
-    return yearlyCurrentModel;
+    return yearlyFinancialSummary;
   }
 
   factory FinancialCalculatorService.fromTransaction(
@@ -109,62 +103,60 @@ class FinancialCalculatorService {
         balancesBySource: balancesBySource);
   }
 
-  static YearlyTransactionsHiveModel updateYearlyTransactionHiveModel(
-      {required YearlyTransactionsHiveModel? transactionsYear,
+  static YearlyTransactions updateYearlyTransactionHiveModel(
+      {required YearlyTransactions? yearlyTransactions,
       required Transaction transaction}) {
     final date = transaction.transactionDate;
     final month = date.month;
 
-    transactionsYear = transactionsYear ??
-        YearlyTransactionsHiveModel.initial(year: date.year);
+    yearlyTransactions =
+        yearlyTransactions ?? YearlyTransactions.initial(year: date.year);
 
     final dayKey = HiveHelper.generateTransactionDayKey(date: date);
-    final hiveModel = TransactionHiveModel.fromEntity(transaction);
+    final hiveModel = transaction;
     final monthIndex =
-        transactionsYear.months.indexWhere((m) => m.month == month);
+        yearlyTransactions.months.indexWhere((m) => m.month == month);
 
-    MonthlyTransactionsHiveModel monthModel;
+    MonthlyTransactions monthlyTransactions;
 
     if (monthIndex != -1) {
-      monthModel = transactionsYear.months[monthIndex];
+      monthlyTransactions = yearlyTransactions.months[monthIndex];
     } else {
-      monthModel = MonthlyTransactionsHiveModel.initial(month: month);
-      transactionsYear.months.add(monthModel);
+      monthlyTransactions = MonthlyTransactions.initial(month: month);
+      yearlyTransactions.months.add(monthlyTransactions);
     }
 
-    final transactionsByDay = List<TransactionHiveModel>.from(
-      monthModel.transactions[dayKey] ?? [],
+    final transactionsByDay = List<Transaction>.from(
+      monthlyTransactions.transactions[dayKey] ?? [],
     );
 
     transactionsByDay.add(hiveModel);
 
-    monthModel = monthModel.copyWith(
+    monthlyTransactions = monthlyTransactions.copyWith(
       transactions: {
-        ...monthModel.transactions,
+        ...monthlyTransactions.transactions,
         dayKey: transactionsByDay,
       },
     );
 
     if (monthIndex != -1) {
-      transactionsYear.months[monthIndex] = monthModel;
+      yearlyTransactions.months[monthIndex] = monthlyTransactions;
     } else {
-      final lastIndex = transactionsYear.months.length - 1;
-      transactionsYear.months[lastIndex] = monthModel;
+      final lastIndex = yearlyTransactions.months.length - 1;
+      yearlyTransactions.months[lastIndex] = monthlyTransactions;
     }
 
-    return transactionsYear;
+    return yearlyTransactions;
   }
 
   static FinancialSummary updateGlobalSummary(
-      {required Transaction transaction,
-      FinancialSummaryHiveModel? financialSummaryModel}) {
-    financialSummaryModel =
-        financialSummaryModel ?? FinancialSummaryHiveModel.initial();
+      {required Transaction transaction, FinancialSummary? financialSummary}) {
+    financialSummary = financialSummary ?? FinancialSummary.initial();
 
     final updatedGlobalSummary = FinancialCalculatorService.fromTransaction(
       transaction: transaction,
-      balancesBySource: financialSummaryModel.balancesBySource,
-    ).calculateUpdatedSummary(financialSummaryModel.toEntity());
+      balancesBySource: financialSummary.balancesBySource,
+    ).calculateUpdatedSummary(financialSummary);
 
     return updatedGlobalSummary;
   }

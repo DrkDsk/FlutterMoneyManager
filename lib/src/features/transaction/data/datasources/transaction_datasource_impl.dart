@@ -30,8 +30,6 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     try {
       await _transactionsYearBox.put(key, model);
 
-      /* _updateGlobalBalanceRegister(transaction: transaction);*/
-
       return true;
     } catch (e) {
       throw UnknownException(message: e.toString());
@@ -93,9 +91,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   @override
   Future<FinancialSummaryHiveModel?> getGlobalFinancialSummary(
       {required String key}) async {
-    final globalTransactionBalance = _globalBalanceBox.get(key);
-
-    return globalTransactionBalance;
+    return _globalBalanceBox.get(key);
   }
 
   @override

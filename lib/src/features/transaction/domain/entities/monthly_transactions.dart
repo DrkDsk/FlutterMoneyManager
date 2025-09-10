@@ -18,6 +18,10 @@ class MonthlyTransactions with EquatableMixin {
     );
   }
 
+  factory MonthlyTransactions.initial({required int month}) {
+    return MonthlyTransactions(month: month, transactions: {});
+  }
+
   @override
   List<Object?> get props => [month, transactions];
 }
