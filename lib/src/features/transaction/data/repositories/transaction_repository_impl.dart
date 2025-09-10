@@ -8,11 +8,11 @@ import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart'
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/global_balance.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_balance.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_balance.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
@@ -21,7 +21,7 @@ import 'package:flutter_money_manager/src/features/transaction/domain/repositori
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionDatasource _datasource;
   final _transactionsController =
-      StreamController<TransactionBalance>.broadcast();
+      StreamController<TransactionsSummary>.broadcast();
 
   TransactionRepositoryImpl({required TransactionDatasource datasource})
       : _datasource = datasource;
@@ -40,12 +40,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Stream<TransactionBalance> transactionsStream() {
+  Stream<TransactionsSummary> transactionsStream() {
     return _transactionsController.stream;
   }
 
   @override
-  Future<Either<Failure, TransactionBalance>> getTransactionsByMonth(
+  Future<Either<Failure, TransactionsSummary>> getTransactionsByMonth(
       {int? month, int? year}) async {
     try {
       final now = DateTime.now();
@@ -70,10 +70,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
           return TransactionsData(transactions: transactions, date: date);
         }).toList();
 
-        final transactionsBalance = TransactionBalance(
+        final transactionsBalance = TransactionsSummary(
           transactionsData: transactionsData,
           income: monthBalance.income,
-          total: monthBalance.total,
+          total: monthBalance.netWorth,
           expense: monthBalance.expense,
         );
 
@@ -89,7 +89,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, TransactionBalance>> getTransactionsByDate(
+  Future<Either<Failure, TransactionsSummary>> getTransactionsByDate(
       {required DateTime date}) async {
     final models = await _datasource.getTransactionsModelsByDate(date: date);
     final rawModels = models.map((model) => model.toMap()).toList();
@@ -117,7 +117,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       }
     }
 
-    final TransactionBalance transactionBalance = TransactionBalance(
+    final TransactionsSummary transactionBalance = TransactionsSummary(
         transactionsData: [transactionData],
         income: income,
         total: income - expense,
@@ -162,14 +162,14 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<GlobalBalance?> getGlobalTransactionsBalance() async {
+  Future<FinancialSummary?> getGlobalTransactionsBalance() async {
     final globalTransactionBalanceModel = await _datasource.getGlobalBalance();
 
     return globalTransactionBalanceModel?.toEntity();
   }
 
   @override
-  Future<Either<Failure, Map<int, GlobalBalance>?>> getBalanceByYear(
+  Future<Either<Failure, Map<int, FinancialSummary>?>> getBalanceByYear(
       {int? year}) async {
     final model = await _datasource.getBalancesByYear(year: year);
 

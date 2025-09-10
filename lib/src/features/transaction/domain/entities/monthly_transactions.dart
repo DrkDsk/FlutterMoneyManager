@@ -1,18 +1,18 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
-class TransactionsMonth with EquatableMixin {
+class MonthlyTransactions with EquatableMixin {
   final int month;
 
   final Map<String, List<Transaction>> transactions;
 
-  const TransactionsMonth({required this.month, required this.transactions});
+  const MonthlyTransactions({required this.month, required this.transactions});
 
-  TransactionsMonth copyWith({
+  MonthlyTransactions copyWith({
     int? month,
     Map<String, List<Transaction>>? transactions,
   }) {
-    return TransactionsMonth(
+    return MonthlyTransactions(
       month: month ?? this.month,
       transactions: transactions ?? this.transactions,
     );

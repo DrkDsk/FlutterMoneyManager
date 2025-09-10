@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 
-class TransactionBalance with EquatableMixin {
+class TransactionsSummary with EquatableMixin {
   final List<TransactionsData> transactionsData;
   final int income;
   final int expense;
   final int total;
 
-  const TransactionBalance(
+  const TransactionsSummary(
       {required this.transactionsData,
       required this.income,
       required this.total,

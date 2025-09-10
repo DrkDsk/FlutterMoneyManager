@@ -1,37 +1,36 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transactions_month_hive_model.dart';
+part of 'monthly_financial_summary_hive_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionsMonthHiveModelAdapter
-    extends TypeAdapter<TransactionsMonthHiveModel> {
+class MonthlyFinancialSummaryHiveModelAdapter
+    extends TypeAdapter<MonthlyFinancialSummaryHiveModel> {
   @override
-  final int typeId = 5;
+  final int typeId = 3;
 
   @override
-  TransactionsMonthHiveModel read(BinaryReader reader) {
+  MonthlyFinancialSummaryHiveModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TransactionsMonthHiveModel(
+    return MonthlyFinancialSummaryHiveModel(
       month: fields[0] as int,
-      transactions: (fields[1] as Map).map((dynamic k, dynamic v) =>
-          MapEntry(k as String, (v as List).cast<TransactionHiveModel>())),
+      summary: fields[1] as FinancialSummaryHiveModel,
     );
   }
 
   @override
-  void write(BinaryWriter writer, TransactionsMonthHiveModel obj) {
+  void write(BinaryWriter writer, MonthlyFinancialSummaryHiveModel obj) {
     writer
       ..writeByte(2)
       ..writeByte(0)
       ..write(obj.month)
       ..writeByte(1)
-      ..write(obj.transactions);
+      ..write(obj.summary);
   }
 
   @override
@@ -40,7 +39,7 @@ class TransactionsMonthHiveModelAdapter
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TransactionsMonthHiveModelAdapter &&
+      other is MonthlyFinancialSummaryHiveModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

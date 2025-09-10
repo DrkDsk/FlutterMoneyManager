@@ -1,5 +1,5 @@
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/global_balance.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 
 class BalanceCalculatorService {
   final bool isIncome;
@@ -21,7 +21,7 @@ class BalanceCalculatorService {
     return updatedSources;
   }
 
-  GlobalBalance calculateUpdatedBalance(GlobalBalance baseBalance) {
+  FinancialSummary calculateUpdatedBalance(FinancialSummary baseBalance) {
     final updatedSources = calculateUpdatedSources();
 
     final newIncome = baseBalance.income + (isIncome ? amount : 0);

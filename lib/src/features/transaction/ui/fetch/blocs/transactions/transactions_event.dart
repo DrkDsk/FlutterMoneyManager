@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_balance.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 
 sealed class TransactionsEvent {
   const TransactionsEvent();
@@ -25,7 +25,7 @@ class UpdateMonth extends TransactionsEvent with EquatableMixin {
 }
 
 class UpdateBalance extends TransactionsEvent with EquatableMixin {
-  final TransactionBalance balance;
+  final TransactionsSummary balance;
 
   const UpdateBalance({required this.balance});
 
