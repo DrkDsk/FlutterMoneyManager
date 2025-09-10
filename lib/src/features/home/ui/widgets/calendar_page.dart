@@ -21,7 +21,7 @@ class CalendarPage extends StatelessWidget {
             if (index == 0) {
               return Container(
                 padding: const EdgeInsets.all(4),
-                decoration: kWidgetRoundedDecoration,
+                decoration: ContainerStyles.kWidgetRoundedDecoration,
                 child: const BodyCalendar(),
               );
             }
