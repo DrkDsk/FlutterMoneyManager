@@ -34,7 +34,7 @@ class FinancialSummaryHiveModel extends HiveObject {
   FinancialSummaryHiveModel copyWith({
     int? income,
     int? expense,
-    int? total,
+    int? netWorth,
     int? asset,
     Map<String, int>? balancesBySource,
     int? debt,
@@ -42,7 +42,7 @@ class FinancialSummaryHiveModel extends HiveObject {
     return FinancialSummaryHiveModel(
         income: income ?? this.income,
         expense: expense ?? this.expense,
-        netWorth: total ?? this.netWorth,
+        netWorth: netWorth ?? this.netWorth,
         asset: asset ?? this.asset,
         balancesBySource: balancesBySource ?? this.balancesBySource,
         debt: debt ?? this.debt);

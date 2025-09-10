@@ -26,7 +26,7 @@ class MonthlyTransactionsHiveModel extends HiveObject {
   }
 
   factory MonthlyTransactionsHiveModel.initial({required int month}) {
-    return MonthlyTransactionsHiveModel(month: month, transactions: const {});
+    return MonthlyTransactionsHiveModel(month: month, transactions: {});
   }
 
   MonthlyTransactions toEntity() {

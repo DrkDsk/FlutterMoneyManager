@@ -25,7 +25,7 @@ class YearlyFinancialSummaryHiveModel extends HiveObject {
   }
 
   factory YearlyFinancialSummaryHiveModel.initial({required int year}) {
-    return YearlyFinancialSummaryHiveModel(year: year, months: const []);
+    return YearlyFinancialSummaryHiveModel(year: year, months: []);
   }
 
   FinancialSummaryHiveModel? getByMonth(int month) {
