@@ -15,6 +15,7 @@ import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/finan
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
@@ -47,14 +48,18 @@ class TransactionRepositoryImpl implements TransactionRepository {
       await _datasource.save(model: yearlyModel, key: transactionKey);
 
       final yearlyCurrentModel =
-          await _datasource.getBalancesByYear(key: date.year.toString());
+          await _datasource.getBalancesByYear(key: date.year.toString()) ??
+              YearlyFinancialSummaryHiveModel.initial(year: date.year);
 
       final yearlyFinancialSummaryModel =
           FinancialCalculatorService.updateYearlyFinancialSummary(
-              transaction: transaction, yearlyCurrentModel: yearlyCurrentModel);
+              transaction: transaction,
+              yearlyFinancialSummary: yearlyCurrentModel.toEntity());
 
       await _datasource.saveYearFinancialSummary(
-          model: yearlyFinancialSummaryModel, key: date.year.toString());
+          model: YearlyFinancialSummaryHiveModel.fromEntity(
+              yearlyFinancialSummaryModel),
+          key: date.year.toString());
 
       final financialSummaryModel = await _datasource.getGlobalFinancialSummary(
           key: HiveConstants.globalSummaryKey);
