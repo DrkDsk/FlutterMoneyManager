@@ -8,9 +8,6 @@ abstract interface class TransactionDatasource {
   Future<bool> save(
       {required YearlyTransactionsHiveModel model, required String key});
 
-  Future<Map<String, List<TransactionHiveModel>>> getTransactionsModelsMonth(
-      {required int month, required int year});
-
   Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
       {required DateTime date});
 

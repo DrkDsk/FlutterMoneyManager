@@ -37,27 +37,6 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<Map<String, List<TransactionHiveModel>>> getTransactionsModelsMonth(
-      {required int month, required int year}) async {
-    final transactionYearKey = "$year";
-    final yearTransactions = _transactionsYearBox.get(transactionYearKey);
-
-    if (yearTransactions == null) {
-      return const {};
-    }
-
-    final monthTransactions = yearTransactions.months
-        .where((monthTransaction) => monthTransaction.month == month)
-        .toList();
-
-    if (monthTransactions.isEmpty) {
-      return const {};
-    }
-
-    return monthTransactions.first.transactions;
-  }
-
-  @override
   Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
       {required DateTime date}) async {
     final month = date.month;
