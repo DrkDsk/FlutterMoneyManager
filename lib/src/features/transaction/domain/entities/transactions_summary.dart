@@ -13,6 +13,25 @@ class TransactionsSummary with EquatableMixin {
       required this.total,
       required this.expense});
 
+  factory TransactionsSummary.initial() {
+    return const TransactionsSummary(
+        transactionsData: [], income: 0, total: 0, expense: 0);
+  }
+
+  TransactionsSummary copyWith({
+    List<TransactionsData>? transactionsData,
+    int? income,
+    int? expense,
+    int? total,
+  }) {
+    return TransactionsSummary(
+      transactionsData: transactionsData ?? this.transactionsData,
+      income: income ?? this.income,
+      expense: expense ?? this.expense,
+      total: total ?? this.total,
+    );
+  }
+
   @override
   List<Object?> get props => [transactionsData, income, expense, total];
 }

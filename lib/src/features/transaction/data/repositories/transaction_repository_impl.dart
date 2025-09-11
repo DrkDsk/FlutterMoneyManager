@@ -98,11 +98,20 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final defaultMonth = month ?? now.month;
       final defaultYear = year ?? now.year;
 
-      final transactionsModelsMonth =
-          await _datasource.getTransactionsModelsMonth(
-        month: defaultMonth,
-        year: defaultYear,
-      );
+      final emptyTransaction = TransactionsSummary.initial();
+
+      final yearlyTransactions = await _datasource
+          .getYearlyTransactionsHiveModel(key: defaultYear.toString());
+
+      final monthTransactions = yearlyTransactions?.months
+          .where((monthTransaction) => monthTransaction.month == month)
+          .toList();
+
+      if (monthTransactions == null || monthTransactions.isEmpty) {
+        return Right(emptyTransaction);
+      }
+
+      final transactionsModelsMonth = monthTransactions.first.transactions;
 
       final monthBalance = await _datasource.getBalancesMonth(
         month: defaultMonth,
@@ -116,14 +125,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
           return TransactionsData(transactions: transactions, date: date);
         }).toList();
 
-        final transactionsBalance = TransactionsSummary(
+        return TransactionsSummary(
           transactionsData: transactionsData,
           income: monthBalance.income,
           total: monthBalance.netWorth,
           expense: monthBalance.expense,
         );
-
-        return transactionsBalance;
       });
 
       return Right(transactionsBalance);
