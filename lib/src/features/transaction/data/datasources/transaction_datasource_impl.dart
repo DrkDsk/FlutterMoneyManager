@@ -1,8 +1,6 @@
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
-import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
@@ -34,32 +32,6 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     } catch (e) {
       throw UnknownException(message: e.toString());
     }
-  }
-
-  @override
-  Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
-      {required DateTime date}) async {
-    final month = date.month;
-
-    final transactionYearKey =
-        HiveHelper.generateTransactionYearKey(date: date);
-    final transactionDayKey = HiveHelper.generateTransactionDayKey(date: date);
-
-    final yearTransactions = _transactionsYearBox.get(transactionYearKey);
-
-    if (yearTransactions == null) {
-      return const [];
-    }
-
-    final monthTransactions = yearTransactions.months
-        .where((monthTransaction) => monthTransaction.month == month)
-        .toList();
-
-    if (monthTransactions.isEmpty) {
-      return const [];
-    }
-
-    return monthTransactions.first.transactions[transactionDayKey] ?? [];
   }
 
   @override

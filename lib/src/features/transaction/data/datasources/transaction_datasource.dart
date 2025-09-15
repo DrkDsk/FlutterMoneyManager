@@ -1,15 +1,11 @@
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
 
 abstract interface class TransactionDatasource {
   Future<bool> save(
       {required YearlyTransactionsHiveModel model, required String key});
-
-  Future<List<TransactionHiveModel>> getTransactionsModelsByDate(
-      {required DateTime date});
 
   Future<List<TransactionSourceHiveModel>> getTransactionSources();
 
