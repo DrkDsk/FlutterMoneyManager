@@ -1,9 +1,8 @@
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/transaction_dto.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
-
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
 part 'transaction_hive_model.g.dart';
 
@@ -54,17 +53,6 @@ class TransactionHiveModel extends HiveObject {
     );
   }
 
-  factory TransactionHiveModel.fromEntity(Transaction entity) {
-    return TransactionHiveModel(
-      id: entity.id ?? const Uuid().v4(),
-      type: entity.type.name,
-      transactionDate: entity.transactionDate,
-      amount: entity.amount,
-      categoryType: entity.categoryType!,
-      sourceType: entity.sourceType!,
-    );
-  }
-
   Map<String, dynamic> toMap() => {
         "id": id,
         "type": type,
@@ -74,8 +62,8 @@ class TransactionHiveModel extends HiveObject {
         "sourceType": sourceType
       };
 
-  Transaction toEntity() {
-    return Transaction(
+  TransactionDto toDTO() {
+    return TransactionDto(
         id: id,
         type: type == TransactionsConstants.kIncomeType
             ? TransactionTypEnum.income
@@ -103,5 +91,15 @@ class TransactionHiveModel extends HiveObject {
       categoryType: map['categoryType'].toString(),
       sourceType: map['sourceType'].toString(),
     );
+  }
+
+  factory TransactionHiveModel.fromDto(TransactionDto dto) {
+    return TransactionHiveModel(
+        id: dto.id ?? const Uuid().v4(),
+        type: dto.type.name,
+        transactionDate: dto.transactionDate,
+        amount: dto.amount,
+        categoryType: dto.categoryType ?? "",
+        sourceType: dto.categoryType ?? "");
   }
 }

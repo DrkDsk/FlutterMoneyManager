@@ -14,11 +14,12 @@ import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/transaction_dto.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_transactions_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
@@ -45,17 +46,22 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
-      final transactionsYear = await _datasource.getYearlyTransactionsHiveModel(
-          key: yearlyTransactionKey);
+      final yearlyTransactionsHive = await _datasource
+          .getYearlyTransactionsHiveModel(key: yearlyTransactionKey);
 
-      final yearlyTransactions =
+      final transactionYearToDto = (yearlyTransactionsHive?.toDTO()) ??
+          YearlyTransactionsDto.initial(year: year);
+
+      final transactionModel = TransactionModel.fromEntity(transaction);
+      final transactionDTO = TransactionDto.fromModel(transactionModel);
+
+      final yearlyTransactionsDTO =
           FinancialCalculatorService.updateYearlyTransactionHiveModel(
-              yearlyTransactions: transactionsYear?.toEntity(),
-              transaction: transaction);
+              yearlyTransactions: transactionYearToDto,
+              transactionDto: transactionDTO);
 
       await _datasource.save(
-          model: YearlyTransactionsModel.fromEntity(yearlyTransactions),
-          key: yearlyTransactionKey);
+          dto: yearlyTransactionsDTO, key: yearlyTransactionKey);
 
       final yearlyCurrentModel =
           await _datasource.getBalancesByYear(key: yearlyBalanceKey) ??
@@ -144,7 +150,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final transactionsBalance = await Isolate.run(() {
         final transactionsData = transactionsModelsMonth.entries.map((entry) {
           final date = DatetimeHelper.parse(input: entry.key);
-          final transactions = entry.value.map((t) => t.toEntity()).toList();
+          final transactions =
+              entry.value.map((t) => t.toDTO().toModel().toEntity()).toList();
           return TransactionsData(transactions: transactions, date: date);
         }).toList();
 
@@ -195,7 +202,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final transactions = transactionsModelsRaw.map((entry) {
         final transactionModel = TransactionHiveModel.fromMap(entry);
-        return transactionModel.toEntity();
+        return transactionModel.toDTO().toModel().toEntity();
       }).toList();
 
       return TransactionsData(transactions: transactions, date: date);

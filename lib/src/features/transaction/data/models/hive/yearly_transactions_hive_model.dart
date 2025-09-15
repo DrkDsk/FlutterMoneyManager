@@ -1,5 +1,5 @@
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_transactions_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_transactions.dart';
 import 'package:hive/hive.dart';
 
 part 'yearly_transactions_hive_model.g.dart';
@@ -24,20 +24,21 @@ class YearlyTransactionsHiveModel extends HiveObject {
     );
   }
 
-  YearlyTransactions toEntity() {
-    return YearlyTransactions(
-        year: year, months: months.map((month) => month.toEntity()).toList());
-  }
-
   factory YearlyTransactionsHiveModel.initial({required int year}) {
     return YearlyTransactionsHiveModel(year: year, months: []);
   }
 
-  factory YearlyTransactionsHiveModel.fromEntity(YearlyTransactions entity) {
+  YearlyTransactionsDto toDTO() {
+    return YearlyTransactionsDto(
+        year: year, months: months.map((month) => month.toDTO()).toList());
+  }
+
+  factory YearlyTransactionsHiveModel.fromDto(YearlyTransactionsDto dto) {
     return YearlyTransactionsHiveModel(
-        year: entity.year,
-        months: entity.months
-            .map((month) => MonthlyTransactionsHiveModel.fromEntity(month))
+        year: dto.year,
+        months: dto.months
+            .map((monthTransactionDTo) =>
+                MonthlyTransactionsHiveModel.fromDto(monthTransactionDTo))
             .toList());
   }
 }

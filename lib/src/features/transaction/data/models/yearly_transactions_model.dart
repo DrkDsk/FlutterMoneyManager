@@ -12,12 +12,4 @@ class YearlyTransactionsModel {
     return YearlyTransactions(
         year: year, months: months.map((month) => month.toEntity()).toList());
   }
-
-  factory YearlyTransactionsModel.fromEntity(YearlyTransactions entity) {
-    return YearlyTransactionsModel(
-        year: entity.year,
-        months: entity.months
-            .map((month) => MonthlyTransactionsModel.fromEntity(month))
-            .toList());
-  }
 }

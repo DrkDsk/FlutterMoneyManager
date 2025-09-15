@@ -1,5 +1,5 @@
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/monthly_transaction_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_transactions.dart';
 import 'package:hive/hive.dart';
 
 part 'monthly_transactions_hive_model.g.dart';
@@ -29,18 +29,6 @@ class MonthlyTransactionsHiveModel extends HiveObject {
     return MonthlyTransactionsHiveModel(month: month, transactions: {});
   }
 
-  MonthlyTransactions toEntity() {
-    return MonthlyTransactions(
-      month: month,
-      transactions: transactions.map(
-        (key, list) => MapEntry(
-          key,
-          list.map((transaction) => transaction.toEntity()).toList(),
-        ),
-      ),
-    );
-  }
-
   Map<String, dynamic> toMap() {
     return {
       'month': month,
@@ -48,17 +36,25 @@ class MonthlyTransactionsHiveModel extends HiveObject {
     };
   }
 
-  factory MonthlyTransactionsHiveModel.fromEntity(
-    MonthlyTransactions entity,
-  ) {
+  MonthlyTransactionDto toDTO() {
+    return MonthlyTransactionDto(
+        month: month,
+        transactions: transactions.map(
+          (key, list) => MapEntry(
+            key,
+            list.map((transaction) => transaction.toDTO()).toList(),
+          ),
+        ));
+  }
+
+  factory MonthlyTransactionsHiveModel.fromDto(MonthlyTransactionDto dto) {
     return MonthlyTransactionsHiveModel(
-      month: entity.month,
-      transactions: entity.transactions.map(
-        (key, value) => MapEntry(
-          key,
-          value.map((t) => TransactionHiveModel.fromEntity(t)).toList(),
-        ),
-      ),
-    );
+        month: dto.month,
+        transactions: dto.transactions.map((key, list) => MapEntry(
+            key,
+            list
+                .map((transactionDto) =>
+                    TransactionHiveModel.fromDto(transactionDto))
+                .toList())));
   }
 }

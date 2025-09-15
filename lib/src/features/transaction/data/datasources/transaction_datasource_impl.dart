@@ -1,6 +1,7 @@
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_financial_summary_hive_model.dart';
@@ -25,10 +26,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
   @override
   Future<bool> save(
-      {required YearlyTransactionsModel model, required String key}) async {
+      {required YearlyTransactionsDto dto, required String key}) async {
     try {
-      final hiveModel =
-          YearlyTransactionsHiveModel.fromEntity(model.toEntity());
+      final hiveModel = YearlyTransactionsHiveModel.fromDto(dto);
       await _transactionsYearBox.put(key, hiveModel);
 
       return true;
