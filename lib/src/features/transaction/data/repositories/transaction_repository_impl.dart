@@ -39,11 +39,13 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final date = transaction.transactionDate;
       final year = date.year;
 
-      final transactionKey =
+      final yearlyTransactionKey =
           HiveHelper.generateYearlyTransactionKey(year: year);
 
-      final transactionsYear =
-          await _datasource.getYearlyTransactionsHiveModel(key: transactionKey);
+      final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
+
+      final transactionsYear = await _datasource.getYearlyTransactionsHiveModel(
+          key: yearlyTransactionKey);
 
       final yearlyTransactions =
           FinancialCalculatorService.updateYearlyTransactionHiveModel(
@@ -52,10 +54,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       await _datasource.save(
           model: YearlyTransactionsHiveModel.fromEntity(yearlyTransactions),
-          key: transactionKey);
+          key: yearlyTransactionKey);
 
       final yearlyCurrentModel =
-          await _datasource.getBalancesByYear(key: year.toString()) ??
+          await _datasource.getBalancesByYear(key: yearlyBalanceKey) ??
               YearlyFinancialSummaryHiveModel.initial(year: year);
 
       final yearlyFinancialSummary =
@@ -66,7 +68,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       await _datasource.saveYearFinancialSummary(
           model: YearlyFinancialSummaryHiveModel.fromEntity(
               yearlyFinancialSummary),
-          key: year.toString());
+          key: yearlyBalanceKey);
 
       final financialSummaryModel = await _datasource.getGlobalFinancialSummary(
           key: HiveConstants.globalSummaryKey);
@@ -98,14 +100,13 @@ class TransactionRepositoryImpl implements TransactionRepository {
       {int? month, int? year}) async {
     try {
       final now = DateTime.now();
-      final defaultYear = year ?? now.year;
-      final defaultMonth = month ?? now.month;
+      year = year ?? now.year;
+      month = month ?? now.month;
 
       final yearlyTransactionsKey =
-          HiveHelper.generateYearlyTransactionKey(year: defaultYear);
+          HiveHelper.generateYearlyTransactionKey(year: year);
 
-      final yearlyBalanceKey =
-          HiveHelper.generateYearlyBalanceKey(year: defaultYear);
+      final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
       final emptyTransaction = TransactionsSummary.initial();
 
@@ -113,7 +114,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
           .getYearlyTransactionsHiveModel(key: yearlyTransactionsKey);
 
       final monthTransactions = yearlyTransactions?.months
-          .where((monthTransaction) => monthTransaction.month == defaultMonth)
+          .where((monthTransaction) => monthTransaction.month == month)
           .toList();
 
       if (monthTransactions == null || monthTransactions.isEmpty) {
@@ -123,14 +124,14 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final transactionsModelsMonth = monthTransactions.first.transactions;
 
       final yearlyBalances =
-          await _datasource.getBalancesByYear(key: defaultYear.toString());
+          await _datasource.getBalancesByYear(key: yearlyBalanceKey);
 
       if (yearlyBalances == null) {
         return Right(emptyTransaction);
       }
 
       final balances = yearlyBalances.months
-          .where((monthBalance) => monthBalance.month == defaultMonth)
+          .where((monthBalance) => monthBalance.month == month)
           .toList();
 
       if (balances.isEmpty) {

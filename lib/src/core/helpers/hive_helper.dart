@@ -65,8 +65,8 @@ class HiveHelper {
     return "transactions_year_$selectedYear";
   }
 
-  static String generateYearlyBalanceKey({DateTime? date, int? year}) {
-    final selectedYear = date?.year ?? year;
+  static String generateYearlyBalanceKey({int? year}) {
+    final selectedYear = year;
     if (selectedYear == null) {
       throw ArgumentError(
           "A date or a year must be provided to generate the key.");
