@@ -14,6 +14,7 @@ import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
@@ -144,7 +145,22 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, TransactionsSummary>> getTransactionsByDate(
       {required DateTime date}) async {
-    final models = await _datasource.getTransactionsModelsByDate(date: date);
+    final yearlyKey = HiveHelper.generateTransactionYearKey(date: date);
+    final transactionDayKey = HiveHelper.generateTransactionDayKey(date: date);
+
+    final yearlyModels =
+        await _datasource.getYearlyTransactionsHiveModel(key: yearlyKey);
+
+    if (yearlyModels == null) {
+      return Right(TransactionsSummary.initial());
+    }
+
+    final monthTransaction = (yearlyModels.months).firstWhere(
+      (m) => m.month == date.month,
+      orElse: () => MonthlyTransactionsHiveModel.initial(month: date.month),
+    );
+
+    final models = monthTransaction.transactions[transactionDayKey] ?? [];
     final rawModels = models.map((model) => model.toMap()).toList();
     final grouped = {date: rawModels};
 
