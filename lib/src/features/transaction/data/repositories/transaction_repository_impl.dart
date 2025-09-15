@@ -14,10 +14,11 @@ import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_financial_summary_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
@@ -53,7 +54,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
               transaction: transaction);
 
       await _datasource.save(
-          model: YearlyTransactionsHiveModel.fromEntity(yearlyTransactions),
+          model: YearlyTransactionsModel.fromEntity(yearlyTransactions),
           key: yearlyTransactionKey);
 
       final yearlyCurrentModel =

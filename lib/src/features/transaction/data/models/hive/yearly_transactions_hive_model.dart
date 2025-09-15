@@ -1,4 +1,4 @@
-import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_transactions.dart';
 import 'package:hive/hive.dart';
 
