@@ -2,6 +2,9 @@ import 'package:flutter_money_manager/src/core/constants/transactions_constants.
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/monthly_transaction_dto.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/transaction_dto.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_financial_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_transactions.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
@@ -103,47 +106,46 @@ class FinancialCalculatorService {
         balancesBySource: balancesBySource);
   }
 
-  static YearlyTransactions updateYearlyTransactionHiveModel(
-      {required YearlyTransactions? yearlyTransactions,
-      required Transaction transaction}) {
-    final date = transaction.transactionDate;
+  static YearlyTransactionsDto updateYearlyTransactionHiveModel(
+      {required YearlyTransactionsDto? yearlyTransactions,
+      required TransactionDto transactionDto}) {
+    final date = transactionDto.transactionDate;
     final month = date.month;
 
     yearlyTransactions =
-        yearlyTransactions ?? YearlyTransactions.initial(year: date.year);
+        yearlyTransactions ?? YearlyTransactionsDto.initial(year: date.year);
 
     final dayKey = HiveHelper.generateTransactionDayKey(date: date);
-    final hiveModel = transaction;
     final monthIndex =
         yearlyTransactions.months.indexWhere((m) => m.month == month);
 
-    MonthlyTransactions monthlyTransactions;
+    MonthlyTransactionDto monthlyTransactionsDTO;
 
     if (monthIndex != -1) {
-      monthlyTransactions = yearlyTransactions.months[monthIndex];
+      monthlyTransactionsDTO = yearlyTransactions.months[monthIndex];
     } else {
-      monthlyTransactions = MonthlyTransactions.initial(month: month);
-      yearlyTransactions.months.add(monthlyTransactions);
+      monthlyTransactionsDTO = MonthlyTransactionDto.initial(month: month);
+      yearlyTransactions.months.add(monthlyTransactionsDTO);
     }
 
-    final transactionsByDay = List<Transaction>.from(
-      monthlyTransactions.transactions[dayKey] ?? [],
+    final transactionsByDay = List<TransactionDto>.from(
+      monthlyTransactionsDTO.transactions[dayKey] ?? [],
     );
 
-    transactionsByDay.add(hiveModel);
+    transactionsByDay.add(transactionDto);
 
-    monthlyTransactions = monthlyTransactions.copyWith(
+    monthlyTransactionsDTO = monthlyTransactionsDTO.copyWith(
       transactions: {
-        ...monthlyTransactions.transactions,
+        ...monthlyTransactionsDTO.transactions,
         dayKey: transactionsByDay,
       },
     );
 
     if (monthIndex != -1) {
-      yearlyTransactions.months[monthIndex] = monthlyTransactions;
+      yearlyTransactions.months[monthIndex] = monthlyTransactionsDTO;
     } else {
       final lastIndex = yearlyTransactions.months.length - 1;
-      yearlyTransactions.months[lastIndex] = monthlyTransactions;
+      yearlyTransactions.months[lastIndex] = monthlyTransactionsDTO;
     }
 
     return yearlyTransactions;
