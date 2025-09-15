@@ -52,27 +52,6 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<FinancialSummaryHiveModel> getBalancesMonth(
-      {int? year, int? month}) async {
-    final defaultValue = DateTime.now();
-    final selectedYear = year ?? defaultValue.year;
-    final selectedMonth = month ?? defaultValue.month;
-
-    final yearBalances = _yearBalanceBox.get(selectedYear.toString()) ??
-        YearlyFinancialSummaryHiveModel.initial(year: selectedYear);
-
-    final balances = yearBalances.months
-        .where((monthBalance) => monthBalance.month == selectedMonth)
-        .toList();
-
-    if (balances.isEmpty) {
-      return FinancialSummaryHiveModel.initial();
-    }
-
-    return balances.first.summary;
-  }
-
-  @override
   Future<YearlyTransactionsHiveModel?> getYearlyTransactionsHiveModel(
       {required String key}) async {
     return _transactionsYearBox.get(key);

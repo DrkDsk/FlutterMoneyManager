@@ -96,8 +96,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
       {int? month, int? year}) async {
     try {
       final now = DateTime.now();
-      final defaultMonth = month ?? now.month;
       final defaultYear = year ?? now.year;
+
+      final yearlyKey = HiveHelper.generateTransactionYearKey(year: year);
 
       final emptyTransaction = TransactionsSummary.initial();
 
@@ -114,10 +115,22 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final transactionsModelsMonth = monthTransactions.first.transactions;
 
-      final monthBalance = await _datasource.getBalancesMonth(
-        month: defaultMonth,
-        year: defaultYear,
-      );
+      final yearlyBalances =
+          await _datasource.getBalancesByYear(key: yearlyKey);
+
+      if (yearlyBalances == null) {
+        return Right(emptyTransaction);
+      }
+
+      final balances = yearlyBalances.months
+          .where((monthBalance) => monthBalance.month == month)
+          .toList();
+
+      if (balances.isEmpty) {
+        return Right(emptyTransaction);
+      }
+
+      final monthBalance = balances.first.summary;
 
       final transactionsBalance = await Isolate.run(() {
         final transactionsData = transactionsModelsMonth.entries.map((entry) {

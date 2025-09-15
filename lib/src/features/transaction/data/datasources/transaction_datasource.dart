@@ -15,9 +15,6 @@ abstract interface class TransactionDatasource {
   Future<YearlyFinancialSummaryHiveModel?> getBalancesByYear(
       {required String key});
 
-  Future<FinancialSummaryHiveModel> getBalancesMonth(
-      {required int month, required int year});
-
   Future<YearlyTransactionsHiveModel?> getYearlyTransactionsHiveModel(
       {required String key});
 
