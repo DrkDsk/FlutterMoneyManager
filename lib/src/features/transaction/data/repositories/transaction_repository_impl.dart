@@ -97,16 +97,18 @@ class TransactionRepositoryImpl implements TransactionRepository {
     try {
       final now = DateTime.now();
       final defaultYear = year ?? now.year;
+      final defaultMonth = month ?? now.month;
 
-      final yearlyKey = HiveHelper.generateTransactionYearKey(year: year);
+      final yearlyKey =
+          HiveHelper.generateTransactionYearKey(year: defaultYear);
 
       final emptyTransaction = TransactionsSummary.initial();
 
-      final yearlyTransactions = await _datasource
-          .getYearlyTransactionsHiveModel(key: defaultYear.toString());
+      final yearlyTransactions =
+          await _datasource.getYearlyTransactionsHiveModel(key: yearlyKey);
 
       final monthTransactions = yearlyTransactions?.months
-          .where((monthTransaction) => monthTransaction.month == month)
+          .where((monthTransaction) => monthTransaction.month == defaultMonth)
           .toList();
 
       if (monthTransactions == null || monthTransactions.isEmpty) {
@@ -123,7 +125,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       }
 
       final balances = yearlyBalances.months
-          .where((monthBalance) => monthBalance.month == month)
+          .where((monthBalance) => monthBalance.month == defaultMonth)
           .toList();
 
       if (balances.isEmpty) {
