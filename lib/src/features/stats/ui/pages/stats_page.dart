@@ -32,8 +32,8 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _pageController = PageController(initialPage: 0);
-    _calendarBloc = context.read<CalendarBloc>();
-    _transactionsBloc = context.read<TransactionsBloc>();
+    _calendarBloc = BlocProvider.of<CalendarBloc>(context);
+    _transactionsBloc = BlocProvider.of<TransactionsBloc>(context);
   }
 
   @override
