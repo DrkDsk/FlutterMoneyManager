@@ -118,7 +118,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final transactionsModelsMonth = monthTransactions.first.transactions;
 
       final yearlyBalances =
-          await _datasource.getBalancesByYear(key: yearlyKey);
+          await _datasource.getBalancesByYear(key: defaultYear.toString());
 
       if (yearlyBalances == null) {
         return Right(emptyTransaction);

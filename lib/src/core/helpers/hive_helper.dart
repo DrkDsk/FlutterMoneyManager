@@ -57,8 +57,11 @@ class HiveHelper {
   }
 
   static String generateTransactionYearKey({DateTime? date, int? year}) {
-    final yearKey = date != null ? date.year : year ?? DateTime.now().year;
-
-    return "$yearKey";
+    final selectedYear = date?.year ?? year;
+    if (selectedYear == null) {
+      throw ArgumentError(
+          "A date or a year must be provided to generate the key.");
+    }
+    return "transactions_year_$selectedYear";
   }
 }
