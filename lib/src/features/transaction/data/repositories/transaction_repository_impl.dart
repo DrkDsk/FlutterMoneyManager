@@ -37,11 +37,15 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<Either<Failure, bool>> save(Transaction transaction) async {
     try {
       final date = transaction.transactionDate;
+      final year = date.year;
 
-      final transactionKey = HiveHelper.generateTransactionYearKey(date: date);
+      final yearlyTransactionKey =
+          HiveHelper.generateYearlyTransactionKey(year: year);
 
-      final transactionsYear =
-          await _datasource.getYearlyTransactionsHiveModel(key: transactionKey);
+      final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
+
+      final transactionsYear = await _datasource.getYearlyTransactionsHiveModel(
+          key: yearlyTransactionKey);
 
       final yearlyTransactions =
           FinancialCalculatorService.updateYearlyTransactionHiveModel(
@@ -50,11 +54,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       await _datasource.save(
           model: YearlyTransactionsHiveModel.fromEntity(yearlyTransactions),
-          key: transactionKey);
+          key: yearlyTransactionKey);
 
       final yearlyCurrentModel =
-          await _datasource.getBalancesByYear(key: date.year.toString()) ??
-              YearlyFinancialSummaryHiveModel.initial(year: date.year);
+          await _datasource.getBalancesByYear(key: yearlyBalanceKey) ??
+              YearlyFinancialSummaryHiveModel.initial(year: year);
 
       final yearlyFinancialSummary =
           FinancialCalculatorService.updateYearlyFinancialSummary(
@@ -64,7 +68,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       await _datasource.saveYearFinancialSummary(
           model: YearlyFinancialSummaryHiveModel.fromEntity(
               yearlyFinancialSummary),
-          key: date.year.toString());
+          key: yearlyBalanceKey);
 
       final financialSummaryModel = await _datasource.getGlobalFinancialSummary(
           key: HiveConstants.globalSummaryKey);
@@ -96,14 +100,18 @@ class TransactionRepositoryImpl implements TransactionRepository {
       {int? month, int? year}) async {
     try {
       final now = DateTime.now();
-      final defaultYear = year ?? now.year;
+      year = year ?? now.year;
+      month = month ?? now.month;
 
-      final yearlyKey = HiveHelper.generateTransactionYearKey(year: year);
+      final yearlyTransactionsKey =
+          HiveHelper.generateYearlyTransactionKey(year: year);
+
+      final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
       final emptyTransaction = TransactionsSummary.initial();
 
       final yearlyTransactions = await _datasource
-          .getYearlyTransactionsHiveModel(key: defaultYear.toString());
+          .getYearlyTransactionsHiveModel(key: yearlyTransactionsKey);
 
       final monthTransactions = yearlyTransactions?.months
           .where((monthTransaction) => monthTransaction.month == month)
@@ -116,7 +124,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final transactionsModelsMonth = monthTransactions.first.transactions;
 
       final yearlyBalances =
-          await _datasource.getBalancesByYear(key: yearlyKey);
+          await _datasource.getBalancesByYear(key: yearlyBalanceKey);
 
       if (yearlyBalances == null) {
         return Right(emptyTransaction);
@@ -158,7 +166,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, TransactionsSummary>> getTransactionsByDate(
       {required DateTime date}) async {
-    final yearlyKey = HiveHelper.generateTransactionYearKey(date: date);
+    final month = date.month;
+    final yearlyKey = HiveHelper.generateYearlyTransactionKey(year: date.year);
     final transactionDayKey = HiveHelper.generateTransactionDayKey(date: date);
 
     final yearlyModels =
@@ -169,8 +178,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     final monthTransaction = (yearlyModels.months).firstWhere(
-      (m) => m.month == date.month,
-      orElse: () => MonthlyTransactionsHiveModel.initial(month: date.month),
+      (m) => m.month == month,
+      orElse: () => MonthlyTransactionsHiveModel.initial(month: month),
     );
 
     final models = monthTransaction.transactions[transactionDayKey] ?? [];

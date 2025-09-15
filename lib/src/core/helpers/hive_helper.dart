@@ -56,9 +56,15 @@ class HiveHelper {
     return "$day-$month-$year";
   }
 
-  static String generateTransactionYearKey({DateTime? date, int? year}) {
-    final yearKey = date != null ? date.year : year ?? DateTime.now().year;
+  static String generateYearlyTransactionKey({required int year}) {
+    final selectedYear = year;
 
-    return "$yearKey";
+    return "transactions_year_$selectedYear";
+  }
+
+  static String generateYearlyBalanceKey({required int year}) {
+    final selectedYear = year;
+
+    return "balance_year_$selectedYear";
   }
 }
