@@ -23,7 +23,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    _accountBloc = context.read<AccountBloc>();
+    _accountBloc = BlocProvider.of<AccountBloc>(context);
     _accountBloc.add(LoadTransactionsSource());
     _accountBloc.add(const GetGlobalBalance());
   }

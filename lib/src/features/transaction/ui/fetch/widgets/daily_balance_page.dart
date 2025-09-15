@@ -20,7 +20,7 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
   @override
   void initState() {
     super.initState();
-    _transactionsBloc = context.read<TransactionsBloc>();
+    _transactionsBloc = BlocProvider.of<TransactionsBloc>(context);
     final monthIndex = _transactionsBloc.state.monthIndex;
     _transactionsBloc.add(LoadTransactionsByMonth(month: monthIndex));
   }
