@@ -55,9 +55,11 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   }
 
   @override
-  Future<YearlyTransactionsHiveModel?> getYearlyTransactionsHiveModel(
+  Future<YearlyTransactionsModel?> getYearlyTransactionsHiveModel(
       {required String key}) async {
-    return _transactionsYearBox.get(key);
+    final hiveModel = _transactionsYearBox.get(key);
+
+    return hiveModel?.toDTO().toModel();
   }
 
   @override

@@ -38,4 +38,15 @@ class TransactionModel {
       sourceType: entity.sourceType!,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'type': type.name,
+      'transactionDate': transactionDate.toIso8601String(),
+      'amount': amount,
+      'categoryType': categoryType,
+      'sourceType': sourceType,
+    };
+  }
 }

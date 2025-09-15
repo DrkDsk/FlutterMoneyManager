@@ -16,9 +16,9 @@ import 'package:flutter_money_manager/src/features/accounts/domain/entities/acco
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/transaction_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_financial_summary_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
@@ -49,8 +49,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final yearlyTransactionsHive = await _datasource
           .getYearlyTransactionsHiveModel(key: yearlyTransactionKey);
 
-      final transactionYearToDto = (yearlyTransactionsHive?.toDTO()) ??
-          YearlyTransactionsDto.initial(year: year);
+      final transactionYearToDto = yearlyTransactionsHive != null
+          ? (YearlyTransactionsDto.fromModel(yearlyTransactionsHive))
+          : YearlyTransactionsDto.initial(year: year);
 
       final transactionModel = TransactionModel.fromEntity(transaction);
       final transactionDTO = TransactionDto.fromModel(transactionModel);
@@ -150,8 +151,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final transactionsBalance = await Isolate.run(() {
         final transactionsData = transactionsModelsMonth.entries.map((entry) {
           final date = DatetimeHelper.parse(input: entry.key);
-          final transactions =
-              entry.value.map((t) => t.toDTO().toModel().toEntity()).toList();
+          final transactions = entry.value.map((t) => t.toEntity()).toList();
           return TransactionsData(transactions: transactions, date: date);
         }).toList();
 
@@ -187,7 +187,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
     final monthTransaction = (yearlyModels.months).firstWhere(
       (m) => m.month == month,
-      orElse: () => MonthlyTransactionsHiveModel.initial(month: month),
+      orElse: () => MonthlyTransactionsModel.initial(month: month),
     );
 
     final models = monthTransaction.transactions[transactionDayKey] ?? [];
