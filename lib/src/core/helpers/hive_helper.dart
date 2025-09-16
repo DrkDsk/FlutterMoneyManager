@@ -1,5 +1,5 @@
 import 'package:flutter_money_manager/src/core/constants/hive_constants.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/data/models/hive/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';

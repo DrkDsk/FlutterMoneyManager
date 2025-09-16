@@ -100,6 +100,6 @@ class TransactionHiveModel extends HiveObject {
         transactionDate: dto.transactionDate,
         amount: dto.amount,
         categoryType: dto.categoryType ?? "",
-        sourceType: dto.categoryType ?? "");
+        sourceType: dto.sourceType ?? "");
   }
 }

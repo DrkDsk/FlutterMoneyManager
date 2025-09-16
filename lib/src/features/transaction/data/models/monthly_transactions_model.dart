@@ -34,4 +34,20 @@ class MonthlyTransactionsModel {
       ),
     );
   }
+
+  factory MonthlyTransactionsModel.initial({required int month}) {
+    return MonthlyTransactionsModel(month: month, transactions: {});
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'month': month,
+      'transactions': transactions.map(
+        (key, value) => MapEntry(
+          key,
+          value.map((tx) => tx.toMap()).toList(),
+        ),
+      ),
+    };
+  }
 }

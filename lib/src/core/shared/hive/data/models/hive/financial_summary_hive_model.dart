@@ -1,3 +1,5 @@
+import 'package:flutter_money_manager/src/core/shared/hive/data/DTO/financial_summary_dto.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:hive/hive.dart';
 
@@ -48,7 +50,7 @@ class FinancialSummaryHiveModel extends HiveObject {
         debt: debt ?? this.debt);
   }
 
-  factory FinancialSummaryHiveModel.fromEntity(FinancialSummary entity) {
+/*factory FinancialSummaryHiveModel.fromEntity(FinancialSummary entity) {
     return FinancialSummaryHiveModel(
         income: entity.income,
         expense: entity.expense,
@@ -76,5 +78,25 @@ class FinancialSummaryHiveModel extends HiveObject {
         netWorth: netWorth,
         debt: debt,
         balancesBySource: balancesBySource);
+  }*/
+
+  FinancialSummaryDto toDTO() {
+    return FinancialSummaryDto(
+        income: income,
+        expense: expense,
+        netWorth: netWorth,
+        asset: asset,
+        debt: debt,
+        balancesBySource: balancesBySource);
+  }
+
+  factory FinancialSummaryHiveModel.fromDto(FinancialSummaryDto dto) {
+    return FinancialSummaryHiveModel(
+        income: dto.income,
+        expense: dto.expense,
+        netWorth: dto.netWorth,
+        asset: dto.asset,
+        balancesBySource: dto.balancesBySource,
+        debt: dto.debt);
   }
 }
