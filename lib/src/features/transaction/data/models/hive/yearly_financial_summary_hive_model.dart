@@ -1,7 +1,7 @@
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/data/models/hive/financial_summary_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/monthly_financial_summary_dto.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_financial_summary_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_financial_summary.dart';
 import 'package:hive/hive.dart';
 
 part 'yearly_financial_summary_hive_model.g.dart';
@@ -19,18 +19,16 @@ class YearlyFinancialSummaryHiveModel extends HiveObject {
     required this.months,
   });
 
-  Map<int, FinancialSummary> toEntityMap() {
-    return Map.fromEntries(
-      months.map((e) => MapEntry(e.month, e.summary.toEntity())),
-    );
-  }
-
-  YearlyFinancialSummary toEntity() {
+  /*YearlyFinancialSummary toEntity() {
     return YearlyFinancialSummary(
-        year: year, months: months.map((month) => month.toEntity()).toList());
-  }
+        year: year,
+        months: months.map((month) {
+          final dto = MonthlyFinancialSummaryDto.fromHive(month);
+          return dto.toModel().toEntity();
+        }).toList());
+  }*/
 
-  factory YearlyFinancialSummaryHiveModel.fromEntity(
+  /*factory YearlyFinancialSummaryHiveModel.fromEntity(
       YearlyFinancialSummary entity) {
     return YearlyFinancialSummaryHiveModel(
       year: entity.year,
@@ -38,7 +36,7 @@ class YearlyFinancialSummaryHiveModel extends HiveObject {
           .map((month) => MonthlyFinancialSummaryHiveModel.fromEntity(month))
           .toList(),
     );
-  }
+  }*/
 
   factory YearlyFinancialSummaryHiveModel.initial({required int year}) {
     return YearlyFinancialSummaryHiveModel(year: year, months: []);
@@ -67,5 +65,25 @@ class YearlyFinancialSummaryHiveModel extends HiveObject {
       year: year ?? this.year,
       months: months ?? this.months,
     );
+  }
+
+  YearlyFinancialSummaryDto toDto() {
+    return YearlyFinancialSummaryDto(
+        year: year,
+        months: months
+            .map((monthlyFinancialSummaryHive) =>
+                MonthlyFinancialSummaryDto.fromHive(
+                    monthlyFinancialSummaryHive))
+            .toList());
+  }
+
+  factory YearlyFinancialSummaryHiveModel.fromDto(
+      YearlyFinancialSummaryDto dto) {
+    return YearlyFinancialSummaryHiveModel(
+        year: dto.year,
+        months: dto.months
+            .map((dtoElement) =>
+                MonthlyFinancialSummaryHiveModel.fromDto(dtoElement))
+            .toList());
   }
 }
