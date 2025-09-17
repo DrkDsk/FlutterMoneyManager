@@ -90,13 +90,13 @@ class FinancialSummaryHiveModel extends HiveObject {
         balancesBySource: balancesBySource);
   }
 
-  factory FinancialSummaryHiveModel.fromDto(FinancialSummaryDto dto) {
+  factory FinancialSummaryHiveModel.fromModel(FinancialSummaryModel model) {
     return FinancialSummaryHiveModel(
-        income: dto.income,
-        expense: dto.expense,
-        netWorth: dto.netWorth,
-        asset: dto.asset,
-        balancesBySource: dto.balancesBySource,
-        debt: dto.debt);
+        income: model.income,
+        expense: model.expense,
+        netWorth: model.netWorth,
+        asset: model.asset,
+        balancesBySource: model.balancesBySource,
+        debt: model.debt);
   }
 }

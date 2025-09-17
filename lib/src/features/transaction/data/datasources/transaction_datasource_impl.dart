@@ -3,7 +3,6 @@ import 'package:flutter_money_manager/src/core/shared/hive/data/DTO/financial_su
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/hive/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_financial_summary_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_source_hive_model.dart';
@@ -59,22 +58,31 @@ class TransactionDatasourceImpl implements TransactionDatasource {
       {required String key}) async {
     final hiveModel = _yearBalanceBox.get(key);
 
-    return hiveModel?.toDto().toModel();
-    /*return YearlyFinancialSummaryDto.fromHive(hiveModel).toModel();*/
+    if (hiveModel == null) {
+      return null;
+    }
+
+    return YearlyFinancialSummaryModel.fromHive(hiveModel);
   }
 
   @override
-  Future<YearlyTransactionsModel?> getYearlyTransactionsHiveModel(
+  Future<YearlyTransactionsModel?> getYearlyTransactions(
       {required String key}) async {
     final hiveModel = _transactionsYearBox.get(key);
 
-    return hiveModel?.toDTO().toModel();
+    if (hiveModel == null) {
+      return null;
+    }
+
+    final model = YearlyTransactionsModel.fromHive(hiveModel);
+
+    return model;
   }
 
   @override
   Future<bool> saveYearFinancialSummary(
-      {required YearlyFinancialSummaryDto dto, required String key}) async {
-    final hiveModel = YearlyFinancialSummaryHiveModel.fromDto(dto);
+      {required YearlyFinancialSummaryModel model, required String key}) async {
+    final hiveModel = YearlyFinancialSummaryHiveModel.fromModel(model);
     _yearBalanceBox.put(key, hiveModel);
 
     return true;
@@ -82,8 +90,8 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
   @override
   Future<bool> saveFinancialSummary(
-      {required FinancialSummaryDto dto, required String key}) async {
-    final hiveModel = FinancialSummaryHiveModel.fromDto(dto);
+      {required FinancialSummaryModel model, required String key}) async {
+    final hiveModel = FinancialSummaryHiveModel.fromModel(model);
 
     await _globalBalanceBox.put(
       key,

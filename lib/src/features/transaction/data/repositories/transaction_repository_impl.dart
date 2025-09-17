@@ -48,8 +48,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
-      final yearlyTransactionsHive = await _datasource
-          .getYearlyTransactionsHiveModel(key: yearlyTransactionKey);
+      final yearlyTransactionsHive =
+          await _datasource.getYearlyTransactions(key: yearlyTransactionKey);
 
       final yearlyTransactionsDto = yearlyTransactionsHive != null
           ? (YearlyTransactionsDto.fromModel(yearlyTransactionsHive))
@@ -79,7 +79,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
               yearlyFinancialSummaryDto: yearlyFinancialSummaryDto);
 
       await _datasource.saveYearFinancialSummary(
-          dto: updatedYearlyFinancialSummaryDto, key: yearlyBalanceKey);
+          model: yearlyFinancialSummaryCurrentModel, key: yearlyBalanceKey);
 
       final financialSummaryModel = await _datasource.getGlobalFinancialSummary(
               key: HiveConstants.globalSummaryKey) ??
@@ -92,7 +92,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
                   FinancialSummaryDto.fromModel(financialSummaryModel));
 
       await _datasource.saveFinancialSummary(
-          dto: updatedGlobalFinancial, key: HiveConstants.globalSummaryKey);
+          model: updatedGlobalFinancial, key: HiveConstants.globalSummaryKey);
 
       return const Right(true);
     } on UnknownException catch (_) {
@@ -122,8 +122,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final emptyTransaction = TransactionsSummary.initial();
 
-      final yearlyTransactions = await _datasource
-          .getYearlyTransactionsHiveModel(key: yearlyTransactionsKey);
+      final yearlyTransactions =
+          await _datasource.getYearlyTransactions(key: yearlyTransactionsKey);
 
       final monthTransactions = yearlyTransactions?.months
           .where((monthTransaction) => monthTransaction.month == month)
@@ -183,7 +183,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
     final transactionDayKey = HiveHelper.generateTransactionDayKey(date: date);
 
     final yearlyModels =
-        await _datasource.getYearlyTransactionsHiveModel(key: yearlyKey);
+        await _datasource.getYearlyTransactions(key: yearlyKey);
 
     if (yearlyModels == null) {
       return Right(TransactionsSummary.initial());

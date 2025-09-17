@@ -1,4 +1,6 @@
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:uuid/uuid.dart';
 
@@ -48,5 +50,17 @@ class TransactionModel {
       'categoryType': categoryType,
       'sourceType': sourceType,
     };
+  }
+
+  factory TransactionModel.fromHive(TransactionHiveModel hive) {
+    return TransactionModel(
+        id: hive.id,
+        type: hive.type == TransactionsConstants.kIncomeType
+            ? TransactionTypEnum.income
+            : TransactionTypEnum.expense,
+        transactionDate: hive.transactionDate,
+        amount: hive.amount,
+        sourceType: hive.sourceType,
+        categoryType: hive.categoryType);
   }
 }

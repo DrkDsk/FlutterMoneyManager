@@ -1,3 +1,4 @@
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/monthly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_transactions.dart';
 
@@ -49,5 +50,18 @@ class MonthlyTransactionsModel {
         ),
       ),
     };
+  }
+
+  factory MonthlyTransactionsModel.fromHive(MonthlyTransactionsHiveModel hive) {
+    return MonthlyTransactionsModel(
+        month: hive.month,
+        transactions: hive.transactions.map(
+          (key, list) => MapEntry(
+            key,
+            list
+                .map((transaction) => TransactionModel.fromHive(transaction))
+                .toList(),
+          ),
+        ));
   }
 }

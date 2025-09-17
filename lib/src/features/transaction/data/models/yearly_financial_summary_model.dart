@@ -1,3 +1,4 @@
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_financial_summary_model.dart';
 
 class YearlyFinancialSummaryModel {
@@ -9,5 +10,15 @@ class YearlyFinancialSummaryModel {
 
   factory YearlyFinancialSummaryModel.initial({required int year}) {
     return YearlyFinancialSummaryModel(year: year, months: []);
+  }
+
+  factory YearlyFinancialSummaryModel.fromHive(
+      YearlyFinancialSummaryHiveModel hive) {
+    return YearlyFinancialSummaryModel(
+        year: hive.year,
+        months: hive.months.map((monthlyFinancialSummaryHive) {
+          return MonthlyFinancialSummaryModel.fromHive(
+              monthlyFinancialSummaryHive);
+        }).toList());
   }
 }

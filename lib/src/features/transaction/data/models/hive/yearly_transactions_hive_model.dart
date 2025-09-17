@@ -28,11 +28,6 @@ class YearlyTransactionsHiveModel extends HiveObject {
     return YearlyTransactionsHiveModel(year: year, months: []);
   }
 
-  YearlyTransactionsDto toDTO() {
-    return YearlyTransactionsDto(
-        year: year, months: months.map((month) => month.toDTO()).toList());
-  }
-
   factory YearlyTransactionsHiveModel.fromDto(YearlyTransactionsDto dto) {
     return YearlyTransactionsHiveModel(
         year: dto.year,
