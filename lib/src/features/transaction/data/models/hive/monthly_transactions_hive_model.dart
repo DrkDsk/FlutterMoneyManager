@@ -1,5 +1,5 @@
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/monthly_transaction_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:hive/hive.dart';
 
 part 'monthly_transactions_hive_model.g.dart';
@@ -36,25 +36,18 @@ class MonthlyTransactionsHiveModel extends HiveObject {
     };
   }
 
-  MonthlyTransactionDto toDTO() {
-    return MonthlyTransactionDto(
-        month: month,
-        transactions: transactions.map(
+  factory MonthlyTransactionsHiveModel.fromModel(
+      MonthlyTransactionsModel model) {
+    return MonthlyTransactionsHiveModel(
+        month: model.month,
+        transactions: model.transactions.map(
           (key, list) => MapEntry(
             key,
-            list.map((transaction) => transaction.toDTO()).toList(),
+            list
+                .map((transactionModel) =>
+                    TransactionHiveModel.fromModel(transactionModel))
+                .toList(),
           ),
         ));
-  }
-
-  factory MonthlyTransactionsHiveModel.fromDto(MonthlyTransactionDto dto) {
-    return MonthlyTransactionsHiveModel(
-        month: dto.month,
-        transactions: dto.transactions.map((key, list) => MapEntry(
-            key,
-            list
-                .map((transactionDto) =>
-                    TransactionHiveModel.fromDto(transactionDto))
-                .toList())));
   }
 }

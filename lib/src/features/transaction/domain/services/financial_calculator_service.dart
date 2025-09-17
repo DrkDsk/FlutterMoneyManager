@@ -1,12 +1,12 @@
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/DTO/financial_summary_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/monthly_financial_summary_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/monthly_transaction_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/transaction_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_financial_summary_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_financial_summary.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_transactions.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_financial_summary.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_transactions.dart';
 
 class FinancialCalculatorService {
   final bool isIncome;
@@ -28,12 +28,12 @@ class FinancialCalculatorService {
     return updatedSources;
   }
 
-  FinancialSummaryDto calculateUpdatedSummary(FinancialSummaryDto summaryDto) {
+  FinancialSummary calculateUpdatedSummary(FinancialSummary summary) {
     final updatedSources = calculateUpdatedSources();
 
-    final newIncome = summaryDto.income + (isIncome ? amount : 0);
-    final newExpense = summaryDto.expense + (!isIncome ? amount : 0);
-    final newTotal = summaryDto.netWorth + (isIncome ? amount : -amount);
+    final newIncome = summary.income + (isIncome ? amount : 0);
+    final newExpense = summary.expense + (!isIncome ? amount : 0);
+    final newTotal = summary.netWorth + (isIncome ? amount : -amount);
 
     final newAsset = updatedSources.entries
         .where((e) =>
@@ -45,7 +45,7 @@ class FinancialCalculatorService {
             TransactionsConstants.kNegativeTransactionSources.contains(e.key))
         .fold<int>(0, (sum, e) => sum + (e.value < 0 ? -e.value : e.value));
 
-    return summaryDto.copyWith(
+    return summary.copyWith(
       income: newIncome,
       expense: newExpense,
       netWorth: newTotal,
@@ -55,46 +55,46 @@ class FinancialCalculatorService {
     );
   }
 
-  static YearlyFinancialSummaryDto updateYearlyFinancialSummary(
-      {required TransactionDto transactionDTO,
-      required YearlyFinancialSummaryDto yearlyFinancialSummaryDto}) {
-    final date = transactionDTO.transactionDate;
+  static YearlyFinancialSummary updateYearlyFinancialSummary(
+      {required Transaction transaction,
+      required YearlyFinancialSummary yearlyFinancialSummary}) {
+    final date = transaction.transactionDate;
     final month = date.month;
 
-    final yearModelAsMap = yearlyFinancialSummaryDto.toEntityMap();
+    final yearModelAsMap = yearlyFinancialSummary.toEntityMap();
 
     final monthIndexOfCurrentTransaction =
-        yearlyFinancialSummaryDto.months.indexWhere((m) => m.month == month);
+        yearlyFinancialSummary.months.indexWhere((m) => m.month == month);
 
-    final baseBalance = yearModelAsMap[month] ?? FinancialSummaryDto.initial();
+    final baseBalance = yearModelAsMap[month] ?? FinancialSummary.initial();
 
     final calculator = FinancialCalculatorService.fromTransaction(
-        transactionDto: transactionDTO,
+        transaction: transaction,
         balancesBySource: baseBalance.balancesBySource);
 
     final updatedBalance = calculator.calculateUpdatedSummary(baseBalance);
 
-    final monthBalance = MonthlyFinancialSummaryDto(
+    final monthBalance = MonthlyFinancialSummary(
       month: month,
       summary: updatedBalance,
     );
 
     if (monthIndexOfCurrentTransaction != -1) {
-      yearlyFinancialSummaryDto.months[monthIndexOfCurrentTransaction] =
+      yearlyFinancialSummary.months[monthIndexOfCurrentTransaction] =
           monthBalance;
     } else {
-      yearlyFinancialSummaryDto.months.add(monthBalance);
+      yearlyFinancialSummary.months.add(monthBalance);
     }
 
-    return yearlyFinancialSummaryDto;
+    return yearlyFinancialSummary;
   }
 
   factory FinancialCalculatorService.fromTransaction(
-      {required TransactionDto transactionDto,
+      {required Transaction transaction,
       required Map<String, int> balancesBySource}) {
-    final isIncome = transactionDto.type == TransactionTypEnum.income;
-    final source = transactionDto.sourceType ?? "Unknown";
-    final amount = transactionDto.amount;
+    final isIncome = transaction.type == TransactionTypEnum.income;
+    final source = transaction.sourceType ?? "Unknown";
+    final amount = transaction.amount;
 
     return FinancialCalculatorService(
         isIncome: isIncome,
@@ -103,33 +103,33 @@ class FinancialCalculatorService {
         balancesBySource: balancesBySource);
   }
 
-  static YearlyTransactionsDto updateYearlyTransactionHiveModel(
-      {required YearlyTransactionsDto? yearlyTransactionsDto,
-      required TransactionDto transactionDto}) {
-    final date = transactionDto.transactionDate;
+  static YearlyTransactions updateYearlyTransactionHiveModel(
+      {required YearlyTransactions? yearlyTransactions,
+      required Transaction transaction}) {
+    final date = transaction.transactionDate;
     final month = date.month;
 
-    yearlyTransactionsDto =
-        yearlyTransactionsDto ?? YearlyTransactionsDto.initial(year: date.year);
+    yearlyTransactions =
+        yearlyTransactions ?? YearlyTransactions.initial(year: date.year);
 
     final dayKey = HiveHelper.generateTransactionDayKey(date: date);
     final monthIndex =
-        yearlyTransactionsDto.months.indexWhere((m) => m.month == month);
+        yearlyTransactions.months.indexWhere((m) => m.month == month);
 
-    MonthlyTransactionDto monthlyTransactionsDTO;
+    MonthlyTransactions monthlyTransactionsDTO;
 
     if (monthIndex != -1) {
-      monthlyTransactionsDTO = yearlyTransactionsDto.months[monthIndex];
+      monthlyTransactionsDTO = yearlyTransactions.months[monthIndex];
     } else {
-      monthlyTransactionsDTO = MonthlyTransactionDto.initial(month: month);
-      yearlyTransactionsDto.months.add(monthlyTransactionsDTO);
+      monthlyTransactionsDTO = MonthlyTransactions.initial(month: month);
+      yearlyTransactions.months.add(monthlyTransactionsDTO);
     }
 
-    final transactionsByDay = List<TransactionDto>.from(
+    final transactionsByDay = List<Transaction>.from(
       monthlyTransactionsDTO.transactions[dayKey] ?? [],
     );
 
-    transactionsByDay.add(transactionDto);
+    transactionsByDay.add(transaction);
 
     monthlyTransactionsDTO = monthlyTransactionsDTO.copyWith(
       transactions: {
@@ -139,24 +139,23 @@ class FinancialCalculatorService {
     );
 
     if (monthIndex != -1) {
-      yearlyTransactionsDto.months[monthIndex] = monthlyTransactionsDTO;
+      yearlyTransactions.months[monthIndex] = monthlyTransactionsDTO;
     } else {
-      final lastIndex = yearlyTransactionsDto.months.length - 1;
-      yearlyTransactionsDto.months[lastIndex] = monthlyTransactionsDTO;
+      final lastIndex = yearlyTransactions.months.length - 1;
+      yearlyTransactions.months[lastIndex] = monthlyTransactionsDTO;
     }
 
-    return yearlyTransactionsDto;
+    return yearlyTransactions;
   }
 
-  static FinancialSummaryDto updateGlobalSummary(
-      {required TransactionDto transactionDto,
-      FinancialSummaryDto? financialSummaryDto}) {
-    financialSummaryDto = financialSummaryDto ?? FinancialSummaryDto.initial();
+  static FinancialSummary updateGlobalSummary(
+      {required Transaction transaction, FinancialSummary? financialSummary}) {
+    financialSummary = financialSummary ?? FinancialSummary.initial();
 
     final updatedGlobalSummary = FinancialCalculatorService.fromTransaction(
-      transactionDto: transactionDto,
-      balancesBySource: financialSummaryDto.balancesBySource,
-    ).calculateUpdatedSummary(financialSummaryDto);
+      transaction: transaction,
+      balancesBySource: financialSummary.balancesBySource,
+    ).calculateUpdatedSummary(financialSummary);
 
     return updatedGlobalSummary;
   }

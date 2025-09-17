@@ -1,3 +1,4 @@
+import 'package:flutter_money_manager/src/core/shared/hive/data/models/hive/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 
 class FinancialSummaryModel {
@@ -49,5 +50,15 @@ class FinancialSummaryModel {
         netWorth: netWorth,
         debt: debt,
         balancesBySource: balancesBySource);
+  }
+
+  factory FinancialSummaryModel.fromHive(FinancialSummaryHiveModel hive) {
+    return FinancialSummaryModel(
+        income: hive.income,
+        expense: hive.expense,
+        netWorth: hive.netWorth,
+        asset: hive.asset,
+        debt: hive.debt,
+        balancesBySource: hive.balancesBySource);
   }
 }
