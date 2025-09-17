@@ -1,7 +1,4 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:uuid/uuid.dart';
-
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 
 part 'transaction_source_hive_model.g.dart';
 
@@ -34,20 +31,9 @@ class TransactionSourceHiveModel extends HiveObject {
     );
   }
 
-  TransactionSource toEntity() {
-    return TransactionSource(name: name, icon: icon);
-  }
-
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "icon": icon,
       };
-
-  factory TransactionSourceHiveModel.fromEntity(TransactionSource entity) {
-    return TransactionSourceHiveModel(
-        id: entity.id ?? const Uuid().v4(),
-        name: entity.name,
-        icon: entity.icon);
-  }
 }
