@@ -14,8 +14,6 @@ import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/transaction_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
@@ -204,8 +202,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final transactionsModelsRaw = (grouped[date] ?? []).toList();
 
       final transactions = transactionsModelsRaw.map((entry) {
-        final transactionModel = TransactionHiveModel.fromMap(entry);
-        return transactionModel.toDTO().toModel().toEntity();
+        final transactionHiveModel = TransactionHiveModel.fromMap(entry);
+        final transactionModel =
+            TransactionModel.fromHive(transactionHiveModel);
+        return transactionModel.toEntity();
       }).toList();
 
       return TransactionsData(transactions: transactions, date: date);
