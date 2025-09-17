@@ -10,18 +10,14 @@ import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exceptio
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/DTO/financial_summary_dto.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/transaction_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_financial_summary_dto.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/yearly_transactions_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
@@ -48,51 +44,51 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
-      final yearlyTransactionsHive =
-          await _datasource.getYearlyTransactions(key: yearlyTransactionKey);
+      YearlyTransactionsModel currentYearlyTransactionsModel =
+          await _datasource.getYearlyTransactions(key: yearlyTransactionKey) ??
+              YearlyTransactionsModel.initial(year: year);
 
-      final yearlyTransactionsDto = yearlyTransactionsHive != null
-          ? (YearlyTransactionsDto.fromModel(yearlyTransactionsHive))
-          : YearlyTransactionsDto.initial(year: year);
-
-      final transactionModel = TransactionModel.fromEntity(transaction);
-      final transactionDTO = TransactionDto.fromModel(transactionModel);
-
-      final yearlyTransactionsDTO =
+      final updatedYearlyTransactions =
           FinancialCalculatorService.updateYearlyTransactionHiveModel(
-              yearlyTransactionsDto: yearlyTransactionsDto,
-              transactionDto: transactionDTO);
+              yearlyTransactions: currentYearlyTransactionsModel.toEntity(),
+              transaction: transaction);
+
+      currentYearlyTransactionsModel =
+          YearlyTransactionsModel.fromEntity(updatedYearlyTransactions);
 
       await _datasource.save(
-          dto: yearlyTransactionsDTO, key: yearlyTransactionKey);
+          model: currentYearlyTransactionsModel, key: yearlyTransactionKey);
 
-      final yearlyFinancialSummaryCurrentModel =
+      YearlyFinancialSummaryModel yearlyFinancialSummaryCurrentModel =
           await _datasource.getBalancesByYear(key: yearlyBalanceKey) ??
               YearlyFinancialSummaryModel.initial(year: year);
 
-      final yearlyFinancialSummaryDto = YearlyFinancialSummaryDto.fromModel(
-          yearlyFinancialSummaryCurrentModel);
-
-      final updatedYearlyFinancialSummaryDto =
+      final updatedYearlyFinancialSummary =
           FinancialCalculatorService.updateYearlyFinancialSummary(
-              transactionDTO: transactionDTO,
-              yearlyFinancialSummaryDto: yearlyFinancialSummaryDto);
+              transaction: transaction,
+              yearlyFinancialSummary:
+                  yearlyFinancialSummaryCurrentModel.toEntity());
+
+      yearlyFinancialSummaryCurrentModel =
+          YearlyFinancialSummaryModel.fromEntity(updatedYearlyFinancialSummary);
 
       await _datasource.saveYearFinancialSummary(
           model: yearlyFinancialSummaryCurrentModel, key: yearlyBalanceKey);
 
-      final financialSummaryModel = await _datasource.getGlobalFinancialSummary(
-              key: HiveConstants.globalSummaryKey) ??
+      FinancialSummaryModel financialSummaryModel = await _datasource
+              .getGlobalFinancialSummary(key: HiveConstants.globalSummaryKey) ??
           FinancialSummaryModel.initial();
 
       final updatedGlobalFinancial =
           FinancialCalculatorService.updateGlobalSummary(
-              transactionDto: transactionDTO,
-              financialSummaryDto:
-                  FinancialSummaryDto.fromModel(financialSummaryModel));
+              transaction: transaction,
+              financialSummary: financialSummaryModel.toEntity());
+
+      financialSummaryModel =
+          FinancialSummaryModel.fromEntity(updatedGlobalFinancial);
 
       await _datasource.saveFinancialSummary(
-          model: updatedGlobalFinancial, key: HiveConstants.globalSummaryKey);
+          model: financialSummaryModel, key: HiveConstants.globalSummaryKey);
 
       return const Right(true);
     } on UnknownException catch (_) {

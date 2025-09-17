@@ -1,6 +1,8 @@
 import 'package:flutter_money_manager/src/core/shared/hive/data/DTO/financial_summary_dto.dart';
+import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/monthly_financial_summary_dto.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_financial_summary.dart';
 
 class YearlyFinancialSummaryDto {
   final int year;
@@ -28,14 +30,5 @@ class YearlyFinancialSummaryDto {
     return YearlyFinancialSummaryModel(
         year: year,
         months: months.map((element) => element.toModel()).toList());
-  }
-
-  factory YearlyFinancialSummaryDto.fromModel(
-      YearlyFinancialSummaryModel model) {
-    return YearlyFinancialSummaryDto(
-        year: model.year,
-        months: model.months
-            .map((model) => MonthlyFinancialSummaryDto.fromModel(model))
-            .toList());
   }
 }

@@ -20,4 +20,11 @@ class MonthlyFinancialSummaryModel {
         month: hive.month,
         summary: FinancialSummaryModel.fromHive(hive.summary));
   }
+
+  factory MonthlyFinancialSummaryModel.fromEntity(
+      MonthlyFinancialSummary entity) {
+    return MonthlyFinancialSummaryModel(
+        month: entity.month,
+        summary: FinancialSummaryModel.fromEntity(entity.summary));
+  }
 }

@@ -29,9 +29,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
   @override
   Future<bool> save(
-      {required YearlyTransactionsDto dto, required String key}) async {
+      {required YearlyTransactionsModel model, required String key}) async {
     try {
-      final hiveModel = YearlyTransactionsHiveModel.fromDto(dto);
+      final hiveModel = YearlyTransactionsHiveModel.fromModel(model);
       await _transactionsYearBox.put(key, hiveModel);
 
       return true;

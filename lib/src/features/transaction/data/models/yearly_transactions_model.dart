@@ -21,4 +21,16 @@ class YearlyTransactionsModel {
           return MonthlyTransactionsModel.fromHive(monthly);
         }).toList());
   }
+
+  factory YearlyTransactionsModel.initial({required int year}) {
+    return YearlyTransactionsModel(year: year, months: []);
+  }
+
+  factory YearlyTransactionsModel.fromEntity(YearlyTransactions entity) {
+    return YearlyTransactionsModel(
+        year: entity.year,
+        months: entity.months.map((month) {
+          return MonthlyTransactionsModel.fromEntity(month);
+        }).toList());
+  }
 }

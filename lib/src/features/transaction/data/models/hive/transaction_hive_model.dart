@@ -1,6 +1,7 @@
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/DTO/transaction_dto.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
@@ -101,5 +102,15 @@ class TransactionHiveModel extends HiveObject {
         amount: dto.amount,
         categoryType: dto.categoryType ?? "",
         sourceType: dto.sourceType ?? "");
+  }
+
+  factory TransactionHiveModel.fromModel(TransactionModel model) {
+    return TransactionHiveModel(
+        id: model.id ?? const Uuid().v4(),
+        type: model.type.name,
+        transactionDate: model.transactionDate,
+        amount: model.amount,
+        categoryType: model.categoryType ?? "",
+        sourceType: model.sourceType ?? "");
   }
 }
