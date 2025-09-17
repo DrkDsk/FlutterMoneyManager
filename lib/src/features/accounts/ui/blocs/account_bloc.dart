@@ -28,7 +28,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       GetGlobalBalance event, Emitter<AccountState> emit) async {
     final result = await _transactionRepository.getGlobalFinancialSummary();
 
-    print("result: $result");
-    /*emit(state.copyWith(globalBalance: result));*/
+    emit(state.copyWith(financialSummary: result));
   }
 }

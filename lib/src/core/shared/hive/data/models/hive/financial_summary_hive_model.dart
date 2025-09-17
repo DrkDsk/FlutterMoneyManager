@@ -48,36 +48,6 @@ class FinancialSummaryHiveModel extends HiveObject {
         debt: debt ?? this.debt);
   }
 
-/*factory FinancialSummaryHiveModel.fromEntity(FinancialSummary entity) {
-    return FinancialSummaryHiveModel(
-        income: entity.income,
-        expense: entity.expense,
-        netWorth: entity.netWorth,
-        asset: entity.asset,
-        balancesBySource: entity.balancesBySource,
-        debt: entity.debt);
-  }
-
-  factory FinancialSummaryHiveModel.initial() {
-    return FinancialSummaryHiveModel(
-        income: 0,
-        expense: 0,
-        netWorth: 0,
-        asset: 0,
-        debt: 0,
-        balancesBySource: {});
-  }
-
-  FinancialSummary toEntity() {
-    return FinancialSummary(
-        income: income,
-        expense: expense,
-        asset: asset,
-        netWorth: netWorth,
-        debt: debt,
-        balancesBySource: balancesBySource);
-  }*/
-
   factory FinancialSummaryHiveModel.fromModel(FinancialSummaryModel model) {
     return FinancialSummaryHiveModel(
         income: model.income,
