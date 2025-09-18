@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_bloc.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_event.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_state.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/pie_chart_sample.dart';
 
 class IncomeStatPage extends StatefulWidget {
@@ -24,9 +25,13 @@ class _IncomeStatPageState extends State<IncomeStatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        PieChartSample(),
+        BlocBuilder<StatsBloc, StatsState>(
+          builder: (context, state) {
+            return const PieChartSample();
+          },
+        ),
       ],
     );
   }
