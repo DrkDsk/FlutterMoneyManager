@@ -8,6 +8,7 @@ import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_event.da
 import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_state.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/pie_chart_sample.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/stat_list_items.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
 
 class IncomeStatPage extends StatefulWidget {
   const IncomeStatPage({super.key});
@@ -18,12 +19,18 @@ class IncomeStatPage extends StatefulWidget {
 
 class _IncomeStatPageState extends State<IncomeStatPage> {
   late final StatsBloc _statsBloc;
+  late final CalendarBloc _calendarBloc;
 
   @override
   void initState() {
     super.initState();
     _statsBloc = BlocProvider.of<StatsBloc>(context);
-    _statsBloc.add(const LoadStatsEvent(type: TransactionTypEnum.income));
+    _calendarBloc = BlocProvider.of<CalendarBloc>(context);
+    final focusedDate = _calendarBloc.state.focusedDate;
+    _statsBloc.add(LoadStatsEvent(
+        type: TransactionTypEnum.income,
+        month: focusedDate.month,
+        year: focusedDate.year));
   }
 
   @override
