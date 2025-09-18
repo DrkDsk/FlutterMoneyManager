@@ -4,13 +4,16 @@ class Indicator extends StatelessWidget {
   const Indicator({
     super.key,
     required this.color,
-    required this.text,
+    required this.source,
+    required this.amount,
     required this.isSquare,
     this.size = 16,
     this.textColor,
   });
+
   final Color color;
-  final String text;
+  final String source;
+  final int amount;
   final bool isSquare;
   final double size;
   final Color? textColor;
@@ -18,6 +21,7 @@ class Indicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
           width: size,
@@ -30,13 +34,27 @@ class Indicator extends StatelessWidget {
         const SizedBox(
           width: 4,
         ),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: textColor,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              source,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: textColor ?? Colors.grey.shade700,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              "\$$amount",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade500,
+              ),
+            ),
+          ],
         )
       ],
     );

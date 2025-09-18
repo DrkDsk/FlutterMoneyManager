@@ -47,7 +47,7 @@ class _IncomeStatPageState extends State<IncomeStatPage> {
               children: [
                 PieChartSample(stats: stats),
                 Expanded(
-                  child: Center(child: StatListItems(stats: stats)),
+                  child: StatListItems(stats: stats),
                 )
               ],
             );

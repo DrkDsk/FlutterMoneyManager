@@ -37,4 +37,14 @@ class ContainerStyles {
       ],
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: AppColors.turquoise.customOpacity(0.8)));
+
+  static final cardDecoration = BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(4),
+      boxShadow: [
+        BoxShadow(
+          spreadRadius: 0.4,
+          color: Colors.grey.shade400,
+        )
+      ]);
 }

@@ -4,6 +4,7 @@ import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_divider.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_event.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_state.dart';
@@ -78,15 +79,7 @@ class _AccountPageState extends State<AccountPage> {
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                    boxShadow: [
-                      BoxShadow(
-                        spreadRadius: 0.4,
-                        color: Colors.grey.shade400,
-                      )
-                    ]),
+                decoration: ContainerStyles.cardDecoration,
                 child: ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
