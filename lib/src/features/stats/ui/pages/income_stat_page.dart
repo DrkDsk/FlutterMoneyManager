@@ -18,7 +18,7 @@ class _IncomeStatPageState extends State<IncomeStatPage> {
   @override
   void initState() {
     super.initState();
-    _statsBloc = context.read<StatsBloc>();
+    _statsBloc = BlocProvider.of<StatsBloc>(context);
     _statsBloc.add(const LoadStatsEvent(type: TransactionTypEnum.income));
   }
 
