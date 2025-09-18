@@ -74,9 +74,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
       return null;
     }
 
-    final model = YearlyTransactionsModel.fromHive(hiveModel);
-
-    return model;
+    return YearlyTransactionsModel.fromHive(hiveModel);
   }
 
   @override
