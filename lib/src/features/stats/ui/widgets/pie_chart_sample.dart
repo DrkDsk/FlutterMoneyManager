@@ -56,6 +56,28 @@ class _PieChartSampleState extends State<PieChartSample> {
 
   List<PieChartSectionData> showingSections(
       {required List<StatBreakdown> stats}) {
+    if (stats.isEmpty) {
+      final isTouched = 0 == touchedIndex;
+      final fontSize = isTouched ? 20.0 : 15.0;
+      final radius = isTouched ? 90.0 : 70.0;
+      const shadows = [Shadow(color: Colors.black, blurRadius: 10)];
+
+      return [
+        PieChartSectionData(
+          color: Colors.grey.shade200,
+          value: 100,
+          title: '',
+          radius: radius,
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: shadows,
+          ),
+        )
+      ];
+    }
+
     return List.generate(stats.length, (index) {
       final report = stats[index];
       final isTouched = index == touchedIndex;

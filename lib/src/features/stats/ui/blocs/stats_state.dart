@@ -13,11 +13,7 @@ class StatsState with EquatableMixin {
     return const StatsState(data: StatResponse(stats: []));
   }
 
-  StatsState copyWith({
-    StatResponse? data,
-  }) {
-    return StatsState(
-      data: data ?? this.data,
-    );
+  StatsState copyWith({StatResponse? data}) {
+    return StatsState(data: data ?? this.data);
   }
 }
