@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 class ReportBreakdown with EquatableMixin {
   final String source;
-
   final int expenseAmount;
   final double percentOfExpenses;
   final double percentOfIncomes;
@@ -17,7 +16,6 @@ class ReportBreakdown with EquatableMixin {
   });
 
   @override
-  // TODO: implement props
   List<Object?> get props => [
         source,
         expenseAmount,

@@ -8,7 +8,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
   StatsBloc({required StatsRepository repository})
       : _repository = repository,
-        super(StatsState()) {
+        super(StatsState.initial()) {
     on<LoadStatsEvent>(_loadStats);
   }
 
@@ -17,7 +17,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     final monthlyTransactionsRequest = await _repository.getStatMonth();
 
     monthlyTransactionsRequest.fold((left) {}, (right) {
-      print("monthlyTransactions: $right");
+      emit(state.copyWith(data: right));
     });
   }
 }
