@@ -12,20 +12,38 @@ class StatListItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: ListView.builder(
-          itemCount: stats.length,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            final stat = stats[index];
-            final source = stat.source;
-            final amount = stat.amount;
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (stats.isEmpty) ...[
+              Text(
+                "No data available",
+                style: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300),
+              )
+            ] else ...[
+              ListView.builder(
+                  itemCount: stats.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final stat = stats[index];
+                    final source = stat.source;
+                    final amount = stat.amount;
 
-            return Indicator(
-                color: CategoryColors.getCategoryColor(source.toLowerCase()),
-                source: source,
-                amount: amount,
-                isSquare: true);
-          }),
+                    return Indicator(
+                        color: CategoryColors.getCategoryColor(
+                            source.toLowerCase()),
+                        source: source,
+                        amount: amount,
+                        isSquare: true);
+                  })
+            ]
+          ],
+        ),
+      ),
     );
   }
 }

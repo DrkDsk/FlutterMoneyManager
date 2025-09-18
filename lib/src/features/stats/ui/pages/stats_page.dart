@@ -23,9 +23,9 @@ class StatsPage extends StatefulWidget {
 
 class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
   late final TabController _tabController;
-  late PageController _pageController;
-  late CalendarBloc _calendarBloc;
-  late TransactionsBloc _transactionsBloc;
+  late final PageController _pageController;
+  late final CalendarBloc _calendarBloc;
+  late final TransactionsBloc _transactionsBloc;
 
   @override
   void initState() {
@@ -63,6 +63,11 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     _pageController.jumpToPage(newMonthIndex);
   }
 
+  void onPageChanged(int index) {
+    _transactionsBloc.add(UpdateMonth(monthIndex: index));
+    _transactionsBloc.add(LoadTransactionsByMonth(month: index));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -86,10 +91,7 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
             scrollDirection: Axis.horizontal,
             itemCount: 13,
             controller: _pageController,
-            onPageChanged: (index) {
-              _transactionsBloc.add(UpdateMonth(monthIndex: index));
-              _transactionsBloc.add(LoadTransactionsByMonth(month: index));
-            },
+            onPageChanged: onPageChanged,
             itemBuilder: (context, index) {
               return Column(
                 children: [
