@@ -2,11 +2,15 @@ import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/home_redirection_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
+import 'package:flutter_money_manager/src/features/stats/data/datasources/stats_repository_impl.dart';
+import 'package:flutter_money_manager/src/features/stats/domain/repositories/stats_repository.dart';
+import 'package:flutter_money_manager/src/features/stats/domain/services/stat_service.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource_impl.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/services/transaction_service.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
@@ -29,8 +33,21 @@ Future<void> initDependencies() async {
           transactionsYearBox: transactionsYearBox,
           yearBalanceBox: yearBalanceBox));
 
+  getIt.registerLazySingleton<TransactionService>(
+      () => TransactionService(datasource: getIt<TransactionDatasource>()));
+
+  getIt.registerLazySingleton<StatService>(() => StatService());
+
+  final transactionService = getIt<TransactionService>();
+
   getIt.registerLazySingleton<TransactionRepository>(() =>
-      TransactionRepositoryImpl(datasource: getIt<TransactionDatasource>()));
+      TransactionRepositoryImpl(
+          datasource: getIt<TransactionDatasource>(),
+          transactionService: transactionService));
+
+  getIt.registerLazySingleton<StatsRepository>(() => StatsRepositoryImpl(
+      transactionService: transactionService,
+      statService: getIt<StatService>()));
 
   final transactionRepositoryInst = getIt<TransactionRepository>();
 
@@ -47,5 +64,5 @@ Future<void> initDependencies() async {
   getIt.registerFactory<AccountBloc>(
       () => AccountBloc(transactionRepository: transactionRepositoryInst));
   getIt.registerFactory<StatsBloc>(
-      () => StatsBloc(repository: transactionRepositoryInst));
+      () => StatsBloc(repository: getIt<StatsRepository>()));
 }
