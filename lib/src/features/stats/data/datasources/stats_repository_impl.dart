@@ -1,0 +1,62 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
+import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
+import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
+import 'package:flutter_money_manager/src/features/stats/domain/entities/stat_response.dart';
+import 'package:flutter_money_manager/src/features/stats/domain/repositories/stats_repository.dart';
+import 'package:flutter_money_manager/src/features/stats/domain/services/stat_service.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/services/transaction_service.dart';
+
+class StatsRepositoryImpl implements StatsRepository {
+  final TransactionService _transactionService;
+  final StatService _statService;
+
+  StatsRepositoryImpl(
+      {required TransactionService transactionService,
+      required StatService statService})
+      : _transactionService = transactionService,
+        _statService = statService;
+
+  @override
+  Future<Either<Failure, StatResponse>> getStatMonth(
+      {int? year, int? month}) async {
+    try {
+      final now = DateTime.now();
+      year = year ?? now.year;
+      month = month ?? now.month;
+      final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
+
+      const emptyResponse = StatResponse(reports: []);
+      final List<TransactionModel> transactions = [];
+
+      final summary = await _transactionService.getBalanceByMonth(
+          key: yearlyBalanceKey, month: month);
+
+      final monthTransactions = await _transactionService.getTransactionsMonth(
+          month: month, year: year);
+
+      if (monthTransactions == null ||
+          monthTransactions.isEmpty ||
+          summary == null) {
+        return const Right(emptyResponse);
+      }
+
+      final allTransactions = monthTransactions.values.toList();
+
+      for (final transaction in allTransactions) {
+        for (final model in transaction.toList()) {
+          transactions.add(model);
+        }
+      }
+
+      final breakdown = _statService.calculateBreakdown(transactions, summary);
+
+      return Right(StatResponse(reports: breakdown));
+    } on UnknownException catch (_) {
+      return Left(GenericFailure());
+    } catch (error) {
+      return Left(GenericFailure());
+    }
+  }
+}

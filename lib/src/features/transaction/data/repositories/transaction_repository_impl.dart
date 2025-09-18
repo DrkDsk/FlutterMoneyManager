@@ -25,14 +25,19 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/services/financial_calculator_service.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/services/transaction_service.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionDatasource _datasource;
+  final TransactionService _transactionService;
   final _transactionsController =
       StreamController<TransactionsSummary>.broadcast();
 
-  TransactionRepositoryImpl({required TransactionDatasource datasource})
-      : _datasource = datasource;
+  TransactionRepositoryImpl(
+      {required TransactionDatasource datasource,
+      required TransactionService transactionService})
+      : _datasource = datasource,
+        _transactionService = transactionService;
 
   @override
   Future<Either<Failure, bool>> save(Transaction transaction) async {
@@ -111,46 +116,20 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final now = DateTime.now();
       year = year ?? now.year;
       month = month ?? now.month;
-
-      final yearlyTransactionsKey =
-          HiveHelper.generateYearlyTransactionKey(year: year);
-
       final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
-      final emptyTransaction = TransactionsSummary.initial();
+      final monthBalance = await _transactionService.getBalanceByMonth(
+          key: yearlyBalanceKey, month: month);
 
-      final yearlyTransactions =
-          await _datasource.getYearlyTransactions(key: yearlyTransactionsKey);
+      final monthTransactions = await _transactionService.getTransactionsMonth(
+          year: year, month: month);
 
-      final monthTransactions = yearlyTransactions?.months
-          .where((monthTransaction) => monthTransaction.month == month)
-          .toList();
-
-      if (monthTransactions == null || monthTransactions.isEmpty) {
-        return Right(emptyTransaction);
+      if (monthTransactions == null || monthBalance == null) {
+        return Right(TransactionsSummary.initial());
       }
-
-      final transactionsModelsMonth = monthTransactions.first.transactions;
-
-      final yearlyBalances =
-          await _datasource.getBalancesByYear(key: yearlyBalanceKey);
-
-      if (yearlyBalances == null) {
-        return Right(emptyTransaction);
-      }
-
-      final balances = yearlyBalances.months
-          .where((monthBalance) => monthBalance.month == month)
-          .toList();
-
-      if (balances.isEmpty) {
-        return Right(emptyTransaction);
-      }
-
-      final monthBalance = balances.first.summary;
 
       final transactionsBalance = await Isolate.run(() {
-        final transactionsData = transactionsModelsMonth.entries.map((entry) {
+        final transactionsData = monthTransactions.entries.map((entry) {
           final date = DatetimeHelper.parse(input: entry.key);
           final transactions = entry.value.map((t) => t.toEntity()).toList();
           return TransactionsData(transactions: transactions, date: date);
