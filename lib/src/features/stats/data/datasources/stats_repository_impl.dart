@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/entities/stat_response.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/repositories/stats_repository.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/services/stat_service.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/services/transaction_service.dart';
 
 class StatsRepositoryImpl implements StatsRepository {
@@ -20,7 +20,7 @@ class StatsRepositoryImpl implements StatsRepository {
 
   @override
   Future<Either<Failure, StatResponse>> getStatMonth(
-      {int? year, int? month}) async {
+      {required TransactionTypEnum type, int? year, int? month}) async {
     try {
       final now = DateTime.now();
       year = year ?? now.year;
@@ -28,7 +28,6 @@ class StatsRepositoryImpl implements StatsRepository {
       final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
       const emptyResponse = StatResponse(reports: []);
-      final List<TransactionModel> transactions = [];
 
       final summary = await _transactionService.getBalanceByMonth(
           key: yearlyBalanceKey, month: month);
@@ -42,15 +41,13 @@ class StatsRepositoryImpl implements StatsRepository {
         return const Right(emptyResponse);
       }
 
-      final allTransactions = monthTransactions.values.toList();
+      final transactions = monthTransactions.values
+          .expand((list) => list)
+          .where((model) => model.type == type)
+          .toList();
 
-      for (final transaction in allTransactions) {
-        for (final model in transaction.toList()) {
-          transactions.add(model);
-        }
-      }
-
-      final breakdown = _statService.calculateBreakdown(transactions, summary);
+      final breakdown =
+          _statService.calculateBreakdown(transactions, summary, type);
 
       return Right(StatResponse(reports: breakdown));
     } on UnknownException catch (_) {

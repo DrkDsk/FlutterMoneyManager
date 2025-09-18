@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
-import 'package:flutter_money_manager/src/core/shared/theme/styles.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_divider.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
@@ -31,7 +31,7 @@ class CreateTransactionTabview extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: defaultBorder,
+      decoration: ContainerStyles.defaultBorder,
       child: BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
         builder: (context, state) {
           final sourceName = state.transaction.sourceType;
