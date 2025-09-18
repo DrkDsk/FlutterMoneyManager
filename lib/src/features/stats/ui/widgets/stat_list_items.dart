@@ -16,11 +16,14 @@ class StatListItems extends StatelessWidget {
           itemCount: stats.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            final source = stats[index].source;
+            final stat = stats[index];
+            final source = stat.source;
+            final amount = stat.amount;
 
             return Indicator(
                 color: CategoryColors.getCategoryColor(source.toLowerCase()),
-                text: source,
+                source: source,
+                amount: amount,
                 isSquare: true);
           }),
     );
