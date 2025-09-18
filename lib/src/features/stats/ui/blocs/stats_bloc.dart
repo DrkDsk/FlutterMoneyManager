@@ -15,9 +15,11 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   Future<void> _loadStats(
       LoadStatsEvent event, Emitter<StatsState> emit) async {
     final type = event.type;
+    final month = event.month;
+    final year = event.year;
 
     final monthlyTransactionsRequest =
-        await _repository.getStatMonth(type: type);
+        await _repository.getStatMonth(type: type, month: month, year: year);
 
     monthlyTransactionsRequest.fold((left) {}, (right) {
       emit(state.copyWith(data: right));
