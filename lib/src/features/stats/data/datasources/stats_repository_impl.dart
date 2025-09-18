@@ -27,7 +27,7 @@ class StatsRepositoryImpl implements StatsRepository {
       month = month ?? now.month;
       final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
-      const emptyResponse = StatResponse(reports: []);
+      const emptyResponse = StatResponse(stats: []);
 
       final summary = await _transactionService.getBalanceByMonth(
           key: yearlyBalanceKey, month: month);
@@ -49,7 +49,7 @@ class StatsRepositoryImpl implements StatsRepository {
       final breakdown =
           _statService.calculateBreakdown(transactions, summary, type);
 
-      return Right(StatResponse(reports: breakdown));
+      return Right(StatResponse(stats: breakdown));
     } on UnknownException catch (_) {
       return Left(GenericFailure());
     } catch (error) {
