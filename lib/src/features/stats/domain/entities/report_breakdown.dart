@@ -1,26 +1,20 @@
 import 'package:equatable/equatable.dart';
 
-class ReportBreakdown with EquatableMixin {
+class StatBreakdown with EquatableMixin {
   final String source;
-  final int expenseAmount;
-  final double percentOfExpenses;
-  final double percentOfIncomes;
-  final int incomeAmount;
+  final int amount;
+  final double percent;
 
-  const ReportBreakdown({
+  const StatBreakdown({
     required this.source,
-    required this.expenseAmount,
-    required this.percentOfExpenses,
-    required this.percentOfIncomes,
-    required this.incomeAmount,
+    required this.amount,
+    required this.percent,
   });
 
   @override
   List<Object?> get props => [
         source,
-        expenseAmount,
-        percentOfExpenses,
-        percentOfIncomes,
-        incomeAmount,
+        amount,
+        percent,
       ];
 }

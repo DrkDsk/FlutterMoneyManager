@@ -4,43 +4,36 @@ import 'package:flutter_money_manager/src/features/stats/domain/entities/report_
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 
 class StatService {
-  List<ReportBreakdown> calculateBreakdown(
-    List<TransactionModel> transactions,
-    FinancialSummaryModel summary,
-  ) {
-    final Map<String, int> expensesBySource = {};
-    final Map<String, int> incomesBySource = {};
+  List<StatBreakdown> calculateBreakdown(List<TransactionModel> transactions,
+      FinancialSummaryModel summary, TransactionTypEnum selectedType) {
+    final Map<String, int> sources = {};
 
     for (var tx in transactions) {
       final source = tx.categoryType ?? "Unknown";
-      if (tx.type == TransactionTypEnum.expense) {
-        expensesBySource[source] = (expensesBySource[source] ?? 0) + tx.amount;
-      } else if (tx.type == TransactionTypEnum.income) {
-        incomesBySource[source] = (incomesBySource[source] ?? 0) + tx.amount;
+      if (tx.type == selectedType) {
+        sources[source] = (sources[source] ?? 0) + tx.amount;
       }
     }
 
     final allSources = {
-      ...expensesBySource.keys,
-      ...incomesBySource.keys,
+      ...sources.keys,
     };
 
     return allSources.map((source) {
-      final expenseAmount = expensesBySource[source] ?? 0;
-      final incomeAmount = incomesBySource[source] ?? 0;
+      final amount = sources[source] ?? 0;
 
-      final percentOfExpenses =
-          summary.expense > 0 ? (expenseAmount / summary.expense) * 100 : 0;
+      double percent = 0;
 
-      final percentOfIncomes =
-          summary.income > 0 ? (incomeAmount / summary.income) * 100 : 0;
+      if (selectedType == TransactionTypEnum.income) {
+        percent = summary.income > 0 ? (amount / summary.income) * 100 : 0;
+      } else {
+        percent = summary.expense > 0 ? (amount / summary.expense) * 100 : 0;
+      }
 
-      return ReportBreakdown(
+      return StatBreakdown(
         source: source,
-        expenseAmount: expenseAmount,
-        percentOfExpenses: percentOfExpenses.toDouble(),
-        incomeAmount: incomeAmount,
-        percentOfIncomes: percentOfIncomes.toDouble(),
+        amount: amount,
+        percent: percent.toDouble(),
       );
     }).toList();
   }

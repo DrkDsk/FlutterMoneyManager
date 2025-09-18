@@ -34,7 +34,7 @@ class PieChartSampleState extends State {
             ],
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.turquoise.customOpacity(0.8))),
-        child: BlocSelector<StatsBloc, StatsState, List<ReportBreakdown>>(
+        child: BlocSelector<StatsBloc, StatsState, List<StatBreakdown>>(
           selector: (state) {
             return state.data.reports;
           },
@@ -97,7 +97,7 @@ class PieChartSampleState extends State {
   }
 
   List<PieChartSectionData> showingSections(
-      {required List<ReportBreakdown> data}) {
+      {required List<StatBreakdown> data}) {
     return List.generate(data.length, (index) {
       final isTouched = index == touchedIndex;
       final fontSize = isTouched ? 25.0 : 16.0;
@@ -108,8 +108,8 @@ class PieChartSampleState extends State {
 
       return PieChartSectionData(
         color: CategoryColors.getCategoryColor(report.source.toLowerCase()),
-        value: report.percentOfExpenses,
-        title: '${report.percentOfExpenses}%',
+        value: report.percent,
+        title: '${report.percent}%',
         radius: radius,
         titleStyle: TextStyle(
           fontSize: fontSize,
