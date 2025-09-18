@@ -10,7 +10,7 @@ class StatsState with EquatableMixin {
   List<Object?> get props => [data];
 
   factory StatsState.initial() {
-    return const StatsState(data: StatResponse(reports: []));
+    return const StatsState(data: StatResponse(stats: []));
   }
 
   StatsState copyWith({

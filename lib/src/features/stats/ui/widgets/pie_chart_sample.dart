@@ -1,69 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/colors/category_colors.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/entities/report_breakdown.dart';
-import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_bloc.dart';
-import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_state.dart';
 
 class PieChartSample extends StatefulWidget {
-  const PieChartSample({super.key});
+  final List<StatBreakdown> stats;
+
+  const PieChartSample({super.key, required this.stats});
 
   @override
-  State<StatefulWidget> createState() => PieChartSampleState();
+  State<PieChartSample> createState() => _PieChartSampleState();
 }
 
-class PieChartSampleState extends State {
+class _PieChartSampleState extends State<PieChartSample> {
   int touchedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
+    final stats = widget.stats;
+
     return AspectRatio(
       aspectRatio: 1.5,
-      child: BlocSelector<StatsBloc, StatsState, List<StatBreakdown>>(
-        selector: (state) {
-          return state.data.reports;
-        },
-        builder: (context, reports) {
-          return Column(
-            children: <Widget>[
-              Expanded(
-                child: PieChart(
-                  PieChartData(
-                    pieTouchData: PieTouchData(
-                      touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                        setState(() {
-                          if (!event.isInterestedForInteractions ||
-                              pieTouchResponse == null ||
-                              pieTouchResponse.touchedSection == null) {
-                            touchedIndex = -1;
-                            return;
-                          }
-                          touchedIndex = pieTouchResponse
-                              .touchedSection!.touchedSectionIndex;
-                        });
-                      },
-                    ),
-                    borderData: FlBorderData(
-                      show: false,
-                    ),
-                    sectionsSpace: 0,
-                    centerSpaceRadius: 50,
-                    sections: showingSections(data: reports),
-                  ),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: PieChart(
+              PieChartData(
+                pieTouchData: PieTouchData(
+                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    setState(() {
+                      if (!event.isInterestedForInteractions ||
+                          pieTouchResponse == null ||
+                          pieTouchResponse.touchedSection == null) {
+                        touchedIndex = -1;
+                        return;
+                      }
+                      touchedIndex =
+                          pieTouchResponse.touchedSection!.touchedSectionIndex;
+                    });
+                  },
                 ),
-              )
-            ],
-          );
-        },
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                sectionsSpace: 0,
+                centerSpaceRadius: 50,
+                sections: showingSections(stats: stats),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
 
   List<PieChartSectionData> showingSections(
-      {required List<StatBreakdown> data}) {
-    return List.generate(data.length, (index) {
-      final report = data[index];
+      {required List<StatBreakdown> stats}) {
+    return List.generate(stats.length, (index) {
+      final report = stats[index];
       final isTouched = index == touchedIndex;
       final fontSize = isTouched ? 20.0 : 15.0;
       final radius = isTouched ? 90.0 : 70.0;
