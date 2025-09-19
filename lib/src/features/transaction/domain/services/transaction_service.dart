@@ -1,14 +1,21 @@
 import 'dart:isolate';
 
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
+import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_source_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_transactions.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_transactions.dart';
@@ -85,6 +92,88 @@ class TransactionService {
     });
 
     return transactionsSummary;
+  }
+
+  Future<TransactionsSummary> getYearlySummary(
+      {required YearlyTransactionsModel? yearlyModel,
+      required DateTime date}) async {
+    if (yearlyModel == null) {
+      return TransactionsSummary.initial();
+    }
+
+    final month = date.month;
+    final transactionDayKey = HiveHelper.generateTransactionDayKey(date: date);
+
+    final monthTransaction = (yearlyModel.months).firstWhere(
+      (m) => m.month == month,
+      orElse: () => MonthlyTransactionsModel.initial(month: month),
+    );
+
+    final models = monthTransaction.transactions[transactionDayKey] ?? [];
+    final rawModels = models.map((model) => model.toMap()).toList();
+    final grouped = {date: rawModels};
+
+    int income = 0;
+    int expense = 0;
+
+    final transactionData = await Isolate.run(() {
+      final transactionsModelsRaw = (grouped[date] ?? []).toList();
+
+      final transactions = transactionsModelsRaw.map((entry) {
+        final transactionHiveModel = TransactionHiveModel.fromMap(entry);
+        final transactionModel =
+            TransactionModel.fromHive(transactionHiveModel);
+        return transactionModel.toEntity();
+      }).toList();
+
+      return TransactionsData(transactions: transactions, date: date);
+    });
+
+    for (final transaction in transactionData.transactions) {
+      if (transaction.type == TransactionTypEnum.income) {
+        income += transaction.amount;
+      } else {
+        expense += transaction.amount;
+      }
+    }
+
+    return TransactionsSummary(
+        transactionsData: [transactionData],
+        income: income,
+        total: income - expense,
+        expense: expense);
+  }
+
+  Future<List<AccountSummaryItem>> getAccountSummaryItems(
+      {required List<TransactionSourceHiveModel>
+          transactionsSourceModels}) async {
+    final modelsRaw =
+        transactionsSourceModels.map((model) => model.toJson()).toList();
+
+    final result = await Isolate.run(() {
+      final data = modelsRaw.map((source) {
+        final name = source["name"] as String;
+        final icon = source["icon"] as String;
+
+        final transactionSource = TransactionSource(name: name, icon: icon);
+        const amount = 0;
+
+        return AccountSummaryItem(
+            transactionSource: transactionSource, amount: amount);
+      }).toList();
+
+      return data;
+    });
+
+    final defaultTransactionSource = TransactionsConstants
+        .kDefaultTransactionSources
+        .map((transactionSource) =>
+            AccountSummaryItem(transactionSource: transactionSource, amount: 0))
+        .toList();
+
+    result.addAll(defaultTransactionSource);
+
+    return result;
   }
 
   Future<void> saveYearlyTransaction({required Transaction transaction}) async {
