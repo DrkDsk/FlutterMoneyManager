@@ -3,15 +3,21 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_financial_summary_use_case.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_year_financial_summary_use_case.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_yearly_transaction_use_case.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
 
 class CreateTransactionCubit extends Cubit<CreateTransactionState> {
-  final TransactionRepository _repository;
+  final SaveYearlyTransactionUseCase saveYearlyTransactionUseCase;
+  final SaveYearFinancialSummaryUseCase saveYearFinancialSummaryUseCase;
+  final SaveFinancialSummaryUseCase saveFinancialSummaryUseCase;
 
-  CreateTransactionCubit({required TransactionRepository repository})
-      : _repository = repository,
-        super(CreateTransactionState.initial());
+  CreateTransactionCubit(
+      {required this.saveYearlyTransactionUseCase,
+      required this.saveYearFinancialSummaryUseCase,
+      required this.saveFinancialSummaryUseCase})
+      : super(CreateTransactionState.initial());
 
   void updateAmountDate(DateTime? time) {
     final transaction = state.transaction.copyWith(transactionDate: time);
@@ -77,12 +83,15 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
     emit(state.copyWith(status: CreateTransactionStatus.loading));
 
-    final result = await _repository.save(transaction);
-
-    result.fold((left) {
-      emit(state.copyWith(status: CreateTransactionStatus.error));
-    }, (right) {
+    try {
+      await Future.wait([
+        saveYearlyTransactionUseCase(transaction: transaction),
+        saveYearFinancialSummaryUseCase(transaction: transaction),
+        saveFinancialSummaryUseCase(transaction: transaction)
+      ]);
       emit(state.copyWith(status: CreateTransactionStatus.success));
-    });
+    } catch (e) {
+      emit(state.copyWith(status: CreateTransactionStatus.error));
+    }
   }
 }

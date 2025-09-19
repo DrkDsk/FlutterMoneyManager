@@ -9,4 +9,7 @@ abstract interface class FinancialSummaryDatasource {
 
   Future<bool> saveFinancialSummary(
       {required FinancialSummaryModel model, required String key});
+
+  Future<bool> saveYearFinancialSummary(
+      {required YearlyFinancialSummaryModel model, required String key});
 }

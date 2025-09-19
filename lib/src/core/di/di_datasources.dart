@@ -13,21 +13,18 @@ final getIt = GetIt.instance;
 
 Future<void> registerDataSources() async {
   final transactionSourceBox = getIt<Box<TransactionSourceHiveModel>>();
+  final transactionsYearBox = getIt<Box<YearlyTransactionsHiveModel>>();
+
   final globalBalanceBox = getIt<Box<FinancialSummaryHiveModel>>();
   final yearBalanceBox = getIt<Box<YearlyFinancialSummaryHiveModel>>();
-  final transactionsYearBox = getIt<Box<YearlyTransactionsHiveModel>>();
+
+  getIt.registerLazySingleton<TransactionDatasource>(
+      () => TransactionDatasourceImpl(
+            transactionSourceBox: transactionSourceBox,
+            transactionsYearBox: transactionsYearBox,
+          ));
 
   getIt.registerLazySingleton<FinancialSummaryDatasource>(() =>
       FinancialSummaryDatasourceImpl(
-          transactionSourceBox: transactionSourceBox,
-          globalBalanceBox: globalBalanceBox,
-          yearBalanceBox: yearBalanceBox,
-          transactionsYearBox: transactionsYearBox));
-
-  getIt.registerLazySingleton<TransactionDatasource>(() =>
-      TransactionDatasourceImpl(
-          transactionSourceBox: transactionSourceBox,
-          globalBalanceBox: globalBalanceBox,
-          transactionsYearBox: transactionsYearBox,
-          yearBalanceBox: yearBalanceBox));
+          globalBalanceBox: globalBalanceBox, yearBalanceBox: yearBalanceBox));
 }

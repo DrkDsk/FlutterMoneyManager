@@ -1,26 +1,19 @@
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/hive/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_transactions_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
 import 'package:hive/hive.dart';
 
 class TransactionDatasourceImpl implements TransactionDatasource {
   final Box<TransactionSourceHiveModel> _transactionSourceBox;
-  final Box<YearlyFinancialSummaryHiveModel> _yearBalanceBox;
   final Box<YearlyTransactionsHiveModel> _transactionsYearBox;
 
   const TransactionDatasourceImpl(
       {required Box<TransactionSourceHiveModel> transactionSourceBox,
-      required Box<FinancialSummaryHiveModel> globalBalanceBox,
-      required Box<YearlyFinancialSummaryHiveModel> yearBalanceBox,
       required Box<YearlyTransactionsHiveModel> transactionsYearBox})
       : _transactionSourceBox = transactionSourceBox,
-        _transactionsYearBox = transactionsYearBox,
-        _yearBalanceBox = yearBalanceBox;
+        _transactionsYearBox = transactionsYearBox;
 
   @override
   Future<bool> save(
@@ -50,14 +43,5 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     }
 
     return YearlyTransactionsModel.fromHive(hiveModel);
-  }
-
-  @override
-  Future<bool> saveYearFinancialSummary(
-      {required YearlyFinancialSummaryModel model, required String key}) async {
-    final hiveModel = YearlyFinancialSummaryHiveModel.fromModel(model);
-    _yearBalanceBox.put(key, hiveModel);
-
-    return true;
   }
 }
