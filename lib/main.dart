@@ -5,7 +5,7 @@ import 'package:flutter_money_manager/src/my_app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initDependencies();
+  await registerDependencies();
 
   runApp(const MyApp());
 }
