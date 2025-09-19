@@ -1,5 +1,9 @@
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/accounts/ui/blocs/account_bloc.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/finanacial_summary_datasource_impl.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/repositories/financial_summary_repository_impl.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/domain/repositories/financial_summary_repository.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/home_redirection_cubit.dart';
 import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubit.dart';
 import 'package:flutter_money_manager/src/features/stats/data/datasources/stats_repository_impl.dart';
@@ -26,6 +30,13 @@ Future<void> initDependencies() async {
   final yearBalanceBox = await HiveHelper.getBalanceYearHiveBox();
   final transactionsYearBox = await HiveHelper.getTransactionYearHiveBox();
 
+  getIt.registerLazySingleton<FinancialSummaryDatasource>(() =>
+      FinancialSummaryDatasourceImpl(
+          transactionSourceBox: transactionsSourceBox,
+          globalBalanceBox: globalBalanceBox,
+          yearBalanceBox: yearBalanceBox,
+          transactionsYearBox: transactionsYearBox));
+
   getIt.registerLazySingleton<TransactionDatasource>(() =>
       TransactionDatasourceImpl(
           transactionSourceBox: transactionsSourceBox,
@@ -33,8 +44,12 @@ Future<void> initDependencies() async {
           transactionsYearBox: transactionsYearBox,
           yearBalanceBox: yearBalanceBox));
 
-  getIt.registerLazySingleton<TransactionService>(
-      () => TransactionService(datasource: getIt<TransactionDatasource>()));
+  final transactionDatasourceInst = getIt<TransactionDatasource>();
+  final financialSummaryDatasourceInst = getIt<FinancialSummaryDatasource>();
+
+  getIt.registerLazySingleton<TransactionService>(() => TransactionService(
+      transactionDatasource: transactionDatasourceInst,
+      financialSummaryDatasource: financialSummaryDatasourceInst));
 
   getIt.registerLazySingleton<StatService>(() => StatService());
 
@@ -42,14 +57,20 @@ Future<void> initDependencies() async {
 
   getIt.registerLazySingleton<TransactionRepository>(() =>
       TransactionRepositoryImpl(
-          datasource: getIt<TransactionDatasource>(),
+          transactionDatasource: transactionDatasourceInst,
+          financialSummaryDatasource: financialSummaryDatasourceInst,
           transactionService: transactionService));
+
+  getIt.registerLazySingleton<FinancialSummaryRepository>(() =>
+      FinancialSummaryRepositoryImpl(
+          datasource: financialSummaryDatasourceInst));
 
   getIt.registerLazySingleton<StatsRepository>(() => StatsRepositoryImpl(
       transactionService: transactionService,
       statService: getIt<StatService>()));
 
   final transactionRepositoryInst = getIt<TransactionRepository>();
+  final financialSummaryRepositoryInst = getIt<FinancialSummaryRepository>();
 
   getIt.registerFactory<NavigationCubit>(() => NavigationCubit());
   getIt.registerFactory<HomeRedirectionCubit>(() => HomeRedirectionCubit());
@@ -61,8 +82,11 @@ Future<void> initDependencies() async {
 
   getIt.registerFactory<CalendarBloc>(
       () => CalendarBloc(repository: transactionRepositoryInst));
-  getIt.registerFactory<AccountBloc>(
-      () => AccountBloc(transactionRepository: transactionRepositoryInst));
+
+  getIt.registerFactory<AccountBloc>(() => AccountBloc(
+      transactionRepository: transactionRepositoryInst,
+      financialSummaryRepository: financialSummaryRepositoryInst));
+
   getIt.registerFactory<StatsBloc>(
       () => StatsBloc(repository: getIt<StatsRepository>()));
 }
