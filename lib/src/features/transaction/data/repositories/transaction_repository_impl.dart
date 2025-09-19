@@ -7,7 +7,6 @@ import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart'
 
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
-import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
@@ -66,24 +65,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final monthTransactions = await _transactionService.getTransactionsMonth(
           year: year, month: month);
 
-      if (monthTransactions == null || monthBalance == null) {
-        return Right(TransactionsSummary.initial());
-      }
-
-      final transactionsBalance = await Isolate.run(() {
-        final transactionsData = monthTransactions.entries.map((entry) {
-          final date = DatetimeHelper.parse(input: entry.key);
-          final transactions = entry.value.map((t) => t.toEntity()).toList();
-          return TransactionsData(transactions: transactions, date: date);
-        }).toList();
-
-        return TransactionsSummary(
-          transactionsData: transactionsData,
-          income: monthBalance.income,
-          total: monthBalance.netWorth,
-          expense: monthBalance.expense,
-        );
-      });
+      final transactionsBalance = await _transactionService.getMonthSummary(
+          monthTransactions: monthTransactions, monthBalance: monthBalance);
 
       return Right(transactionsBalance);
     } on UnknownException catch (_) {
