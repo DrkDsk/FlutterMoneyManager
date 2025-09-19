@@ -155,8 +155,11 @@ class FinancialCalculatorService {
     final updatedGlobalSummary = FinancialCalculatorService.fromTransaction(
       transaction: transaction,
       balancesBySource: financialSummary.balancesBySource,
-    ).calculateUpdatedSummary(financialSummary);
+    );
 
-    return updatedGlobalSummary;
+    final result =
+        updatedGlobalSummary.calculateUpdatedSummary(financialSummary);
+
+    return result;
   }
 }

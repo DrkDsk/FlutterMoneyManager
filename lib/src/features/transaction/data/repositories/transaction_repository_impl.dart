@@ -14,13 +14,11 @@ import 'package:flutter_money_manager/src/features/transaction/data/datasources/
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/services/financial_calculator_service.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/services/transaction_service.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
@@ -38,27 +36,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, bool>> save(Transaction transaction) async {
     try {
-      final date = transaction.transactionDate;
-      final year = date.year;
-
-      final yearlyTransactionKey =
-          HiveHelper.generateYearlyTransactionKey(year: year);
-
-      YearlyTransactionsModel currentYearlyTransactionsModel =
-          await _transactionDatasource.getYearlyTransactions(
-                  key: yearlyTransactionKey) ??
-              YearlyTransactionsModel.initial(year: year);
-
-      final updatedYearlyTransactions =
-          FinancialCalculatorService.updateYearlyTransactionHiveModel(
-              yearlyTransactions: currentYearlyTransactionsModel.toEntity(),
-              transaction: transaction);
-
-      currentYearlyTransactionsModel =
-          YearlyTransactionsModel.fromEntity(updatedYearlyTransactions);
-
-      await _transactionDatasource.save(
-          model: currentYearlyTransactionsModel, key: yearlyTransactionKey);
+      await _transactionService.saveYearlyTransaction(transaction: transaction);
 
       return const Right(true);
     } on UnknownException catch (_) {

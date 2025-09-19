@@ -3,6 +3,9 @@ import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial
 import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/services/financial_calculator_service.dart';
 
 class TransactionService {
   final TransactionDatasource _transactionDatasource;
@@ -51,5 +54,29 @@ class TransactionService {
     }
 
     return balances.first.summary;
+  }
+
+  Future<void> saveYearlyTransaction({required Transaction transaction}) async {
+    final date = transaction.transactionDate;
+    final year = date.year;
+
+    final yearlyTransactionKey =
+        HiveHelper.generateYearlyTransactionKey(year: year);
+
+    YearlyTransactionsModel currentYearlyTransactionsModel =
+        await _transactionDatasource.getYearlyTransactions(
+                key: yearlyTransactionKey) ??
+            YearlyTransactionsModel.initial(year: year);
+
+    final updatedYearlyTransactions =
+        FinancialCalculatorService.updateYearlyTransactionHiveModel(
+            yearlyTransactions: currentYearlyTransactionsModel.toEntity(),
+            transaction: transaction);
+
+    currentYearlyTransactionsModel =
+        YearlyTransactionsModel.fromEntity(updatedYearlyTransactions);
+
+    await _transactionDatasource.save(
+        model: currentYearlyTransactionsModel, key: yearlyTransactionKey);
   }
 }
