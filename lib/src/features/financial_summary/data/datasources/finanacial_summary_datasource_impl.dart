@@ -16,7 +16,7 @@ class FinancialSummaryDatasourceImpl implements FinancialSummaryDatasource {
         _yearBalanceBox = yearBalanceBox;
 
   @override
-  Future<YearlyFinancialSummaryModel?> getBalancesByYear(
+  Future<YearlyFinancialSummaryModel?> getSummaryByYear(
       {required String key}) async {
     final hiveModel = _yearBalanceBox.get(key);
 

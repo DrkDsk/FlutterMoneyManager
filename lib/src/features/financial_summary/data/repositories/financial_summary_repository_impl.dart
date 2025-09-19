@@ -32,7 +32,7 @@ class FinancialSummaryRepositoryImpl implements FinancialSummaryRepository {
     final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
     YearlyFinancialSummaryModel yearlyFinancialSummaryCurrentModel =
-        await _datasource.getBalancesByYear(key: yearlyBalanceKey) ??
+        await _datasource.getSummaryByYear(key: yearlyBalanceKey) ??
             YearlyFinancialSummaryModel.initial(year: year);
 
     final updatedYearlyFinancialSummary =
