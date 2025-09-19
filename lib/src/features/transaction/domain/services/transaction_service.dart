@@ -9,7 +9,6 @@ import 'package:flutter_money_manager/src/features/accounts/domain/entities/acco
 import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
@@ -72,9 +71,12 @@ class TransactionService {
     return transactionsSummary;
   }
 
-  Future<TransactionsSummary> getSummaryByDate(
-      {required YearlyTransactionsModel? yearlyTransactionModel,
-      required DateTime date}) async {
+  Future<TransactionsSummary> getSummaryByDate({required DateTime date}) async {
+    final yearlyKey = HiveHelper.generateYearlyTransactionKey(year: date.year);
+
+    final yearlyTransactionModel =
+        await _transactionDatasource.getYearlyTransactions(key: yearlyKey);
+
     if (yearlyTransactionModel == null) {
       return TransactionsSummary.initial();
     }
@@ -122,9 +124,10 @@ class TransactionService {
         expense: expense);
   }
 
-  Future<List<AccountSummaryItem>> getAccountSummaryItems(
-      {required List<TransactionSourceHiveModel>
-          transactionsSourceModels}) async {
+  Future<List<AccountSummaryItem>> getAccountSummaryItems() async {
+    final transactionsSourceModels =
+        await _transactionDatasource.getTransactionSources();
+
     final modelsRaw =
         transactionsSourceModels.map((model) => model.toJson()).toList();
 

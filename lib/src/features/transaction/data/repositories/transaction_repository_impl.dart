@@ -6,25 +6,21 @@ import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/domain/services/financial_summary_service.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/services/transaction_service.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
-  final TransactionDatasource _transactionDatasource;
   final TransactionService _transactionService;
   final FinancialSummaryService _financialSummaryService;
   final _transactionsController =
       StreamController<TransactionsSummary>.broadcast();
 
   TransactionRepositoryImpl(
-      {required TransactionDatasource transactionDatasource,
-      required TransactionService transactionService,
+      {required TransactionService transactionService,
       required FinancialSummaryService financialSummaryService})
-      : _transactionDatasource = transactionDatasource,
-        _transactionService = transactionService,
+      : _transactionService = transactionService,
         _financialSummaryService = financialSummaryService;
 
   @override
@@ -74,13 +70,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, TransactionsSummary>> getTransactionSummaryByDate(
       {required DateTime date}) async {
-    final yearlyKey = HiveHelper.generateYearlyTransactionKey(year: date.year);
-
-    final yearlyTransactionModel =
-        await _transactionDatasource.getYearlyTransactions(key: yearlyKey);
-
-    final summary = await _transactionService.getSummaryByDate(
-        yearlyTransactionModel: yearlyTransactionModel, date: date);
+    final summary = await _transactionService.getSummaryByDate(date: date);
 
     _transactionsController.add(summary);
 
@@ -90,12 +80,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, List<AccountSummaryItem>>>
       getTransactionSources() async {
-    final transactionsSourceModels =
-        await _transactionDatasource.getTransactionSources();
-
     final accountSummaryItems =
-        await _transactionService.getAccountSummaryItems(
-            transactionsSourceModels: transactionsSourceModels);
+        await _transactionService.getAccountSummaryItems();
 
     return Right(accountSummaryItems);
   }
