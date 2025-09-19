@@ -5,7 +5,7 @@ abstract interface class FinancialSummaryDatasource {
   Future<FinancialSummaryModel?> getGlobalFinancialSummary(
       {required String key});
 
-  Future<YearlyFinancialSummaryModel?> getBalancesByYear({required String key});
+  Future<YearlyFinancialSummaryModel?> getSummaryByYear({required String key});
 
   Future<bool> saveFinancialSummary(
       {required FinancialSummaryModel model, required String key});

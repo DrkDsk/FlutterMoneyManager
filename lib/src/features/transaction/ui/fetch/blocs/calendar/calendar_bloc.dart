@@ -40,7 +40,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       FilterTransactionsByDay event, Emitter<CalendarState> emit) async {
     final selectedDate = event.selectedDay;
 
-    final request = await _repository.getTransactionsByDate(date: selectedDate);
+    final request =
+        await _repository.getTransactionSummaryByDate(date: selectedDate);
 
     request.fold((left) {
       emit(state.copyWith(message: left.message));

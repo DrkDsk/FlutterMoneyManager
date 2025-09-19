@@ -10,7 +10,7 @@ abstract interface class TransactionRepository {
   Future<Either<Failure, TransactionsSummary>> getTransactionsByMonth(
       {int? month, int? year});
 
-  Future<Either<Failure, TransactionsSummary>> getTransactionsByDate(
+  Future<Either<Failure, TransactionsSummary>> getTransactionSummaryByDate(
       {required DateTime date});
 
   Future<Either<Failure, List<AccountSummaryItem>>> getTransactionSources();
