@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:isolate';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter_money_manager/src/core/constants/hive_constants.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 
@@ -10,14 +9,11 @@ import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exceptio
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
-import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
@@ -29,17 +25,14 @@ import 'package:flutter_money_manager/src/features/transaction/domain/services/t
 
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionDatasource _transactionDatasource;
-  final FinancialSummaryDatasource _financialSummaryDatasource;
   final TransactionService _transactionService;
   final _transactionsController =
       StreamController<TransactionsSummary>.broadcast();
 
   TransactionRepositoryImpl(
       {required TransactionDatasource transactionDatasource,
-      required FinancialSummaryDatasource financialSummaryDatasource,
       required TransactionService transactionService})
       : _transactionDatasource = transactionDatasource,
-        _financialSummaryDatasource = financialSummaryDatasource,
         _transactionService = transactionService;
 
   @override
@@ -50,8 +43,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       final yearlyTransactionKey =
           HiveHelper.generateYearlyTransactionKey(year: year);
-
-      final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
       YearlyTransactionsModel currentYearlyTransactionsModel =
           await _transactionDatasource.getYearlyTransactions(
@@ -68,39 +59,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       await _transactionDatasource.save(
           model: currentYearlyTransactionsModel, key: yearlyTransactionKey);
-
-      YearlyFinancialSummaryModel yearlyFinancialSummaryCurrentModel =
-          await _financialSummaryDatasource.getBalancesByYear(
-                  key: yearlyBalanceKey) ??
-              YearlyFinancialSummaryModel.initial(year: year);
-
-      final updatedYearlyFinancialSummary =
-          FinancialCalculatorService.updateYearlyFinancialSummary(
-              transaction: transaction,
-              yearlyFinancialSummary:
-                  yearlyFinancialSummaryCurrentModel.toEntity());
-
-      yearlyFinancialSummaryCurrentModel =
-          YearlyFinancialSummaryModel.fromEntity(updatedYearlyFinancialSummary);
-
-      await _transactionDatasource.saveYearFinancialSummary(
-          model: yearlyFinancialSummaryCurrentModel, key: yearlyBalanceKey);
-
-      FinancialSummaryModel financialSummaryModel =
-          await _financialSummaryDatasource.getGlobalFinancialSummary(
-                  key: HiveConstants.globalSummaryKey) ??
-              FinancialSummaryModel.initial();
-
-      final updatedGlobalFinancial =
-          FinancialCalculatorService.updateGlobalSummary(
-              transaction: transaction,
-              financialSummary: financialSummaryModel.toEntity());
-
-      financialSummaryModel =
-          FinancialSummaryModel.fromEntity(updatedGlobalFinancial);
-
-      await _financialSummaryDatasource.saveFinancialSummary(
-          model: financialSummaryModel, key: HiveConstants.globalSummaryKey);
 
       return const Right(true);
     } on UnknownException catch (_) {

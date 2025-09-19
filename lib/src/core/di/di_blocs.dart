@@ -5,6 +5,9 @@ import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubi
 import 'package:flutter_money_manager/src/features/stats/domain/repositories/stats_repository.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_financial_summary_use_case.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_year_financial_summary_use_case.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_yearly_transaction_use_case.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
@@ -16,10 +19,21 @@ Future<void> registerBlocs() async {
   final transactionRepositoryInst = getIt<TransactionRepository>();
   final financialSummaryRepositoryInst = getIt<FinancialSummaryRepository>();
 
+  final saveYearlyTransactionUseCaseInst =
+      getIt<SaveYearlyTransactionUseCase>();
+
+  final saveYearFinancialSummaryUseCaseInst =
+      getIt<SaveYearFinancialSummaryUseCase>();
+
+  final saveFinancialSummaryUseCase = getIt<SaveFinancialSummaryUseCase>();
+
   getIt.registerFactory<NavigationCubit>(() => NavigationCubit());
   getIt.registerFactory<HomeRedirectionCubit>(() => HomeRedirectionCubit());
-  getIt.registerFactory<CreateTransactionCubit>(
-      () => CreateTransactionCubit(repository: transactionRepositoryInst));
+
+  getIt.registerFactory<CreateTransactionCubit>(() => CreateTransactionCubit(
+      saveYearlyTransactionUseCase: saveYearlyTransactionUseCaseInst,
+      saveYearFinancialSummaryUseCase: saveYearFinancialSummaryUseCaseInst,
+      saveFinancialSummaryUseCase: saveFinancialSummaryUseCase));
 
   getIt.registerFactory<TransactionsBloc>(
       () => TransactionsBloc(repository: transactionRepositoryInst));

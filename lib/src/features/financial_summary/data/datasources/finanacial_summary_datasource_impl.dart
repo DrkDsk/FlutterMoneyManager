@@ -1,9 +1,7 @@
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/hive/financial_summary_hive_model.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_financial_summary_hive_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_transactions_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_model.dart';
 import 'package:hive/hive.dart';
 
@@ -12,10 +10,8 @@ class FinancialSummaryDatasourceImpl implements FinancialSummaryDatasource {
   final Box<YearlyFinancialSummaryHiveModel> _yearBalanceBox;
 
   const FinancialSummaryDatasourceImpl(
-      {required Box<TransactionSourceHiveModel> transactionSourceBox,
-      required Box<FinancialSummaryHiveModel> globalBalanceBox,
-      required Box<YearlyFinancialSummaryHiveModel> yearBalanceBox,
-      required Box<YearlyTransactionsHiveModel> transactionsYearBox})
+      {required Box<FinancialSummaryHiveModel> globalBalanceBox,
+      required Box<YearlyFinancialSummaryHiveModel> yearBalanceBox})
       : _globalBalanceBox = globalBalanceBox,
         _yearBalanceBox = yearBalanceBox;
 
@@ -50,6 +46,15 @@ class FinancialSummaryDatasourceImpl implements FinancialSummaryDatasource {
       key,
       hiveModel,
     );
+
+    return true;
+  }
+
+  @override
+  Future<bool> saveYearFinancialSummary(
+      {required YearlyFinancialSummaryModel model, required String key}) async {
+    final hiveModel = YearlyFinancialSummaryHiveModel.fromModel(model);
+    _yearBalanceBox.put(key, hiveModel);
 
     return true;
   }
