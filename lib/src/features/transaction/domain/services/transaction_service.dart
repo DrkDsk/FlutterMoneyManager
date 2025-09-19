@@ -1,21 +1,26 @@
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 
 class TransactionService {
-  final TransactionDatasource _datasource;
+  final TransactionDatasource _transactionDatasource;
+  final FinancialSummaryDatasource _financialSummaryDatasource;
 
-  TransactionService({required TransactionDatasource datasource})
-      : _datasource = datasource;
+  TransactionService(
+      {required TransactionDatasource transactionDatasource,
+      required FinancialSummaryDatasource financialSummaryDatasource})
+      : _transactionDatasource = transactionDatasource,
+        _financialSummaryDatasource = financialSummaryDatasource;
 
   Future<Map<String, List<TransactionModel>>?> getTransactionsMonth(
       {required int month, required int year}) async {
     final yearlyTransactionsKey =
         HiveHelper.generateYearlyTransactionKey(year: year);
 
-    final yearlyTransactions =
-        await _datasource.getYearlyTransactions(key: yearlyTransactionsKey);
+    final yearlyTransactions = await _transactionDatasource
+        .getYearlyTransactions(key: yearlyTransactionsKey);
 
     final monthTransactions = yearlyTransactions?.months
         .where((monthTransaction) => monthTransaction.month == month)
@@ -30,7 +35,8 @@ class TransactionService {
 
   Future<FinancialSummaryModel?> getBalanceByMonth(
       {required String key, required int month}) async {
-    final yearlyBalances = await _datasource.getBalancesByYear(key: key);
+    final yearlyBalances =
+        await _financialSummaryDatasource.getBalancesByYear(key: key);
 
     if (yearlyBalances == null) {
       return null;
