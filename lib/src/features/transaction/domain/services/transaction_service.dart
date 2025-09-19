@@ -22,13 +22,11 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/y
 
 class TransactionService {
   final TransactionDatasource _transactionDatasource;
-  final FinancialSummaryDatasource _financialSummaryDatasource;
 
   TransactionService(
       {required TransactionDatasource transactionDatasource,
       required FinancialSummaryDatasource financialSummaryDatasource})
-      : _transactionDatasource = transactionDatasource,
-        _financialSummaryDatasource = financialSummaryDatasource;
+      : _transactionDatasource = transactionDatasource;
 
   Future<Map<String, List<TransactionModel>>?> getTransactionsMonth(
       {required int month, required int year}) async {
@@ -49,35 +47,15 @@ class TransactionService {
     return monthTransactions.first.transactions;
   }
 
-  Future<FinancialSummaryModel?> getBalanceByMonth(
-      {required String key, required int month}) async {
-    final yearlyBalances =
-        await _financialSummaryDatasource.getBalancesByYear(key: key);
-
-    if (yearlyBalances == null) {
-      return null;
-    }
-
-    final balances = yearlyBalances.months
-        .where((monthBalance) => monthBalance.month == month)
-        .toList();
-
-    if (balances.isEmpty) {
-      return null;
-    }
-
-    return balances.first.summary;
-  }
-
   Future<TransactionsSummary> getMonthSummary(
-      {required Map<String, List<TransactionModel>>? monthTransactions,
-      required FinancialSummaryModel? monthBalance}) async {
-    if (monthTransactions == null || monthBalance == null) {
+      {required Map<String, List<TransactionModel>>? transactionsMonth,
+      required FinancialSummaryModel? monthSummary}) async {
+    if (transactionsMonth == null || monthSummary == null) {
       return TransactionsSummary.initial();
     }
 
     final transactionsSummary = await Isolate.run(() {
-      final transactionsData = monthTransactions.entries.map((entry) {
+      final transactionsData = transactionsMonth.entries.map((entry) {
         final date = DatetimeHelper.parse(input: entry.key);
         final transactions = entry.value.map((t) => t.toEntity()).toList();
         return TransactionsData(transactions: transactions, date: date);
@@ -85,26 +63,26 @@ class TransactionService {
 
       return TransactionsSummary(
         transactionsData: transactionsData,
-        income: monthBalance.income,
-        total: monthBalance.netWorth,
-        expense: monthBalance.expense,
+        income: monthSummary.income,
+        total: monthSummary.netWorth,
+        expense: monthSummary.expense,
       );
     });
 
     return transactionsSummary;
   }
 
-  Future<TransactionsSummary> getYearlySummary(
-      {required YearlyTransactionsModel? yearlyModel,
+  Future<TransactionsSummary> getSummaryByDate(
+      {required YearlyTransactionsModel? yearlyTransactionModel,
       required DateTime date}) async {
-    if (yearlyModel == null) {
+    if (yearlyTransactionModel == null) {
       return TransactionsSummary.initial();
     }
 
     final month = date.month;
     final transactionDayKey = HiveHelper.generateTransactionDayKey(date: date);
 
-    final monthTransaction = (yearlyModel.months).firstWhere(
+    final monthTransaction = (yearlyTransactionModel.months).firstWhere(
       (m) => m.month == month,
       orElse: () => MonthlyTransactionsModel.initial(month: month),
     );

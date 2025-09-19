@@ -5,6 +5,7 @@ import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exceptio
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/domain/services/financial_summary_service.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
@@ -14,14 +15,17 @@ import 'package:flutter_money_manager/src/features/transaction/domain/services/t
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionDatasource _transactionDatasource;
   final TransactionService _transactionService;
+  final FinancialSummaryService _financialSummaryService;
   final _transactionsController =
       StreamController<TransactionsSummary>.broadcast();
 
   TransactionRepositoryImpl(
       {required TransactionDatasource transactionDatasource,
-      required TransactionService transactionService})
+      required TransactionService transactionService,
+      required FinancialSummaryService financialSummaryService})
       : _transactionDatasource = transactionDatasource,
-        _transactionService = transactionService;
+        _transactionService = transactionService,
+        _financialSummaryService = financialSummaryService;
 
   @override
   Future<Either<Failure, bool>> save(Transaction transaction) async {
@@ -48,16 +52,16 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final now = DateTime.now();
       year = year ?? now.year;
       month = month ?? now.month;
-      final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
+      final yearlySummaryKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
-      final monthBalance = await _transactionService.getBalanceByMonth(
-          key: yearlyBalanceKey, month: month);
+      final monthSummary = await _financialSummaryService.getSummaryByMonth(
+          key: yearlySummaryKey, month: month);
 
-      final monthTransactions = await _transactionService.getTransactionsMonth(
+      final transactionsMonth = await _transactionService.getTransactionsMonth(
           year: year, month: month);
 
       final transactionsSummary = await _transactionService.getMonthSummary(
-          monthTransactions: monthTransactions, monthBalance: monthBalance);
+          transactionsMonth: transactionsMonth, monthSummary: monthSummary);
 
       return Right(transactionsSummary);
     } on UnknownException catch (_) {
@@ -68,19 +72,19 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, TransactionsSummary>> getTransactionsByDate(
+  Future<Either<Failure, TransactionsSummary>> getTransactionSummaryByDate(
       {required DateTime date}) async {
     final yearlyKey = HiveHelper.generateYearlyTransactionKey(year: date.year);
 
-    final yearlyModel =
+    final yearlyTransactionModel =
         await _transactionDatasource.getYearlyTransactions(key: yearlyKey);
 
-    final yearlySummary = await _transactionService.getYearlySummary(
-        yearlyModel: yearlyModel, date: date);
+    final summary = await _transactionService.getSummaryByDate(
+        yearlyTransactionModel: yearlyTransactionModel, date: date);
 
-    _transactionsController.add(yearlySummary);
+    _transactionsController.add(summary);
 
-    return Right(yearlySummary);
+    return Right(summary);
   }
 
   @override
