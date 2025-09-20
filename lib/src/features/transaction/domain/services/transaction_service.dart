@@ -6,7 +6,6 @@ import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
-import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
@@ -20,9 +19,7 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/y
 class TransactionService {
   final TransactionDatasource _transactionDatasource;
 
-  TransactionService(
-      {required TransactionDatasource transactionDatasource,
-      required FinancialSummaryDatasource financialSummaryDatasource})
+  TransactionService({required TransactionDatasource transactionDatasource})
       : _transactionDatasource = transactionDatasource;
 
   Future<List<TransactionModel>> getTransactionsMonth(
