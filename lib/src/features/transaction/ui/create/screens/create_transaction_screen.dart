@@ -45,8 +45,9 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     _createTransactionCubit = context.read<CreateTransactionCubit>();
     _createTransactionCubit.loadTransactionToEdit(transaction: transaction);
 
-    final initialTabIndex =
-        (transaction?.type == TransactionTypEnum.income) ? 0 : 1;
+    int initialTabIndex = transaction == null
+        ? 0
+        : ((transaction.type == TransactionTypEnum.income) ? 0 : 1);
 
     _router = AppRouter.of(context);
     _transactionTypeTabController = TabController(
