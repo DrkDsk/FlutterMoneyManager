@@ -96,7 +96,7 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   @override
   Future<YearlyTransactionsModel> getYearlyTransactionsModel(
       {required int year}) async {
-    final key = HiveHelper.generateYearlyBalanceKey(year: year);
+    final key = HiveHelper.generateYearlyTransactionKey(year: year);
     final hive = _transactionsYearBox.get(key);
 
     if (hive == null) {
