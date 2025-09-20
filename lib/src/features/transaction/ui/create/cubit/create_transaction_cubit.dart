@@ -4,20 +4,13 @@ import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart'
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_financial_summary_use_case.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_year_financial_summary_use_case.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_yearly_transaction_use_case.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/useCases/save_yearly_transaction_use_case.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
 
 class CreateTransactionCubit extends Cubit<CreateTransactionState> {
   final SaveYearlyTransactionUseCase saveYearlyTransactionUseCase;
-  final SaveYearFinancialSummaryUseCase saveYearFinancialSummaryUseCase;
-  final SaveFinancialSummaryUseCase saveFinancialSummaryUseCase;
 
-  CreateTransactionCubit(
-      {required this.saveYearlyTransactionUseCase,
-      required this.saveYearFinancialSummaryUseCase,
-      required this.saveFinancialSummaryUseCase})
+  CreateTransactionCubit({required this.saveYearlyTransactionUseCase})
       : super(CreateTransactionState.initial());
 
   void loadTransactionToEdit({required Transaction? transaction}) {
@@ -90,15 +83,13 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
     emit(state.copyWith(status: CreateTransactionStatus.loading));
 
-    try {
-      await Future.wait([
-        saveYearlyTransactionUseCase(transaction: transaction),
-        saveYearFinancialSummaryUseCase(transaction: transaction),
-        saveFinancialSummaryUseCase(transaction: transaction)
-      ]);
-      emit(state.copyWith(status: CreateTransactionStatus.success));
-    } catch (e) {
+    final result = await saveYearlyTransactionUseCase(transaction: transaction);
+
+    if (result == false) {
       emit(state.copyWith(status: CreateTransactionStatus.error));
+      return;
     }
+    emit(state.copyWith(status: CreateTransactionStatus.success));
+    return;
   }
 }
