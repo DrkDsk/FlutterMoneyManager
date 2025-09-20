@@ -87,4 +87,22 @@ class TransactionModel {
       sourceType: map['sourceType'].toString(),
     );
   }
+
+  TransactionModel copyWith({
+    String? id,
+    TransactionTypEnum? type,
+    DateTime? transactionDate,
+    int? amount,
+    String? categoryType,
+    String? sourceType,
+  }) {
+    return TransactionModel(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      transactionDate: transactionDate ?? this.transactionDate,
+      amount: amount ?? this.amount,
+      categoryType: categoryType ?? this.categoryType,
+      sourceType: sourceType ?? this.sourceType,
+    );
+  }
 }
