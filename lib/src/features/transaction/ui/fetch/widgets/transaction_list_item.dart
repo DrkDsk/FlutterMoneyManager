@@ -7,14 +7,14 @@ class TransactionListItem extends StatelessWidget {
   const TransactionListItem(
       {super.key,
       required this.amount,
-      required this.source,
+      required this.category,
       required this.transactionSource,
       required this.iconAssetCategory,
       required this.type});
 
   final int amount;
-  final String source;
-  final String transactionSource;
+  final String category;
+  final String? transactionSource;
   final TransactionTypEnum type;
   final String iconAssetCategory;
 
@@ -43,7 +43,7 @@ class TransactionListItem extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              source,
+              category,
               style: theme.textTheme.bodyMedium,
             )
           ],
@@ -60,7 +60,7 @@ class TransactionListItem extends StatelessWidget {
               height: 4,
             ),
             Text(
-              transactionSource,
+              "$transactionSource",
               style: theme.textTheme.bodyMedium,
             ),
           ],
