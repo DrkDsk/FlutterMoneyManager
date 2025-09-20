@@ -1,5 +1,5 @@
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/entities/report_breakdown.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 

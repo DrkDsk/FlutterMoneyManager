@@ -39,19 +39,12 @@ class StatsRepositoryImpl implements StatsRepository {
       final monthTransactions = await _transactionService.getTransactionsMonth(
           month: month, year: year);
 
-      if (monthTransactions == null ||
-          monthTransactions.isEmpty ||
-          summary == null) {
+      if (monthTransactions.isEmpty || summary == null) {
         return const Right(emptyResponse);
       }
 
-      final transactions = monthTransactions.values
-          .expand((list) => list)
-          .where((model) => model.type == type)
-          .toList();
-
       final breakdown =
-          _statService.calculateBreakdown(transactions, summary, type);
+          _statService.calculateBreakdown(monthTransactions, summary, type);
 
       return Right(StatResponse(stats: breakdown));
     } on UnknownException catch (_) {

@@ -11,9 +11,8 @@ Future<void> registerServices() async {
   final transactionDatasourceInst = getIt<TransactionDatasource>();
   final financialSummaryDatasourceInst = getIt<FinancialSummaryDatasource>();
 
-  getIt.registerLazySingleton<TransactionService>(() => TransactionService(
-      transactionDatasource: transactionDatasourceInst,
-      financialSummaryDatasource: financialSummaryDatasourceInst));
+  getIt.registerLazySingleton<TransactionService>(() =>
+      TransactionService(transactionDatasource: transactionDatasourceInst));
 
   getIt.registerLazySingleton<StatService>(() => StatService());
 

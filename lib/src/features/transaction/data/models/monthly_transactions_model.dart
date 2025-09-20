@@ -64,4 +64,14 @@ class MonthlyTransactionsModel {
           ),
         ));
   }
+
+  MonthlyTransactionsModel copyWith({
+    int? month,
+    Map<String, List<TransactionModel>>? transactions,
+  }) {
+    return MonthlyTransactionsModel(
+      month: month ?? this.month,
+      transactions: transactions ?? this.transactions,
+    );
+  }
 }

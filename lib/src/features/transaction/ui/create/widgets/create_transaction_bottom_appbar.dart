@@ -6,9 +6,15 @@ import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/c
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateTransactionBottomAppBar extends StatelessWidget {
-  const CreateTransactionBottomAppBar({super.key, required this.onTap});
+  const CreateTransactionBottomAppBar(
+      {super.key,
+      this.onTapSaveButton,
+      this.onTapDeleteButton,
+      this.onTapCancelButton});
 
-  final void Function()? onTap;
+  final void Function()? onTapSaveButton;
+  final void Function()? onTapDeleteButton;
+  final void Function()? onTapCancelButton;
 
   @override
   Widget build(BuildContext context) {
@@ -22,33 +28,39 @@ class CreateTransactionBottomAppBar extends StatelessWidget {
         builder: (context, formValidated) {
           return Row(
             children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: formValidated ? onTap : null,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: formValidated
-                            ? AppColors.turquoise
-                            : AppColors.onPrimary.customOpacity(0.3),
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Center(
-                        child: Text("Save",
-                            style: theme.textTheme.bodyMedium
-                                ?.copyWith(color: theme.colorScheme.primary))),
+              if (onTapDeleteButton != null) ...[
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onTapDeleteButton,
+                  child: SizedBox(
+                    child: Image.asset(
+                      "assets/icons/delete_icon.png",
+                      color: AppColors.expenseColor,
+                      width: 50,
+                    ),
                   ),
-                ),
-              ),
+                )
+              ],
               const SizedBox(width: 10),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: theme.colorScheme.secondary)),
-                child: Center(
-                    child: Text("Continue",
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(color: theme.colorScheme.secondary))),
-              )
+              if (onTapSaveButton != null) ...[
+                Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: formValidated ? onTapSaveButton : null,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: formValidated
+                              ? AppColors.turquoise
+                              : AppColors.onPrimary.customOpacity(0.3),
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Center(
+                          child: Text("Save",
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.primary))),
+                    ),
+                  ),
+                )
+              ]
             ],
           );
         },

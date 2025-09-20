@@ -1,4 +1,4 @@
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/models/financial_summary_model.dart';
 import 'package:hive/hive.dart';
 
 part 'financial_summary_hive_model.g.dart';

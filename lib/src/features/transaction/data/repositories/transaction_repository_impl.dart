@@ -56,8 +56,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final transactionsMonth = await _transactionService.getTransactionsMonth(
           year: year, month: month);
 
-      final transactionsSummary = await _transactionService.getMonthSummary(
-          transactionsMonth: transactionsMonth, monthSummary: monthSummary);
+      final transactionsSummary =
+          await _transactionService.getMonthlyTransactionSummary(
+              transactionsMonth: transactionsMonth, monthSummary: monthSummary);
 
       return Right(transactionsSummary);
     } on UnknownException catch (_) {
