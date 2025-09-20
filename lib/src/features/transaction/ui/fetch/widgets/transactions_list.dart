@@ -40,6 +40,7 @@ class TransactionsList extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () {
               final router = AppRouter.of(context);
 

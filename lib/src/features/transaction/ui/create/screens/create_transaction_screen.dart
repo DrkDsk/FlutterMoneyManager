@@ -190,12 +190,26 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     _router.pop();
   }
 
+  void _handleDeleteTransaction() async {
+    print("delete");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(),
-      bottomNavigationBar: CreateTransactionBottomAppBar(
-        onTap: _handleSaveTransaction,
+      bottomNavigationBar:
+          BlocSelector<CreateTransactionCubit, CreateTransactionState, bool>(
+        selector: (state) {
+          return state.transaction.id != null;
+        },
+        builder: (context, storedTransaction) {
+          return CreateTransactionBottomAppBar(
+            onTapSaveButton: _handleSaveTransaction,
+            onTapDeleteButton:
+                storedTransaction == true ? _handleDeleteTransaction : null,
+          );
+        },
       ),
       body: SafeArea(
         child: Column(
