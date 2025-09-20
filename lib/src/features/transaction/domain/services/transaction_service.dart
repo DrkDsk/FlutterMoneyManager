@@ -21,14 +21,6 @@ class TransactionService {
   TransactionService({required TransactionDatasource transactionDatasource})
       : _transactionDatasource = transactionDatasource;
 
-  Future<List<TransactionModel>> getTransactionsMonth(
-      {required int month, required int year}) async {
-    final monthTransactions = await _transactionDatasource
-        .getTransactionsByMonth(year: year, month: month);
-
-    return monthTransactions;
-  }
-
   Map<String, List<TransactionModel>> _groupTransactionsByDate(
       {required List<TransactionModel> transactions}) {
     final Map<String, List<TransactionModel>> transactionsMonthEntries = {};
@@ -43,6 +35,58 @@ class TransactionService {
     }
 
     return transactionsMonthEntries;
+  }
+
+  Future<YearlyTransactionsModel> _updateYearlyTransaction(
+      {required TransactionModel transactionModel}) async {
+    final date = transactionModel.transactionDate;
+    final year = date.year;
+    final month = date.month;
+    final dayKey = HiveHelper.generateTransactionDayKey(date: date);
+
+    final yearly =
+        await _transactionDatasource.getYearlyTransactionsModel(year: year);
+
+    var months = List<MonthlyTransactionsModel>.from(yearly.months);
+    var monthlyIndex = months.indexWhere((m) => m.month == month);
+
+    MonthlyTransactionsModel monthly;
+    if (monthlyIndex == -1) {
+      monthly = MonthlyTransactionsModel(month: month, transactions: {});
+      months.add(monthly);
+      monthlyIndex = months.length - 1;
+    } else {
+      monthly = months[monthlyIndex];
+    }
+
+    final transactionsMap =
+        Map<String, List<TransactionModel>>.from(monthly.transactions);
+    final dailyTxs = transactionsMap.putIfAbsent(dayKey, () => []);
+
+    if (transactionModel.id == null) {
+      final newTx = transactionModel.copyWith(id: const Uuid().v4());
+      dailyTxs.add(newTx);
+    } else {
+      final index = dailyTxs.indexWhere((t) => t.id == transactionModel.id);
+      if (index != -1) {
+        dailyTxs[index] = transactionModel;
+      } else {
+        dailyTxs.add(transactionModel);
+      }
+    }
+
+    final updatedMonthly = monthly.copyWith(transactions: transactionsMap);
+    months[monthlyIndex] = updatedMonthly;
+
+    return yearly.copyWith(months: months);
+  }
+
+  Future<List<TransactionModel>> getTransactionsMonth(
+      {required int month, required int year}) async {
+    final monthTransactions = await _transactionDatasource
+        .getTransactionsByMonth(year: year, month: month);
+
+    return monthTransactions;
   }
 
   Future<TransactionsSummary> getMonthlyTransactionSummary(
@@ -143,49 +187,5 @@ class TransactionService {
 
     await _transactionDatasource.save(
         model: updatedYearly, key: yearlyTransactionKey);
-  }
-
-  Future<YearlyTransactionsModel> _updateYearlyTransaction(
-      {required TransactionModel transactionModel}) async {
-    final date = transactionModel.transactionDate;
-    final year = date.year;
-    final month = date.month;
-    final dayKey = HiveHelper.generateTransactionDayKey(date: date);
-
-    final yearly =
-        await _transactionDatasource.getYearlyTransactionsModel(year: year);
-
-    var months = List<MonthlyTransactionsModel>.from(yearly.months);
-    var monthlyIndex = months.indexWhere((m) => m.month == month);
-
-    MonthlyTransactionsModel monthly;
-    if (monthlyIndex == -1) {
-      monthly = MonthlyTransactionsModel(month: month, transactions: {});
-      months.add(monthly);
-      monthlyIndex = months.length - 1;
-    } else {
-      monthly = months[monthlyIndex];
-    }
-
-    final transactionsMap =
-        Map<String, List<TransactionModel>>.from(monthly.transactions);
-    final dailyTxs = transactionsMap.putIfAbsent(dayKey, () => []);
-
-    if (transactionModel.id == null) {
-      final newTx = transactionModel.copyWith(id: const Uuid().v4());
-      dailyTxs.add(newTx);
-    } else {
-      final index = dailyTxs.indexWhere((t) => t.id == transactionModel.id);
-      if (index != -1) {
-        dailyTxs[index] = transactionModel;
-      } else {
-        dailyTxs.add(transactionModel);
-      }
-    }
-
-    final updatedMonthly = monthly.copyWith(transactions: transactionsMap);
-    months[monthlyIndex] = updatedMonthly;
-
-    return yearly.copyWith(months: months);
   }
 }
