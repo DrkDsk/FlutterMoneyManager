@@ -24,16 +24,20 @@ class StatService {
 
       double percent = 0;
 
-      if (selectedType == TransactionTypEnum.income) {
-        percent = summary.income > 0 ? (amount / summary.income) * 100 : 0;
-      } else {
-        percent = summary.expense > 0 ? (amount / summary.expense) * 100 : 0;
+      final total = selectedType == TransactionTypEnum.income
+          ? summary.income
+          : summary.expense;
+
+      if (total > 0) {
+        percent = (amount / total) * 100;
       }
+
+      percent = double.parse(percent.toStringAsFixed(3));
 
       return StatBreakdown(
         source: source,
         amount: amount,
-        percent: percent.toDouble(),
+        percent: percent,
       );
     }).toList();
   }
