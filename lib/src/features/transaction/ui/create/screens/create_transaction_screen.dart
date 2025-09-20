@@ -11,6 +11,7 @@ import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dar
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_state.dart';
@@ -20,7 +21,9 @@ import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets
 import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/create_transaction_tabview.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
-  const CreateTransactionScreen({super.key});
+  const CreateTransactionScreen({super.key, this.transaction});
+
+  final Transaction? transaction;
 
   @override
   State<CreateTransactionScreen> createState() =>
@@ -38,9 +41,19 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
   @override
   void initState() {
     super.initState();
+    final transaction = widget.transaction;
     _createTransactionCubit = context.read<CreateTransactionCubit>();
+    _createTransactionCubit.loadTransactionToEdit(transaction: transaction);
+
+    final initialTabIndex =
+        (transaction?.type == TransactionTypEnum.income) ? 0 : 1;
+
     _router = AppRouter.of(context);
-    _transactionTypeTabController = TabController(length: 2, vsync: this);
+    _transactionTypeTabController = TabController(
+      initialIndex: initialTabIndex,
+      length: 2,
+      vsync: this,
+    );
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/usecases/save_financial_summary_use_case.dart';
@@ -18,6 +19,12 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
       required this.saveYearFinancialSummaryUseCase,
       required this.saveFinancialSummaryUseCase})
       : super(CreateTransactionState.initial());
+
+  void loadTransactionToEdit({required Transaction? transaction}) {
+    final newState = state.copyWith(transaction: transaction);
+
+    emit(_validForm(newState));
+  }
 
   void updateAmountDate(DateTime? time) {
     final transaction = state.transaction.copyWith(transactionDate: time);
