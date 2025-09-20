@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/repositories/stats_repository.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_event.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_state.dart';
@@ -10,6 +11,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       : _repository = repository,
         super(StatsState.initial()) {
     on<LoadStatsEvent>(_loadStats);
+    on<UpdateTransactionType>(_updateTransactionType);
   }
 
   Future<void> _loadStats(
@@ -24,5 +26,15 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     monthlyTransactionsRequest.fold((left) {}, (right) {
       emit(state.copyWith(data: right));
     });
+  }
+
+  Future<void> _updateTransactionType(
+      UpdateTransactionType event, Emitter<StatsState> emit) async {
+    final tabIndex = event.tabIndex;
+
+    final type =
+        tabIndex == 0 ? TransactionTypEnum.income : TransactionTypEnum.expense;
+
+    emit(state.copyWith(type: type));
   }
 }

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/core/extensions/string_extension.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_bloc.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_event.dart';
+import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_state.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/pages/expense_stat_page.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/pages/income_stat_page.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
@@ -26,6 +31,7 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
   late final PageController _pageController;
   late final CalendarBloc _calendarBloc;
   late final TransactionsBloc _transactionsBloc;
+  late final StatsBloc _statsBloc;
 
   @override
   void initState() {
@@ -34,6 +40,7 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     _pageController = PageController(initialPage: 0);
     _calendarBloc = BlocProvider.of<CalendarBloc>(context);
     _transactionsBloc = BlocProvider.of<TransactionsBloc>(context);
+    _statsBloc = BlocProvider.of<StatsBloc>(context);
   }
 
   @override
@@ -97,10 +104,31 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
                 children: [
                   const TransactionSummaryContent(),
                   const SizedBox(height: 10),
-                  CustomTabBar(tabController: _tabController, tabs: [
-                    Tab(text: TransactionsConstants.kIncomeType.firstUpper()),
-                    Tab(text: TransactionsConstants.kExpenseType.firstUpper())
-                  ]),
+                  BlocSelector<StatsBloc, StatsState, Decoration?>(
+                    selector: (state) {
+                      final isIncomeTransaction =
+                          state.type == TransactionTypEnum.income;
+
+                      return isIncomeTransaction
+                          ? ContainerStyles.incomeDecoration
+                          : ContainerStyles.expenseDecoration;
+                    },
+                    builder: (context, indicatorDecoration) {
+                      return CustomTabBar(
+                          decoration: indicatorDecoration,
+                          tabController: _tabController,
+                          onTap: (tabIndex) => _statsBloc
+                              .add(UpdateTransactionType(tabIndex: tabIndex)),
+                          tabs: [
+                            Tab(
+                                text: TransactionsConstants.kIncomeType
+                                    .firstUpper()),
+                            Tab(
+                                text: TransactionsConstants.kExpenseType
+                                    .firstUpper())
+                          ]);
+                    },
+                  ),
                   const SizedBox(height: 10),
                   Expanded(
                     child: TabBarView(
