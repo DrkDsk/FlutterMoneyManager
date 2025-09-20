@@ -10,4 +10,14 @@ class YearlyTransactions {
   factory YearlyTransactions.initial({required int year}) {
     return YearlyTransactions(year: year, months: []);
   }
+
+  YearlyTransactions copyWith({
+    int? year,
+    List<MonthlyTransactions>? months,
+  }) {
+    return YearlyTransactions(
+      year: year ?? this.year,
+      months: months ?? this.months,
+    );
+  }
 }

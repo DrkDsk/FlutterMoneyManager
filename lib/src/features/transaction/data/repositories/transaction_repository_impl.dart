@@ -6,6 +6,7 @@ import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/domain/services/financial_summary_service.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
@@ -26,7 +27,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, bool>> save(Transaction transaction) async {
     try {
-      await _transactionService.saveYearlyTransaction(transaction: transaction);
+      await _transactionService.saveYearlyTransaction(
+          transactionModel: TransactionModel.fromEntity(transaction));
 
       return const Right(true);
     } on UnknownException catch (_) {

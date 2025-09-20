@@ -3,6 +3,7 @@ import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_source_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/yearly_transactions_hive_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
 import 'package:hive/hive.dart';
@@ -38,59 +39,30 @@ class TransactionDatasourceImpl implements TransactionDatasource {
   @override
   Future<List<TransactionModel>> getTransactionsByMonth(
       {required int year, required int month}) async {
-    final yearlyKey = HiveHelper.generateYearlyTransactionKey(year: year);
-    final yearly = _transactionsYearBox.get(yearlyKey);
-
-    if (yearly == null) {
-      return [];
-    }
-
-    final monthly = yearly.months
-        .where(
-          (m) => m.month == month,
-        )
-        .toList();
+    final monthly = await _getMonthlyTransactions(year: year, month: month);
 
     if (monthly.isEmpty) {
       return [];
     }
 
-    final transactions =
-        monthly.first.transactions.values.expand((txList) => txList).toList();
-
-    return transactions
-        .map((hiveModel) => TransactionModel.fromHive(hiveModel))
+    return monthly.first.transactions.values
+        .expand((txList) => txList)
         .toList();
   }
 
   @override
   Future<List<TransactionModel>> getTransactionsByDate(
       {required DateTime date}) async {
-    final year = date.year;
-    final month = date.month;
-    final yearlyKey = HiveHelper.generateYearlyTransactionKey(year: year);
     final dayKey = HiveHelper.generateTransactionDayKey(date: date);
-    final yearly = _transactionsYearBox.get(yearlyKey);
 
-    if (yearly == null) {
-      return [];
-    }
-
-    final monthly = yearly.months
-        .where(
-          (m) => m.month == month,
-        )
-        .toList();
+    final monthly =
+        await _getMonthlyTransactions(year: date.year, month: date.month);
 
     if (monthly.isEmpty) {
       return [];
     }
 
-    final transactions = monthly.first.transactions[dayKey] ?? [];
-
-    return transactions
-        .map((model) => TransactionModel.fromHive(model))
-        .toList();
+    return monthly.first.transactions[dayKey] ?? [];
   }
 
   @override
@@ -104,5 +76,28 @@ class TransactionDatasourceImpl implements TransactionDatasource {
     }
 
     return YearlyTransactionsModel.fromHive(hive);
+  }
+
+  Future<List<MonthlyTransactionsModel>> _getMonthlyTransactions(
+      {required int year, required int month}) async {
+    final yearlyKey = HiveHelper.generateYearlyTransactionKey(year: year);
+    final yearly = _transactionsYearBox.get(yearlyKey);
+    if (yearly == null) {
+      return [];
+    }
+
+    final monthly = yearly.months
+        .where(
+          (m) => m.month == month,
+        )
+        .toList();
+
+    if (monthly.isEmpty) {
+      return [];
+    }
+
+    return monthly
+        .map((model) => MonthlyTransactionsModel.fromHive(model))
+        .toList();
   }
 }
