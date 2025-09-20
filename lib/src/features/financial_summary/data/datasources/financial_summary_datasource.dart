@@ -1,4 +1,4 @@
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_model.dart';
 
 abstract interface class FinancialSummaryDatasource {

@@ -26,6 +26,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, bool>> save(Transaction transaction) async {
     try {
+      if (transaction.id != null) {
+        await _transactionService.updateTransaction(transaction: transaction);
+        return const Right(true);
+      }
+
       await _transactionService.saveYearlyTransaction(transaction: transaction);
 
       return const Right(true);

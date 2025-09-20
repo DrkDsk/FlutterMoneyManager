@@ -1,6 +1,6 @@
 import 'package:flutter_money_manager/src/core/constants/hive_constants.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
-import 'package:flutter_money_manager/src/core/shared/hive/data/models/financial_summary_model.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';

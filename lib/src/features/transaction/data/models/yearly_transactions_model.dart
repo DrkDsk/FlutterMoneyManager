@@ -33,4 +33,14 @@ class YearlyTransactionsModel {
           return MonthlyTransactionsModel.fromEntity(month);
         }).toList());
   }
+
+  YearlyTransactionsModel copyWith({
+    int? year,
+    List<MonthlyTransactionsModel>? months,
+  }) {
+    return YearlyTransactionsModel(
+      year: year ?? this.year,
+      months: months ?? this.months,
+    );
+  }
 }
