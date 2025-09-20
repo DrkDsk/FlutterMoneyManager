@@ -155,56 +155,6 @@ class TransactionService {
         model: currentYearlyTransactionsModel, key: yearlyTransactionKey);
   }
 
-  Future<void> updateTransaction({required Transaction transaction}) async {
-    final date = transaction.transactionDate;
-    final year = date.year;
-    final month = date.month;
-
-    final yearlyTransactionKey =
-        HiveHelper.generateYearlyTransactionKey(year: year);
-
-    final dayKey = HiveHelper.generateTransactionDayKey(date: date);
-
-    final transactions = await getTransactionsByDate(date: date);
-
-    final existsTransaction = transactions.indexWhere((currentTransaction) {
-      final currentId = currentTransaction.id;
-      if (currentId != null &&
-          transaction.id != null &&
-          currentId == transaction.id) {
-        return true;
-      }
-
-      return false;
-    });
-
-    final yearlyTransactions =
-        await _transactionDatasource.getYearlyTransactionsModel(year: year);
-
-    final transactionModel = TransactionModel.fromEntity(transaction);
-    transactions[existsTransaction] = transactionModel;
-
-    final monthTransactionsIndex =
-        yearlyTransactions.months.indexWhere((model) => model.month == month);
-
-    final monthlyTransactions =
-        yearlyTransactions.months[monthTransactionsIndex];
-
-    final updatedMonthTransactions =
-        yearlyTransactions.months[monthTransactionsIndex].copyWith(
-      transactions: {
-        ...monthlyTransactions.transactions,
-        dayKey: transactions,
-      },
-    );
-
-    yearlyTransactions.months[monthTransactionsIndex] =
-        updatedMonthTransactions;
-
-    await _transactionDatasource.save(
-        model: yearlyTransactions, key: yearlyTransactionKey);
-  }
-
   YearlyTransactions _updateYearlyTransaction(
       {required YearlyTransactions yearlyTransactions,
       required Transaction transaction}) {
@@ -224,11 +174,25 @@ class TransactionService {
       yearlyTransactions.months.add(monthlyTransactions);
     }
 
-    final transactionsByDay = List<Transaction>.from(
-      monthlyTransactions.transactions[dayKey] ?? [],
-    );
+    final transactionsByDay = monthlyTransactions.transactions[dayKey] ?? [];
+    final transactionIndex = transactionsByDay.indexWhere((currentTransaction) {
+      final currentId = currentTransaction.id;
+      final transactionId = transaction.id;
 
-    transactionsByDay.add(transaction);
+      if (currentId != null &&
+          transactionId != null &&
+          currentId == transactionId) {
+        return true;
+      }
+
+      return false;
+    });
+
+    if (transactionIndex != -1) {
+      transactionsByDay[transactionIndex] = transaction;
+    } else {
+      transactionsByDay.add(transaction);
+    }
 
     monthlyTransactions = monthlyTransactions.copyWith(
       transactions: {
@@ -245,13 +209,5 @@ class TransactionService {
     }
 
     return yearlyTransactions;
-  }
-
-  Future<List<TransactionModel>> getTransactionsByDate(
-      {required DateTime date}) async {
-    final transactions =
-        await _transactionDatasource.getTransactionsByDate(date: date);
-
-    return transactions;
   }
 }
