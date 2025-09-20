@@ -70,12 +70,12 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
   void updateTransactionType(int index) {
     final transaction = state.transaction;
 
-    final transactionSelected =
+    final transactionType =
         index == 0 ? TransactionTypEnum.income : TransactionTypEnum.expense;
-    final newTransactionState = transaction.copyWith(
-        type: transactionSelected, categoryType: "", sourceType: "");
+    final updatedTransaction = transaction.copyWith(
+        type: transactionType, categoryType: "", sourceType: "");
 
-    emit(state.copyWith(transaction: newTransactionState));
+    emit(state.copyWith(transaction: updatedTransaction));
   }
 
   Future<void> saveTransaction() async {

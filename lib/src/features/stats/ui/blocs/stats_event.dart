@@ -16,6 +16,11 @@ class LoadStatsEvent extends StatsEvent with EquatableMixin {
   List<Object?> get props => [type, month, year];
 }
 
-/*class UpdateTabIndex extends StatsEvent with EquatableMixin {
+class UpdateTransactionType extends StatsEvent with EquatableMixin {
+  final int tabIndex;
 
-}*/
+  const UpdateTransactionType({required this.tabIndex});
+
+  @override
+  List<Object?> get props => [tabIndex];
+}

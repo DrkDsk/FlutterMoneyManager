@@ -9,6 +9,7 @@ import 'package:flutter_money_manager/src/core/extensions/string_extension.dart'
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_numeric_keyboard.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
@@ -189,17 +190,12 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
             BlocSelector<CreateTransactionCubit, CreateTransactionState,
                 Decoration?>(
               selector: (state) {
-                if (state.transaction.type == TransactionTypEnum.income) {
-                  return BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppColors.incomeColor,
-                  );
-                }
+                final isIncomeTransaction =
+                    state.transaction.type == TransactionTypEnum.income;
 
-                return BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: AppColors.expenseColor,
-                );
+                return isIncomeTransaction
+                    ? ContainerStyles.incomeDecoration
+                    : ContainerStyles.expenseDecoration;
               },
               builder: (context, indicatorDecoration) {
                 return CustomTabBar(

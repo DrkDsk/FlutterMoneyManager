@@ -14,6 +14,16 @@ class ContainerStyles {
             blurRadius: 0.5)
       ]);
 
+  static final BoxDecoration incomeDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(12),
+    color: AppColors.incomeColor,
+  );
+
+  static final BoxDecoration expenseDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(12),
+    color: AppColors.expenseColor,
+  );
+
   static final kWidgetRoundedDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: AppColors.turquoise.customOpacity(0.15)));

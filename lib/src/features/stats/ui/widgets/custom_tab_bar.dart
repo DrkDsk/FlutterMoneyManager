@@ -14,7 +14,7 @@ class CustomTabBar extends StatelessWidget {
   final List<Widget> tabs;
   final EdgeInsetsGeometry? margin;
   final Decoration? decoration;
-  final void Function(int index)? onTap;
+  final void Function(int tabIndex)? onTap;
 
   @override
   Widget build(BuildContext context) {
