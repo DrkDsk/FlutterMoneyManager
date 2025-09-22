@@ -57,57 +57,46 @@ final class FinancialCalculatorService {
     int income = 0;
     int expense = 0;
     int netWorth = 0;
-    Map<String, int> balancesSource = {};
+    final Map<String, int> balancesBySource = {};
 
-    for (final transaction in transactions) {
-      final source = transaction.sourceType;
+    for (final t in transactions) {
+      final source = t.sourceType;
       if (source == null) continue;
 
-      final amountBySource = balancesSource[source] ?? 0;
-      final isDebt =
-          TransactionsConstants.kNegativeTransactionSources.contains(source);
+      final int delta = t.type == TransactionTypEnum.income
+          ? t.amount.abs()
+          : -t.amount.abs();
 
-      if (isDebt) {
-        if (balancesSource.isNotEmpty) {
-          balancesSource[source] = amountBySource - transaction.amount;
-        } else {
-          balancesSource[source] = transaction.amount;
-        }
-      } else {
-        balancesSource[source] = amountBySource + transaction.amount;
-      }
+      balancesBySource[source] = (balancesBySource[source] ?? 0) + delta;
 
-      if (transaction.type == TransactionTypEnum.income) {
-        income += transaction.amount;
-        netWorth += transaction.amount;
+      if (delta >= 0) {
+        income += delta;
       } else {
-        final expenseAmount =
-            transaction.amount < 0 ? -transaction.amount : transaction.amount;
-        expense += expenseAmount;
-        netWorth -= expenseAmount;
+        expense += -delta;
       }
+      netWorth += delta;
     }
 
     int asset = 0;
     int debt = 0;
 
-    for (final entry in balancesSource.entries) {
+    for (final entry in balancesBySource.entries) {
+      final balance = entry.value;
       if (TransactionsConstants.kPositiveTransactionSources
           .contains(entry.key)) {
-        asset += entry.value;
+        asset += balance > 0 ? balance : 0;
       } else if (TransactionsConstants.kNegativeTransactionSources
           .contains(entry.key)) {
-        debt += -entry.value;
+        debt += balance < 0 ? -balance : 0;
       }
     }
-
     return FinancialSummary(
         income: income,
         expense: expense,
         asset: asset,
         netWorth: netWorth,
         debt: debt,
-        balancesBySource: balancesSource);
+        balancesBySource: balancesBySource);
   }
 
   static FinancialSummary updateGlobalSummary(
