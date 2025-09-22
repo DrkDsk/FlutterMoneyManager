@@ -16,42 +16,6 @@ final class FinancialCalculatorService {
     return updatedSources;
   }
 
-  static FinancialSummary calculateUpdatedSummary(
-      {required FinancialSummary summary, required Transaction transaction}) {
-    final isIncome = transaction.type == TransactionTypEnum.income;
-    final source = transaction.sourceType ?? "Unknown";
-    final amount = transaction.amount;
-
-    final updatedSources = calculateUpdatedSources(
-        balancesBySource: summary.balancesBySource,
-        amount: amount,
-        source: source,
-        isIncome: isIncome);
-
-    final newIncome = summary.income + (isIncome ? amount : 0);
-    final newExpense = summary.expense + (!isIncome ? amount : 0);
-    final newTotal = summary.netWorth + (isIncome ? amount : -amount);
-
-    final newAsset = updatedSources.entries
-        .where((e) =>
-            TransactionsConstants.kPositiveTransactionSources.contains(e.key))
-        .fold<int>(0, (sum, e) => sum + (e.value < 0 ? 0 : e.value));
-
-    final newDebt = updatedSources.entries
-        .where((e) =>
-            TransactionsConstants.kNegativeTransactionSources.contains(e.key))
-        .fold<int>(0, (sum, e) => sum + (e.value < 0 ? -e.value : e.value));
-
-    return summary.copyWith(
-      income: newIncome,
-      expense: newExpense,
-      netWorth: newTotal,
-      asset: newAsset,
-      debt: newDebt,
-      balancesBySource: updatedSources,
-    );
-  }
-
   static FinancialSummary getGlobalFinancialSummary(
       {required List<Transaction> transactions}) {
     int income = 0;
@@ -97,15 +61,5 @@ final class FinancialCalculatorService {
         netWorth: netWorth,
         debt: debt,
         balancesBySource: balancesBySource);
-  }
-
-  static FinancialSummary updateGlobalSummary(
-      {required Transaction transaction, FinancialSummary? financialSummary}) {
-    financialSummary = financialSummary ?? FinancialSummary.initial();
-
-    final result = calculateUpdatedSummary(
-        transaction: transaction, summary: financialSummary);
-
-    return result;
   }
 }
