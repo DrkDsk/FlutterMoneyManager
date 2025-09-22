@@ -3,15 +3,10 @@ import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/finan
 
 class FinancialSummaryModel {
   final int income;
-
   final int expense;
-
   final int netWorth;
-
   final int asset;
-
   final Map<String, int> balancesBySource;
-
   final int debt;
 
   const FinancialSummaryModel(

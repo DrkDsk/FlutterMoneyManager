@@ -2,24 +2,21 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exception.dart';
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
-import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
-import 'package:flutter_money_manager/src/features/financial_summary/domain/services/financial_summary_service.dart';
+import 'package:flutter_money_manager/src/features/financial_summary/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/entities/stat_response.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/repositories/stats_repository.dart';
 import 'package:flutter_money_manager/src/features/stats/domain/services/stat_service.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/services/financial_calculator_service.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/services/transaction_service.dart';
 
 class StatsRepositoryImpl implements StatsRepository {
   final TransactionService _transactionService;
-  final FinancialSummaryService _financialSummaryService;
   final StatService _statService;
 
   StatsRepositoryImpl(
       {required TransactionService transactionService,
-      required FinancialSummaryService financialSummaryService,
       required StatService statService})
       : _transactionService = transactionService,
-        _financialSummaryService = financialSummaryService,
         _statService = statService;
 
   @override
@@ -29,22 +26,24 @@ class StatsRepositoryImpl implements StatsRepository {
       final now = DateTime.now();
       year = year ?? now.year;
       month = month ?? now.month;
-      final yearlyBalanceKey = HiveHelper.generateYearlyBalanceKey(year: year);
 
-      const emptyResponse = StatResponse(stats: []);
+      final transactionsMonth = await _transactionService.getTransactionsMonth(
+          year: year, month: month);
 
-      final summary = await _financialSummaryService.getSummaryByMonth(
-          key: yearlyBalanceKey, month: month);
-
-      final monthTransactions = await _transactionService.getTransactionsMonth(
-          month: month, year: year);
-
-      if (monthTransactions.isEmpty || summary == null) {
-        return const Right(emptyResponse);
+      if (transactionsMonth.isEmpty) {
+        return const Right(StatResponse(stats: []));
       }
 
-      final breakdown =
-          _statService.calculateBreakdown(monthTransactions, summary, type);
+      final transactions =
+          transactionsMonth.map((model) => model.toEntity()).toList();
+
+      final summary = FinancialCalculatorService.getFinancialSummary(
+          transactions: transactions);
+
+      final summaryModel = FinancialSummaryModel.fromEntity(summary);
+
+      final breakdown = _statService.calculateBreakdown(
+          transactionsMonth, summaryModel, type);
 
       return Right(StatResponse(stats: breakdown));
     } on UnknownException catch (_) {

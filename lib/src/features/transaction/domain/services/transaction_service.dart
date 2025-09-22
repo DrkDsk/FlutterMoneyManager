@@ -4,12 +4,9 @@ import 'package:flutter_money_manager/src/core/constants/transactions_constants.
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/helpers/datetime_helper.dart';
 import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
-import 'package:flutter_money_manager/src/features/financial_summary/data/models/financial_summary_model.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/monthly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
-import 'package:flutter_money_manager/src/features/transaction/data/models/yearly_transactions_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
@@ -37,66 +34,42 @@ class TransactionService {
     return transactionsMonthEntries;
   }
 
-  Future<YearlyTransactionsModel> _updateYearlyTransaction(
-      {required TransactionModel transactionModel}) async {
-    final date = transactionModel.transactionDate;
-    final year = date.year;
-    final month = date.month;
-    final dayKey = HiveHelper.generateTransactionDayKey(date: date);
-
-    final yearly =
-        await _transactionDatasource.getYearlyTransactionsModel(year: year);
-
-    var months = List<MonthlyTransactionsModel>.from(yearly.months);
-    var monthlyIndex = months.indexWhere((m) => m.month == month);
-
-    MonthlyTransactionsModel monthly;
-    if (monthlyIndex == -1) {
-      monthly = MonthlyTransactionsModel(month: month, transactions: {});
-      months.add(monthly);
-      monthlyIndex = months.length - 1;
-    } else {
-      monthly = months[monthlyIndex];
-    }
-
-    final transactionsMap =
-        Map<String, List<TransactionModel>>.from(monthly.transactions);
-    final dailyTxs = transactionsMap.putIfAbsent(dayKey, () => []);
-
-    if (transactionModel.id == null) {
-      final newTx = transactionModel.copyWith(id: const Uuid().v4());
-      dailyTxs.add(newTx);
-    } else {
-      final index = dailyTxs.indexWhere((t) => t.id == transactionModel.id);
-      if (index != -1) {
-        dailyTxs[index] = transactionModel;
-      } else {
-        dailyTxs.add(transactionModel);
-      }
-    }
-
-    final updatedMonthly = monthly.copyWith(transactions: transactionsMap);
-    months[monthlyIndex] = updatedMonthly;
-
-    return yearly.copyWith(months: months);
-  }
-
   Future<List<TransactionModel>> getTransactionsMonth(
       {required int month, required int year}) async {
-    final monthTransactions = await _transactionDatasource
-        .getTransactionsByMonth(year: year, month: month);
+    final transactions = await _transactionDatasource.getAllTransactions();
 
-    return monthTransactions;
+    final filtered = transactions
+        .where((t) =>
+            t.transactionDate.year == year && t.transactionDate.month == month)
+        .toList();
+
+    return filtered;
   }
 
-  Future<TransactionsSummary> getMonthlyTransactionSummary(
-      {required List<TransactionModel> transactionsMonth,
-      required FinancialSummaryModel? monthSummary}) async {
-    if (monthSummary == null) {
-      return TransactionsSummary.initial();
-    }
+  Future<List<TransactionModel>> getTransactionsByDate(
+      {required DateTime date}) async {
+    final year = date.year;
+    final month = date.month;
+    final day = date.day;
 
-    final grouped = _groupTransactionsByDate(transactions: transactionsMonth);
+    final transactions = await _transactionDatasource.getAllTransactions();
+
+    final filtered = transactions
+        .where((t) =>
+            t.transactionDate.year == year &&
+            t.transactionDate.month == month &&
+            t.transactionDate.day == day)
+        .toList();
+
+    return filtered;
+  }
+
+  Future<TransactionsSummary> getSummaryWithTransactions(
+      {required List<TransactionModel> transactionsModels}) async {
+    int income = 0;
+    int expense = 0;
+
+    final grouped = _groupTransactionsByDate(transactions: transactionsModels);
 
     final transactionsSummary = await Isolate.run(() {
       final transactionsData = grouped.entries.map((entry) {
@@ -105,43 +78,23 @@ class TransactionService {
         return TransactionsData(transactions: transactions, date: date);
       }).toList();
 
+      for (final transaction in transactionsModels) {
+        if (transaction.type == TransactionTypEnum.income) {
+          income += transaction.amount;
+        } else {
+          expense += transaction.amount;
+        }
+      }
+
       return TransactionsSummary(
         transactionsData: transactionsData,
-        income: monthSummary.income,
-        total: monthSummary.netWorth,
-        expense: monthSummary.expense,
+        income: income,
+        total: income - expense,
+        expense: expense,
       );
     });
 
     return transactionsSummary;
-  }
-
-  Future<TransactionsSummary> getSummaryByDate({required DateTime date}) async {
-    final transactionsModels =
-        await _transactionDatasource.getTransactionsByDate(date: date);
-
-    int income = 0;
-    int expense = 0;
-
-    final transactions =
-        transactionsModels.map((model) => model.toEntity()).toList();
-
-    final transactionData =
-        TransactionsData(transactions: transactions, date: date);
-
-    for (final transaction in transactionsModels) {
-      if (transaction.type == TransactionTypEnum.income) {
-        income += transaction.amount;
-      } else {
-        expense += transaction.amount;
-      }
-    }
-
-    return TransactionsSummary(
-        transactionsData: [transactionData],
-        income: income,
-        total: income - expense,
-        expense: expense);
   }
 
   Future<List<AccountSummaryItem>> getAccountSummaryItems() async {
@@ -177,15 +130,12 @@ class TransactionService {
     return result;
   }
 
-  Future<void> saveYearlyTransaction(
+  Future<void> saveTransaction(
       {required TransactionModel transactionModel}) async {
-    final yearlyTransactionKey = HiveHelper.generateYearlyTransactionKey(
-        year: transactionModel.transactionDate.year);
+    if (transactionModel.id == null) {
+      transactionModel = transactionModel.copyWith(id: const Uuid().v4());
+    }
 
-    final updatedYearly =
-        await _updateYearlyTransaction(transactionModel: transactionModel);
-
-    await _transactionDatasource.save(
-        model: updatedYearly, key: yearlyTransactionKey);
+    await _transactionDatasource.save(model: transactionModel);
   }
 }
