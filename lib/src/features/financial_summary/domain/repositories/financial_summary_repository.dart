@@ -4,7 +4,5 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 abstract interface class FinancialSummaryRepository {
   Future<FinancialSummary> getGlobalFinancialSummary();
 
-  Future<void> saveYearFinancialSummary({required Transaction transaction});
-
   Future<void> saveFinancialSummary({required Transaction transaction});
 }

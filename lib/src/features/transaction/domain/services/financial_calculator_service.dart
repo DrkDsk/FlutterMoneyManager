@@ -1,9 +1,7 @@
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/financial_summary.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_financial_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
-import 'package:flutter_money_manager/src/features/transaction/domain/entities/yearly_financial_summary.dart';
 
 final class FinancialCalculatorService {
   static Map<String, int> calculateUpdatedSources(
@@ -54,35 +52,62 @@ final class FinancialCalculatorService {
     );
   }
 
-  static YearlyFinancialSummary updateYearlyFinancialSummary(
-      {required Transaction transaction,
-      required YearlyFinancialSummary yearlyFinancialSummary}) {
-    final date = transaction.transactionDate;
-    final month = date.month;
+  static FinancialSummary getGlobalFinancialSummary(
+      {required List<Transaction> transactions}) {
+    int income = 0;
+    int expense = 0;
+    int netWorth = 0;
+    Map<String, int> balancesSource = {};
 
-    final yearModelAsMap = yearlyFinancialSummary.toEntityMap();
+    for (final transaction in transactions) {
+      final source = transaction.sourceType;
+      if (source == null) continue;
 
-    final monthIndexOfCurrentTransaction =
-        yearlyFinancialSummary.months.indexWhere((m) => m.month == month);
+      final amountBySource = balancesSource[source] ?? 0;
+      final isDebt =
+          TransactionsConstants.kNegativeTransactionSources.contains(source);
 
-    final summary = yearModelAsMap[month] ?? FinancialSummary.initial();
+      if (isDebt) {
+        if (balancesSource.isNotEmpty) {
+          balancesSource[source] = amountBySource - transaction.amount;
+        } else {
+          balancesSource[source] = transaction.amount;
+        }
+      } else {
+        balancesSource[source] = amountBySource + transaction.amount;
+      }
 
-    final updatedBalance =
-        calculateUpdatedSummary(summary: summary, transaction: transaction);
-
-    final monthBalance = MonthlyFinancialSummary(
-      month: month,
-      summary: updatedBalance,
-    );
-
-    if (monthIndexOfCurrentTransaction != -1) {
-      yearlyFinancialSummary.months[monthIndexOfCurrentTransaction] =
-          monthBalance;
-    } else {
-      yearlyFinancialSummary.months.add(monthBalance);
+      if (transaction.type == TransactionTypEnum.income) {
+        income += transaction.amount;
+        netWorth += transaction.amount;
+      } else {
+        final expenseAmount =
+            transaction.amount < 0 ? -transaction.amount : transaction.amount;
+        expense += expenseAmount;
+        netWorth -= expenseAmount;
+      }
     }
 
-    return yearlyFinancialSummary;
+    int asset = 0;
+    int debt = 0;
+
+    for (final entry in balancesSource.entries) {
+      if (TransactionsConstants.kPositiveTransactionSources
+          .contains(entry.key)) {
+        asset += entry.value;
+      } else if (TransactionsConstants.kNegativeTransactionSources
+          .contains(entry.key)) {
+        debt += -entry.value;
+      }
+    }
+
+    return FinancialSummary(
+        income: income,
+        expense: expense,
+        asset: asset,
+        netWorth: netWorth,
+        debt: debt,
+        balancesBySource: balancesSource);
   }
 
   static FinancialSummary updateGlobalSummary(

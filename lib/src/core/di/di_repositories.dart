@@ -1,4 +1,3 @@
-import 'package:flutter_money_manager/src/features/financial_summary/data/datasources/financial_summary_datasource.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/data/repositories/financial_summary_repository_impl.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/domain/repositories/financial_summary_repository.dart';
 import 'package:flutter_money_manager/src/features/financial_summary/domain/services/financial_summary_service.dart';
@@ -15,7 +14,6 @@ final getIt = GetIt.instance;
 Future<void> registerRepositories() async {
   final transactionService = getIt<TransactionService>();
   final financialSummaryService = getIt<FinancialSummaryService>();
-  final financialSummaryDatasourceInst = getIt<FinancialSummaryDatasource>();
   final statService = getIt<StatService>();
 
   getIt.registerLazySingleton<TransactionRepository>(
@@ -23,7 +21,6 @@ Future<void> registerRepositories() async {
 
   getIt.registerLazySingleton<FinancialSummaryRepository>(() =>
       FinancialSummaryRepositoryImpl(
-          datasource: financialSummaryDatasourceInst,
           financialSummaryService: financialSummaryService));
 
   getIt.registerLazySingleton<StatsRepository>(() => StatsRepositoryImpl(
