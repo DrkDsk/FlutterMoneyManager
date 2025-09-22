@@ -5,7 +5,9 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
 abstract interface class TransactionRepository {
-  Future<Either<Failure, bool>> save(Transaction transaction);
+  Future<Either<Failure, List<AccountSummaryItem>>> getTransactionSources();
+
+  Stream<TransactionsSummary> transactionsStream();
 
   Future<Either<Failure, TransactionsSummary>> getTransactionsByMonth(
       {int? month, int? year});
@@ -13,7 +15,5 @@ abstract interface class TransactionRepository {
   Future<Either<Failure, TransactionsSummary>> getTransactionSummaryByDate(
       {required DateTime date});
 
-  Future<Either<Failure, List<AccountSummaryItem>>> getTransactionSources();
-
-  Stream<TransactionsSummary> transactionsStream();
+  Future<Either<Failure, bool>> save(Transaction transaction);
 }
