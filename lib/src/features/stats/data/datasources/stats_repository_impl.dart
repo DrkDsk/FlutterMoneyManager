@@ -33,7 +33,9 @@ class StatsRepositoryImpl implements StatsRepository {
 
       const emptyResponse = StatResponse(stats: []);
 
-      final summary = await _financialSummaryService.getSummaryByMonth(
+      return const Right(emptyResponse);
+
+      /*final summary = await _financialSummaryService.getSummaryWithTransactions(
           key: yearlyBalanceKey, month: month);
 
       final monthTransactions = await _transactionService.getTransactionsMonth(
@@ -46,7 +48,7 @@ class StatsRepositoryImpl implements StatsRepository {
       final breakdown =
           _statService.calculateBreakdown(monthTransactions, summary, type);
 
-      return Right(StatResponse(stats: breakdown));
+      return Right(StatResponse(stats: breakdown));*/
     } on UnknownException catch (_) {
       return Left(GenericFailure());
     } catch (error) {

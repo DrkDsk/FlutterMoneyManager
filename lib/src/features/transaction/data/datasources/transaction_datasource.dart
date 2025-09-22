@@ -14,6 +14,7 @@ abstract interface class TransactionDatasource {
   Future<List<TransactionModel>> getTransactionsByMonth(
       {required int year, required int month});
 
-  Future<List<TransactionModel>> getTransactionsByDate(
-      {required DateTime date});
+  Future<void> saveTransaction({required TransactionModel model});
+
+  Future<List<TransactionModel>> getAllTransactions();
 }

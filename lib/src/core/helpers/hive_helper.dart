@@ -21,6 +21,11 @@ class HiveHelper {
     Hive.registerAdapter(YearlyTransactionsHiveModelAdapter());
   }
 
+  static Future<Box<TransactionHiveModel>> getTransactionsBox() async {
+    return await Hive.openBox<TransactionHiveModel>(
+        HiveConstants.transactionsBox);
+  }
+
   static Future<Box<TransactionSourceHiveModel>>
       getTransactionsSourceBox() async {
     return await Hive.openBox<TransactionSourceHiveModel>(

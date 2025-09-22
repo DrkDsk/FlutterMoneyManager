@@ -83,20 +83,40 @@ class TransactionService {
 
   Future<List<TransactionModel>> getTransactionsMonth(
       {required int month, required int year}) async {
-    final monthTransactions = await _transactionDatasource
-        .getTransactionsByMonth(year: year, month: month);
+    final transactions = await _transactionDatasource.getAllTransactions();
 
-    return monthTransactions;
+    final filtered = transactions
+        .where((t) =>
+            t.transactionDate.year == year && t.transactionDate.month == month)
+        .toList();
+
+    return filtered;
   }
 
-  Future<TransactionsSummary> getMonthlyTransactionSummary(
-      {required List<TransactionModel> transactionsMonth,
-      required FinancialSummaryModel? monthSummary}) async {
-    if (monthSummary == null) {
-      return TransactionsSummary.initial();
-    }
+  Future<List<TransactionModel>> getTransactionsByDate(
+      {required DateTime date}) async {
+    final year = date.year;
+    final month = date.month;
+    final day = date.day;
 
-    final grouped = _groupTransactionsByDate(transactions: transactionsMonth);
+    final transactions = await _transactionDatasource.getAllTransactions();
+
+    final filtered = transactions
+        .where((t) =>
+            t.transactionDate.year == year &&
+            t.transactionDate.month == month &&
+            t.transactionDate.day == day)
+        .toList();
+
+    return filtered;
+  }
+
+  Future<TransactionsSummary> getSummaryWithTransactions(
+      {required List<TransactionModel> transactionsModels}) async {
+    int income = 0;
+    int expense = 0;
+
+    final grouped = _groupTransactionsByDate(transactions: transactionsModels);
 
     final transactionsSummary = await Isolate.run(() {
       final transactionsData = grouped.entries.map((entry) {
@@ -105,43 +125,23 @@ class TransactionService {
         return TransactionsData(transactions: transactions, date: date);
       }).toList();
 
+      for (final transaction in transactionsModels) {
+        if (transaction.type == TransactionTypEnum.income) {
+          income += transaction.amount;
+        } else {
+          expense += transaction.amount;
+        }
+      }
+
       return TransactionsSummary(
         transactionsData: transactionsData,
-        income: monthSummary.income,
-        total: monthSummary.netWorth,
-        expense: monthSummary.expense,
+        income: income,
+        total: income - expense,
+        expense: expense,
       );
     });
 
     return transactionsSummary;
-  }
-
-  Future<TransactionsSummary> getSummaryByDate({required DateTime date}) async {
-    final transactionsModels =
-        await _transactionDatasource.getTransactionsByDate(date: date);
-
-    int income = 0;
-    int expense = 0;
-
-    final transactions =
-        transactionsModels.map((model) => model.toEntity()).toList();
-
-    final transactionData =
-        TransactionsData(transactions: transactions, date: date);
-
-    for (final transaction in transactionsModels) {
-      if (transaction.type == TransactionTypEnum.income) {
-        income += transaction.amount;
-      } else {
-        expense += transaction.amount;
-      }
-    }
-
-    return TransactionsSummary(
-        transactionsData: [transactionData],
-        income: income,
-        total: income - expense,
-        expense: expense);
   }
 
   Future<List<AccountSummaryItem>> getAccountSummaryItems() async {
@@ -179,13 +179,8 @@ class TransactionService {
 
   Future<void> saveYearlyTransaction(
       {required TransactionModel transactionModel}) async {
-    final yearlyTransactionKey = HiveHelper.generateYearlyTransactionKey(
-        year: transactionModel.transactionDate.year);
+    final transactionWithId = transactionModel.copyWith(id: const Uuid().v4());
 
-    final updatedYearly =
-        await _updateYearlyTransaction(transactionModel: transactionModel);
-
-    await _transactionDatasource.save(
-        model: updatedYearly, key: yearlyTransactionKey);
+    await _transactionDatasource.saveTransaction(model: transactionWithId);
   }
 }
