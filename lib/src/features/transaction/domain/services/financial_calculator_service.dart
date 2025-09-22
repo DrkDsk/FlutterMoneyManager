@@ -4,19 +4,7 @@ import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/finan
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
 final class FinancialCalculatorService {
-  static Map<String, int> calculateUpdatedSources(
-      {required Map<String, int> balancesBySource,
-      required String source,
-      required bool isIncome,
-      required int amount}) {
-    final updatedSources = Map<String, int>.from(balancesBySource);
-    final currentSourceBalance = updatedSources[source] ?? 0;
-    updatedSources[source] =
-        currentSourceBalance + (isIncome ? amount : -amount);
-    return updatedSources;
-  }
-
-  static FinancialSummary getGlobalFinancialSummary(
+  static FinancialSummary getFinancialSummary(
       {required List<Transaction> transactions}) {
     int income = 0;
     int expense = 0;

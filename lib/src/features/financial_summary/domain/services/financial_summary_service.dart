@@ -17,7 +17,7 @@ class FinancialSummaryService {
         transactionsModels.map((model) => model.toEntity()).toList();
 
     final updatedYearlyFinancialSummary =
-        FinancialCalculatorService.getGlobalFinancialSummary(
+        FinancialCalculatorService.getFinancialSummary(
             transactions: transactions);
 
     return updatedYearlyFinancialSummary;
