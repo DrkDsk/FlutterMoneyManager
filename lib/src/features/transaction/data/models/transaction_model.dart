@@ -41,17 +41,6 @@ class TransactionModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'type': type.name,
-      'transactionDate': transactionDate.toIso8601String(),
-      'amount': amount,
-      'categoryType': categoryType,
-      'sourceType': sourceType,
-    };
-  }
-
   factory TransactionModel.fromHive(TransactionHiveModel hive) {
     return TransactionModel(
         id: hive.id,
@@ -62,30 +51,6 @@ class TransactionModel {
         amount: hive.amount,
         sourceType: hive.sourceType,
         categoryType: hive.categoryType);
-  }
-
-  factory TransactionModel.fromMap(Map<String, dynamic> map) {
-    final amountString = map['amount'].toString();
-    final amount = int.tryParse(amountString) ?? 0;
-    final dateString = map['transactionDate'].toString();
-    final dateMilliseconds =
-        int.tryParse(dateString) ?? DateTime.now().millisecondsSinceEpoch;
-
-    final date = DateTime.fromMillisecondsSinceEpoch(dateMilliseconds);
-
-    final transactionType =
-        map['type'].toString() == TransactionsConstants.kIncomeType
-            ? TransactionTypEnum.income
-            : TransactionTypEnum.expense;
-
-    return TransactionModel(
-      id: map['id'].toString(),
-      type: transactionType,
-      transactionDate: date,
-      amount: amount,
-      categoryType: map['categoryType'].toString(),
-      sourceType: map['sourceType'].toString(),
-    );
   }
 
   TransactionModel copyWith({
