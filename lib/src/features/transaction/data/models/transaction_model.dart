@@ -2,7 +2,6 @@ import 'package:flutter_money_manager/src/core/constants/transactions_constants.
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
-import 'package:uuid/uuid.dart';
 
 class TransactionModel {
   final String? id;
@@ -32,7 +31,7 @@ class TransactionModel {
 
   factory TransactionModel.fromEntity(Transaction entity) {
     return TransactionModel(
-      id: entity.id ?? const Uuid().v4(),
+      id: entity.id ?? "",
       type: entity.type,
       transactionDate: entity.transactionDate,
       amount: entity.amount,
