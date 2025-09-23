@@ -65,11 +65,11 @@ class TransactionService {
   }
 
   Future<TransactionsSummary> getSummaryWithTransactions(
-      {required List<TransactionModel> transactionsModels}) async {
+      {required List<TransactionModel> transactions}) async {
     int income = 0;
     int expense = 0;
 
-    final grouped = _groupTransactionsByDate(transactions: transactionsModels);
+    final grouped = _groupTransactionsByDate(transactions: transactions);
 
     final transactionsSummary = await Isolate.run(() {
       final transactionsData = grouped.entries.map((entry) {
@@ -78,7 +78,7 @@ class TransactionService {
         return TransactionsData(transactions: transactions, date: date);
       }).toList();
 
-      for (final transaction in transactionsModels) {
+      for (final transaction in transactions) {
         if (transaction.type == TransactionTypEnum.income) {
           income += transaction.amount;
         } else {
