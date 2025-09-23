@@ -5,6 +5,7 @@ import 'package:flutter_money_manager/src/core/extensions/color_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/screens/create_transaction_screen.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
 
 class AddTransactionButton extends StatelessWidget {
   const AddTransactionButton({
@@ -19,8 +20,15 @@ class AddTransactionButton extends StatelessWidget {
       onTap: () {
         final router = AppRouter.of(context);
 
-        router.goToScreen(BlocProvider(
-          create: (context) => getIt<CreateTransactionCubit>(),
+        router.goToScreen(MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => getIt<CreateTransactionCubit>(),
+            ),
+            BlocProvider(
+              create: (_) => getIt<TransactionsBloc>(),
+            ),
+          ],
           child: const CreateTransactionScreen(),
         ));
       },

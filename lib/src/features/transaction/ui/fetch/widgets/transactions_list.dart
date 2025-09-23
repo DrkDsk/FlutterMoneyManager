@@ -7,6 +7,7 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/t
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/screens/create_transaction_screen.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transaction_list_item.dart';
 
 class TransactionsList extends StatelessWidget {
@@ -44,8 +45,15 @@ class TransactionsList extends StatelessWidget {
             onTap: () {
               final router = AppRouter.of(context);
 
-              router.goToScreen(BlocProvider(
-                create: (context) => getIt<CreateTransactionCubit>(),
+              router.goToScreen(MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => getIt<CreateTransactionCubit>(),
+                  ),
+                  BlocProvider(
+                    create: (_) => getIt<TransactionsBloc>(),
+                  ),
+                ],
                 child: CreateTransactionScreen(transaction: transaction),
               ));
             },
