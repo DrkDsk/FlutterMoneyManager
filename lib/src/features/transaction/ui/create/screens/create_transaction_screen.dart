@@ -6,9 +6,9 @@ import 'package:flutter_money_manager/src/core/constants/transactions_constants.
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/core/extensions/string_extension.dart';
 import 'package:flutter_money_manager/src/core/router/app_router.dart';
+import 'package:flutter_money_manager/src/core/shared/builders/keyboard/keyboard_helper.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/bloc_side_effect_listener.dart';
 import 'package:flutter_money_manager/src/core/shared/widgets/custom_app_bar.dart';
-import 'package:flutter_money_manager/src/core/shared/widgets/custom_numeric_keyboard.dart';
 import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
@@ -66,44 +66,6 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
   void dispose() {
     super.dispose();
     _transactionTypeTabController.dispose();
-  }
-
-  void _showCustomKeyboard(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(),
-      builder: (context) {
-        return CustomNumericKeyboard(
-          onOkSubmit: () => _router.pop(),
-          onNumberTap: (number) {
-            amountValue.write(number);
-            final updatedAmount = int.tryParse(amountValue.toString()) ?? 0;
-            _createTransactionCubit.updateAmount(updatedAmount);
-          },
-          onBackspace: () {
-            final amountString =
-                _createTransactionCubit.state.transaction.amount.toString();
-
-            if (amountString.length <= 1) {
-              _createTransactionCubit.updateAmount(0);
-              amountValue.clear();
-              return;
-            }
-
-            final updatedString =
-                amountString.substring(0, amountString.length - 1);
-            final updatedAmount = int.tryParse(updatedString) ?? 0;
-
-            amountValue
-              ..clear()
-              ..write(updatedString);
-
-            _createTransactionCubit.updateAmount(updatedAmount);
-          },
-        );
-      },
-    );
   }
 
   void _showTransactionSources(BuildContext context) {
@@ -245,7 +207,15 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                       amountLabelColor: AppColors.incomeColor,
                       transactionTypeSource: "Deposit Source",
                       onSelectTransactionDate: onTransactionDateChanged,
-                      onTapAmount: () => _showCustomKeyboard(context),
+                      onTapAmount: () => KeyboardHelper.showCustomKeyboard(
+                          context: context,
+                          onAmountChanged: (value) =>
+                              _createTransactionCubit.updateAmount(value),
+                          onOkSubmit: () => _router.pop(),
+                          currentAmount: _createTransactionCubit
+                              .state.transaction.amount
+                              .toString(),
+                          amountValue: amountValue),
                       onTapCategory: () => _showTransactionsCategories(context,
                           items:
                               TransactionsConstants.kDefaultIncomeCategories),
@@ -256,7 +226,15 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
                       transactionTypeSource: "Payment Source",
                       amountLabelColor: AppColors.expenseColor,
                       onSelectTransactionDate: onTransactionDateChanged,
-                      onTapAmount: () => _showCustomKeyboard(context),
+                      onTapAmount: () => KeyboardHelper.showCustomKeyboard(
+                          context: context,
+                          onAmountChanged: (value) =>
+                              _createTransactionCubit.updateAmount(value),
+                          onOkSubmit: () => _router.pop(),
+                          currentAmount: _createTransactionCubit
+                              .state.transaction.amount
+                              .toString(),
+                          amountValue: amountValue),
                       onTapCategory: () => _showTransactionsCategories(context,
                           items:
                               TransactionsConstants.kDefaultExpenseCategories),

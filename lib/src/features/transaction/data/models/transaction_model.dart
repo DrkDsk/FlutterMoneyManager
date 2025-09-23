@@ -31,7 +31,7 @@ class TransactionModel {
 
   factory TransactionModel.fromEntity(Transaction entity) {
     return TransactionModel(
-      id: entity.id ?? "",
+      id: entity.id,
       type: entity.type,
       transactionDate: entity.transactionDate,
       amount: entity.amount,
