@@ -85,11 +85,12 @@ class CreateTransactionCubit extends Cubit<CreateTransactionState> {
 
     final result = await saveYearlyTransactionUseCase(transaction: transaction);
 
-    if (result == false) {
+    result.fold((left) {
+      emit(state.copyWith(status: CreateTransactionStatus.success));
+      return;
+    }, (right) {
       emit(state.copyWith(status: CreateTransactionStatus.error));
       return;
-    }
-    emit(state.copyWith(status: CreateTransactionStatus.success));
-    return;
+    });
   }
 }

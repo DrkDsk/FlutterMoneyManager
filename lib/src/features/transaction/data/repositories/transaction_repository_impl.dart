@@ -81,4 +81,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
     return Right(accountSummaryItems);
   }
+
+  @override
+  Future<Either<Failure, void>> delete({required String id}) async {
+    _transactionService.delete(id: id);
+
+    return const Right(null);
+  }
 }

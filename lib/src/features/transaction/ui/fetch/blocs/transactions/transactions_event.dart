@@ -32,3 +32,12 @@ class UpdateBalance extends TransactionsEvent with EquatableMixin {
   @override
   List<Object?> get props => [balance];
 }
+
+class DeleteTransaction extends TransactionsEvent with EquatableMixin {
+  final String id;
+
+  const DeleteTransaction({required this.id});
+
+  @override
+  List<Object?> get props => [id];
+}
