@@ -19,6 +19,8 @@ import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets
 import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/bottom_transaction_category.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/create_transaction_bottom_appbar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/widgets/create_transaction_tabview.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_event.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key, this.transaction});
@@ -32,7 +34,8 @@ class CreateTransactionScreen extends StatefulWidget {
 
 class _CreateTransactionScreenState extends State<CreateTransactionScreen>
     with TickerProviderStateMixin {
-  late CreateTransactionCubit _createTransactionCubit;
+  late final CreateTransactionCubit _createTransactionCubit;
+  late final TransactionsBloc _transactionsBloc;
   late AppRouter _router;
   late TabController _transactionTypeTabController;
 
@@ -42,7 +45,8 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
   void initState() {
     super.initState();
     final transaction = widget.transaction;
-    _createTransactionCubit = context.read<CreateTransactionCubit>();
+    _createTransactionCubit = BlocProvider.of<CreateTransactionCubit>(context);
+    _transactionsBloc = BlocProvider.of<TransactionsBloc>(context);
     _createTransactionCubit.loadTransactionToEdit(transaction: transaction);
 
     int initialTabIndex = transaction == null
@@ -187,11 +191,19 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen>
   }
 
   void _handleSaveTransaction() async {
-    await _createTransactionCubit.saveTransaction();
+    _createTransactionCubit.saveTransaction();
     _router.pop();
   }
 
-  void _handleDeleteTransaction() async {}
+  void _handleDeleteTransaction() async {
+    final transactionId = widget.transaction?.id;
+
+    if (transactionId == null) {
+      return;
+    }
+
+    _transactionsBloc.add(DeleteTransaction(id: transactionId));
+  }
 
   @override
   Widget build(BuildContext context) {
