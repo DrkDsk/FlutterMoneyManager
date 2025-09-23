@@ -6,8 +6,5 @@ abstract interface class TransactionDatasource {
 
   Future<List<TransactionModel>> getAllTransactions();
 
-  Future<List<TransactionModel>> getTransactionsByMonth(
-      {required int year, required int month});
-
   Future<void> save({required TransactionModel model});
 }

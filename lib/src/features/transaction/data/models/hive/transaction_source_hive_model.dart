@@ -19,18 +19,6 @@ class TransactionSourceHiveModel extends HiveObject {
     required this.icon,
   });
 
-  TransactionSourceHiveModel copyWith({
-    String? id,
-    String? name,
-    String? icon,
-  }) {
-    return TransactionSourceHiveModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      icon: icon ?? this.icon,
-    );
-  }
-
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,

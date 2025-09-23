@@ -45,11 +45,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
       year = year ?? now.year;
       month = month ?? now.month;
 
-      final transactionsMonth = await _transactionService.getTransactionsMonth(
+      final transactions = await _transactionService.getTransactionsMonth(
           year: year, month: month);
 
       final monthSummary = await _transactionService.getSummaryWithTransactions(
-          transactionsModels: transactionsMonth);
+          transactions: transactions);
 
       return Right(monthSummary);
     } on UnknownException catch (_) {
@@ -62,11 +62,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, TransactionsSummary>> getTransactionSummaryByDate(
       {required DateTime date}) async {
-    final transactionsModels =
+    final transactions =
         await _transactionService.getTransactionsByDate(date: date);
 
     final summary = await _transactionService.getSummaryWithTransactions(
-        transactionsModels: transactionsModels);
+        transactions: transactions);
 
     _transactionsController.add(summary);
 
