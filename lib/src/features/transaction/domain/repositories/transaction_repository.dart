@@ -16,4 +16,6 @@ abstract interface class TransactionRepository {
       {required DateTime date});
 
   Future<Either<Failure, bool>> save(Transaction transaction);
+
+  Future<Either<Failure, void>> delete({required String id});
 }

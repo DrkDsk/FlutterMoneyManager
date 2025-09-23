@@ -32,4 +32,9 @@ class TransactionDatasourceImpl implements TransactionDatasource {
 
     return transactions.map((hive) => TransactionModel.fromHive(hive)).toList();
   }
+
+  @override
+  Future<void> delete({required String id}) async {
+    await _transactionsBox.delete(id);
+  }
 }

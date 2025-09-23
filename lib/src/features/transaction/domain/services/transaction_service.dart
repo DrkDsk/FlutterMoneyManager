@@ -143,4 +143,8 @@ class TransactionService {
 
     await _transactionDatasource.save(model: transactionModel);
   }
+
+  Future<void> delete({required String id}) async {
+    await _transactionDatasource.delete(id: id);
+  }
 }

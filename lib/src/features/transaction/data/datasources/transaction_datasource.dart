@@ -7,4 +7,6 @@ abstract interface class TransactionDatasource {
   Future<List<TransactionModel>> getAllTransactions();
 
   Future<void> save({required TransactionModel model});
+
+  Future<void> delete({required String id});
 }

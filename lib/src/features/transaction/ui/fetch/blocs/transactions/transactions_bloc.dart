@@ -20,6 +20,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
     on<LoadTransactionsByMonth>(getTransactionsByMonth);
     on<UpdateMonth>(updateMonth);
     on<UpdateBalance>(_updateBalance);
+    on<DeleteTransaction>(_deleteTransaction);
   }
 
   int? nextIndex() {
@@ -56,6 +57,15 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
         total: balance.total,
         income: balance.income,
         expense: balance.expense));
+  }
+
+  Future<void> _deleteTransaction(
+      DeleteTransaction event, Emitter<TransactionsListState> emit) async {
+    final transactionId = event.id;
+
+    final result = await _repository.delete(id: transactionId);
+
+    result.fold((left) {}, (right) {});
   }
 
   Future<void> getTransactionsByMonth(LoadTransactionsByMonth event,
