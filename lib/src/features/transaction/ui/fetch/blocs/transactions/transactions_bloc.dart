@@ -6,13 +6,16 @@ import 'package:flutter_money_manager/src/features/transaction/domain/repositori
 import 'transactions_state.dart';
 import 'transactions_event.dart';
 
-class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
+class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
   final TransactionRepository _repository;
   late final StreamSubscription _subscription;
+  final _sideEffectController = StreamController<SideEffect>();
+
+  Stream<SideEffect> get sideEffects => _sideEffectController.stream;
 
   TransactionsBloc({required TransactionRepository repository})
       : _repository = repository,
-        super(TransactionsListState.initial()) {
+        super(TransactionsState.initial()) {
     _subscription = _repository.transactionsStream().listen((balance) {
       add(UpdateBalance(balance: balance));
     });
@@ -39,7 +42,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
     return currentIndex - 1;
   }
 
-  void updateMonth(UpdateMonth event, Emitter<TransactionsListState> emit) {
+  void updateMonth(UpdateMonth event, Emitter<TransactionsState> emit) {
     final monthIndex = event.monthIndex;
 
     final now = DateTime.now();
@@ -50,7 +53,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
   }
 
   Future<void> _updateBalance(
-      UpdateBalance event, Emitter<TransactionsListState> emit) async {
+      UpdateBalance event, Emitter<TransactionsState> emit) async {
     final balance = event.balance;
 
     emit(state.copyWith(
@@ -60,16 +63,18 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsListState> {
   }
 
   Future<void> _deleteTransaction(
-      DeleteTransaction event, Emitter<TransactionsListState> emit) async {
+      DeleteTransaction event, Emitter<TransactionsState> emit) async {
     final transactionId = event.id;
 
     final result = await _repository.delete(id: transactionId);
 
-    result.fold((left) {}, (right) {});
+    result.fold((left) {}, (right) {
+      _sideEffectController.add(const TransactionNavigationSideEffect());
+    });
   }
 
-  Future<void> getTransactionsByMonth(LoadTransactionsByMonth event,
-      Emitter<TransactionsListState> emit) async {
+  Future<void> getTransactionsByMonth(
+      LoadTransactionsByMonth event, Emitter<TransactionsState> emit) async {
     emit(state.copyWith(status: TransactionTypeStatus.loading));
 
     final month = event.month;

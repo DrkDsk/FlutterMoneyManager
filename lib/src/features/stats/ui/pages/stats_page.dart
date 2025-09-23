@@ -82,7 +82,7 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
       child: Column(
         children: [
           const SizedBox(height: 10),
-          BlocBuilder<TransactionsBloc, TransactionsListState>(
+          BlocBuilder<TransactionsBloc, TransactionsState>(
             builder: (context, state) {
               return HeaderBalanceScrollPage(
                 monthName: state.monthName,

@@ -16,7 +16,7 @@ class TransactionSummaryContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return BlocBuilder<TransactionsBloc, TransactionsListState>(
+    return BlocBuilder<TransactionsBloc, TransactionsState>(
       builder: (context, state) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

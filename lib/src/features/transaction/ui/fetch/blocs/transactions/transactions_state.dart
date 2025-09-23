@@ -1,11 +1,27 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 
+import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 
 enum TransactionTypeStatus { initial, loading, error, success }
 
-class TransactionsListState with EquatableMixin {
+sealed class SideEffect {
+  const SideEffect();
+}
+
+class TransactionBlockedLoadingEffect extends SideEffect {
+  const TransactionBlockedLoadingEffect();
+}
+
+class TransactionNavigationSideEffect extends SideEffect {
+  const TransactionNavigationSideEffect();
+}
+
+class TransactionShowErrorSideEffect extends SideEffect {
+  const TransactionShowErrorSideEffect();
+}
+
+class TransactionsState with EquatableMixin {
   final List<TransactionsData> transactions;
   final int income;
   final int expense;
@@ -15,7 +31,7 @@ class TransactionsListState with EquatableMixin {
   final String message;
   final TransactionTypeStatus status;
 
-  const TransactionsListState(
+  const TransactionsState(
       {this.transactions = const [],
       this.income = 0,
       this.expense = 0,
@@ -25,9 +41,9 @@ class TransactionsListState with EquatableMixin {
       this.status = TransactionTypeStatus.initial,
       this.total = 0});
 
-  factory TransactionsListState.initial() {
+  factory TransactionsState.initial() {
     final now = DateTime.now();
-    return TransactionsListState(
+    return TransactionsState(
       monthName: now.monthName,
       monthIndex: now.month,
     );
@@ -37,7 +53,7 @@ class TransactionsListState with EquatableMixin {
   List<Object> get props =>
       [transactions, income, expense, total, monthName, message, status];
 
-  TransactionsListState copyWith(
+  TransactionsState copyWith(
       {List<TransactionsData>? transactions,
       int? income,
       int? expense,
@@ -46,7 +62,7 @@ class TransactionsListState with EquatableMixin {
       int? monthIndex,
       TransactionTypeStatus? status,
       String? message}) {
-    return TransactionsListState(
+    return TransactionsState(
         transactions: transactions ?? this.transactions,
         income: income ?? this.income,
         expense: expense ?? this.expense,

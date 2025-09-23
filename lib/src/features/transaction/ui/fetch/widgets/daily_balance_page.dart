@@ -29,7 +29,7 @@ class _DailyBalancePageState extends State<DailyBalancePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<TransactionsBloc, TransactionsListState>(
+    return BlocBuilder<TransactionsBloc, TransactionsState>(
       builder: (context, state) {
         if (state.transactions.isEmpty) {
           return const Center(child: Text("Sin transacciones disponibles"));
