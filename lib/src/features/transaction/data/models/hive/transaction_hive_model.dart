@@ -33,33 +33,6 @@ class TransactionHiveModel extends HiveObject {
     required this.sourceType,
   });
 
-  TransactionHiveModel copyWith({
-    String? id,
-    String? type,
-    DateTime? transactionDate,
-    int? amount,
-    String? categoryType,
-    String? sourceType,
-  }) {
-    return TransactionHiveModel(
-      id: id ?? this.id,
-      type: type ?? this.type,
-      transactionDate: transactionDate ?? this.transactionDate,
-      amount: amount ?? this.amount,
-      categoryType: categoryType ?? this.categoryType,
-      sourceType: sourceType ?? this.sourceType,
-    );
-  }
-
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "type": type,
-        "transactionDate": transactionDate.millisecondsSinceEpoch,
-        "amount": amount,
-        "categoryType": categoryType,
-        "sourceType": sourceType
-      };
-
   factory TransactionHiveModel.fromModel(TransactionModel model) {
     return TransactionHiveModel(
         id: model.id ?? const Uuid().v4(),
