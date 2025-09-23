@@ -1,6 +1,5 @@
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
 import 'package:hive/hive.dart';
-import 'package:uuid/uuid.dart';
 
 part 'transaction_hive_model.g.dart';
 
@@ -35,7 +34,7 @@ class TransactionHiveModel extends HiveObject {
 
   factory TransactionHiveModel.fromModel(TransactionModel model) {
     return TransactionHiveModel(
-        id: model.id ?? const Uuid().v4(),
+        id: model.id ?? "",
         type: model.type.name,
         transactionDate: model.transactionDate,
         amount: model.amount,
