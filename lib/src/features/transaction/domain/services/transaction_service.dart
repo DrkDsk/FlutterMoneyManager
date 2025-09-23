@@ -38,10 +38,13 @@ class TransactionService {
       {required int month, required int year}) async {
     final transactions = await _transactionDatasource.getAllTransactions();
 
-    final filtered = transactions
-        .where((t) =>
-            t.transactionDate.year == year && t.transactionDate.month == month)
-        .toList();
+    final filtered = await Isolate.run(() {
+      return transactions
+          .where((t) =>
+              t.transactionDate.year == year &&
+              t.transactionDate.month == month)
+          .toList();
+    });
 
     return filtered;
   }
@@ -54,12 +57,14 @@ class TransactionService {
 
     final transactions = await _transactionDatasource.getAllTransactions();
 
-    final filtered = transactions
-        .where((t) =>
-            t.transactionDate.year == year &&
-            t.transactionDate.month == month &&
-            t.transactionDate.day == day)
-        .toList();
+    final filtered = await Isolate.run(() {
+      return transactions
+          .where((t) =>
+              t.transactionDate.year == year &&
+              t.transactionDate.month == month &&
+              t.transactionDate.day == day)
+          .toList();
+    });
 
     return filtered;
   }
@@ -116,16 +121,16 @@ class TransactionService {
             transactionSource: transactionSource, amount: amount);
       }).toList();
 
+      final defaultTransactionSource = TransactionsConstants
+          .kDefaultTransactionSources
+          .map((transactionSource) => AccountSummaryItem(
+              transactionSource: transactionSource, amount: 0))
+          .toList();
+
+      data.addAll(defaultTransactionSource);
+
       return data;
     });
-
-    final defaultTransactionSource = TransactionsConstants
-        .kDefaultTransactionSources
-        .map((transactionSource) =>
-            AccountSummaryItem(transactionSource: transactionSource, amount: 0))
-        .toList();
-
-    result.addAll(defaultTransactionSource);
 
     return result;
   }
