@@ -25,24 +25,4 @@ class FinancialSummaryModel {
         balancesBySource: entity.balancesBySource,
         debt: entity.debt);
   }
-
-  factory FinancialSummaryModel.initial() {
-    return const FinancialSummaryModel(
-        income: 0,
-        expense: 0,
-        netWorth: 0,
-        asset: 0,
-        debt: 0,
-        balancesBySource: {});
-  }
-
-  FinancialSummary toEntity() {
-    return FinancialSummary(
-        income: income,
-        expense: expense,
-        asset: asset,
-        netWorth: netWorth,
-        debt: debt,
-        balancesBySource: balancesBySource);
-  }
 }
