@@ -23,7 +23,7 @@ class TransactionSummaryContent extends StatelessWidget {
           children: [
             SummaryText(
               summaryLabel: TransactionsConstants.kIncomeType.firstUpper(),
-              summaryValue: "${state.income}",
+              summaryValue: "${state.summary.income}",
               textValueColor: AppColors.incomeColor,
             ),
             const SizedBox(
@@ -31,7 +31,7 @@ class TransactionSummaryContent extends StatelessWidget {
             ),
             SummaryText(
               summaryLabel: TransactionsConstants.kExpenseType.firstUpper(),
-              summaryValue: "${state.expense}",
+              summaryValue: "${state.summary.expense}",
               textValueColor: AppColors.expenseColor,
             ),
             const SizedBox(
@@ -39,7 +39,7 @@ class TransactionSummaryContent extends StatelessWidget {
             ),
             SummaryText(
               summaryLabel: "Total",
-              summaryValue: "${state.total}",
+              summaryValue: "${state.summary.total}",
               textValueColor: colorScheme.onPrimary,
             ),
           ],

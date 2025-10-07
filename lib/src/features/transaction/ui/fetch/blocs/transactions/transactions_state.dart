@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:flutter_money_manager/src/core/extensions/datetime_extension.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 
 enum TransactionTypeStatus { initial, loading, error, success }
@@ -23,9 +24,7 @@ class TransactionShowErrorSideEffect extends SideEffect {
 
 class TransactionsState with EquatableMixin {
   final List<TransactionsData> transactions;
-  final int income;
-  final int expense;
-  final int total;
+  final MonthlySummary summary;
   final String monthName;
   final int monthIndex;
   final String message;
@@ -33,40 +32,33 @@ class TransactionsState with EquatableMixin {
 
   const TransactionsState(
       {this.transactions = const [],
-      this.income = 0,
-      this.expense = 0,
+      required this.summary,
       required this.monthName,
       required this.monthIndex,
       this.message = "",
-      this.status = TransactionTypeStatus.initial,
-      this.total = 0});
+      this.status = TransactionTypeStatus.initial});
 
   factory TransactionsState.initial() {
     final now = DateTime.now();
     return TransactionsState(
-      monthName: now.monthName,
-      monthIndex: now.month,
-    );
+        monthName: now.monthName,
+        monthIndex: now.month,
+        summary: MonthlySummary.initial());
   }
 
   @override
-  List<Object> get props =>
-      [transactions, income, expense, total, monthName, message, status];
+  List<Object> get props => [transactions, monthName, message, status];
 
   TransactionsState copyWith(
       {List<TransactionsData>? transactions,
-      int? income,
-      int? expense,
-      int? total,
       String? monthName,
       int? monthIndex,
       TransactionTypeStatus? status,
+      MonthlySummary? summary,
       String? message}) {
     return TransactionsState(
         transactions: transactions ?? this.transactions,
-        income: income ?? this.income,
-        expense: expense ?? this.expense,
-        total: total ?? this.total,
+        summary: summary ?? this.summary,
         monthName: monthName ?? this.monthName,
         monthIndex: monthIndex ?? this.monthIndex,
         status: status ?? this.status,

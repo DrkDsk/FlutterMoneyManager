@@ -56,10 +56,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
       UpdateBalance event, Emitter<TransactionsState> emit) async {
     final balance = event.balance;
 
-    emit(state.copyWith(
-        total: balance.total,
-        income: balance.income,
-        expense: balance.expense));
+    emit(state.copyWith(summary: balance.summary));
   }
 
   Future<void> _deleteTransaction(
@@ -91,9 +88,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
 
       emit(state.copyWith(
           transactions: data.transactionsData,
-          income: data.income,
-          expense: data.expense,
-          total: data.total,
+          summary: data.summary,
           status: TransactionTypeStatus.success));
     });
   }
