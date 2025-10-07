@@ -18,6 +18,7 @@ class MonthlySummaryComparisonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final mediumStyle = theme.textTheme.bodyMedium;
+    final largeStyle = theme.textTheme.bodyLarge;
 
     return Column(
       children: [
@@ -51,7 +52,15 @@ class MonthlySummaryComparisonWidget extends StatelessWidget {
             ),
           ],
         ),
-        TransactionSummaryContent(summary: currentSummary)
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Text("+",
+                style: largeStyle?.copyWith(color: AppColors.incomeColor)),
+            const SizedBox(width: 10),
+            Expanded(child: TransactionSummaryContent(summary: currentSummary)),
+          ],
+        )
       ],
     );
   }
