@@ -70,60 +70,62 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              BlocBuilder<TransactionsBloc, TransactionsState>(
-                builder: (context, state) {
-                  return HeaderBalanceScrollPage(
+          child: BlocBuilder<TransactionsBloc, TransactionsState>(
+            builder: (context, state) {
+              final summary = state.summary;
+
+              return Column(
+                children: [
+                  const SizedBox(height: 10),
+                  HeaderBalanceScrollPage(
                     monthName: state.monthName,
                     leftTap: () => _changeMonth(
                         daysOffset: -30, getIndex: _transactionsBloc.prevIndex),
                     rightTap: () => _changeMonth(
                         daysOffset: 30, getIndex: _transactionsBloc.nextIndex),
-                  );
-                },
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: PageView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 13,
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    _transactionsBloc.add(UpdateMonth(monthIndex: index));
-                    _transactionsBloc
-                        .add(LoadTransactionsByMonth(month: index));
-                  },
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        const TransactionSummaryContent(),
-                        const SizedBox(height: 20),
-                        CustomTabBar(
-                            tabController: _tabController,
-                            margin: EdgeInsets.zero,
-                            tabs: const [
-                              Tab(text: "Daily"),
-                              Tab(text: "Calendar"),
-                              Tab(text: "Summary"),
-                            ]),
-                        const SizedBox(height: 20),
-                        Expanded(
-                          child: TabBarView(
-                              controller: _tabController,
-                              children: const [
-                                DailyBalancePage(),
-                                CalendarPage(),
-                                SummaryPage(),
-                              ]),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: PageView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 13,
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                        _transactionsBloc.add(UpdateMonth(monthIndex: index));
+                        _transactionsBloc
+                            .add(LoadTransactionsByMonth(month: index));
+                      },
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            TransactionSummaryContent(summary: summary),
+                            const SizedBox(height: 20),
+                            CustomTabBar(
+                                tabController: _tabController,
+                                margin: EdgeInsets.zero,
+                                tabs: const [
+                                  Tab(text: "Daily"),
+                                  Tab(text: "Calendar"),
+                                  Tab(text: "Summary"),
+                                ]),
+                            const SizedBox(height: 20),
+                            Expanded(
+                              child: TabBarView(
+                                  controller: _tabController,
+                                  children: const [
+                                    DailyBalancePage(),
+                                    CalendarPage(),
+                                    SummaryPage(),
+                                  ]),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
         const Positioned(bottom: 30, right: 30, child: AddTransactionButton())
