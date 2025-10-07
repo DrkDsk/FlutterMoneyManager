@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/summary/summary_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/summary/summary_state.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/monthly_summary_comparison_widget.dart';
 
 class SummaryPage extends StatefulWidget {
   const SummaryPage({super.key});
@@ -10,6 +15,29 @@ class SummaryPage extends StatefulWidget {
 class _SummaryPageState extends State<SummaryPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: BlocBuilder<SummaryBloc, SummaryState>(
+        builder: (context, state) {
+          final currentSummary = state.currentMonthlySummary;
+          final lastSummary = state.lastMonthlySummary;
+
+          return Column(
+            children: [
+              Container(
+                decoration: ContainerStyles.kWidgetRoundedDecoration,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                child: MonthlySummaryComparisonWidget(
+                  label: "Last Month Comparison",
+                  currentSummary: currentSummary,
+                  lastMonthSummary: lastSummary,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }
