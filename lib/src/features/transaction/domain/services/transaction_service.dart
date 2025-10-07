@@ -7,6 +7,7 @@ import 'package:flutter_money_manager/src/core/helpers/hive_helper.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/datasources/transaction_datasource.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_source.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_data.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
@@ -91,12 +92,11 @@ class TransactionService {
         }
       }
 
+      final summary = MonthlySummary(
+          income: income, expense: expense, total: income - expense);
+
       return TransactionsSummary(
-        transactionsData: transactionsData,
-        income: income,
-        total: income - expense,
-        expense: expense,
-      );
+          transactionsData: transactionsData, summary: summary);
     });
 
     return transactionsSummary;
