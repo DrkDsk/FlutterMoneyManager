@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transaction_summary_content.dart';
 
@@ -19,50 +20,55 @@ class MonthlySummaryComparisonWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final mediumStyle = theme.textTheme.bodyMedium;
 
-    return Column(
-      children: [
-        Text(label, style: mediumStyle),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                const Text("Income"),
-                Text("\$${lastMonthSummary.income}",
-                    style: mediumStyle?.copyWith(color: AppColors.onPrimary))
-              ],
-            ),
-            Column(
-              children: [
-                const Text("Expense"),
-                Text("\$${lastMonthSummary.expense}",
-                    style: mediumStyle?.copyWith(color: AppColors.onPrimary))
-              ],
-            ),
-            Column(
-              children: [
-                const Text("Total"),
-                Text("\$${lastMonthSummary.total}",
-                    style: mediumStyle?.copyWith(color: AppColors.onPrimary))
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            const SizedBox(width: 10),
-            Expanded(
-                child: TransactionSummaryContent(
-              summary: currentSummary,
-              showPrefix: true,
-            )),
-          ],
-        )
-      ],
+    return Container(
+      decoration: ContainerStyles.kWidgetRoundedDecoration,
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: mediumStyle),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  const Text("Income"),
+                  Text("\$${lastMonthSummary.income}",
+                      style: mediumStyle?.copyWith(color: AppColors.onPrimary))
+                ],
+              ),
+              Column(
+                children: [
+                  const Text("Expense"),
+                  Text("\$${lastMonthSummary.expense}",
+                      style: mediumStyle?.copyWith(color: AppColors.onPrimary))
+                ],
+              ),
+              Column(
+                children: [
+                  const Text("Total"),
+                  Text("\$${lastMonthSummary.total}",
+                      style: mediumStyle?.copyWith(color: AppColors.onPrimary))
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const SizedBox(width: 10),
+              Expanded(
+                  child: TransactionSummaryContent(
+                summary: currentSummary,
+                showPrefix: true,
+              )),
+            ],
+          )
+        ],
+      ),
     );
   }
 }

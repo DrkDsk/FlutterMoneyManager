@@ -1,3 +1,4 @@
+import 'package:flutter_money_manager/src/core/shared/hive/domain/entities/top_five_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_summary.dart';
 
 enum SummaryTypeStatus { initial, loading, error, success }
@@ -5,12 +6,14 @@ enum SummaryTypeStatus { initial, loading, error, success }
 class SummaryState {
   final MonthlySummary lastMonthlySummary;
   final MonthlySummary currentMonthlySummary;
+  final TopFiveSummary topFiveSummary;
   final String message;
   final SummaryTypeStatus status;
 
   const SummaryState(
       {required this.lastMonthlySummary,
       required this.currentMonthlySummary,
+      required this.topFiveSummary,
       this.message = "",
       this.status = SummaryTypeStatus.initial});
 
@@ -19,19 +22,21 @@ class SummaryState {
     MonthlySummary? currentMonthlySummary,
     String? message,
     SummaryTypeStatus? status,
+    TopFiveSummary? topFiveSummary,
   }) {
     return SummaryState(
-      message: message ?? this.message,
-      status: status ?? this.status,
-      lastMonthlySummary: lastMonthlySummary ?? this.lastMonthlySummary,
-      currentMonthlySummary:
-          currentMonthlySummary ?? this.currentMonthlySummary,
-    );
+        message: message ?? this.message,
+        status: status ?? this.status,
+        lastMonthlySummary: lastMonthlySummary ?? this.lastMonthlySummary,
+        currentMonthlySummary:
+            currentMonthlySummary ?? this.currentMonthlySummary,
+        topFiveSummary: topFiveSummary ?? this.topFiveSummary);
   }
 
   factory SummaryState.initial() {
     return SummaryState(
         lastMonthlySummary: MonthlySummary.initial(),
-        currentMonthlySummary: MonthlySummary.initial());
+        currentMonthlySummary: MonthlySummary.initial(),
+        topFiveSummary: TopFiveSummary.initial());
   }
 }

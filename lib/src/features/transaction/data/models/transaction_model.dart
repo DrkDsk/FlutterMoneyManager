@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/enums/transaction_type_enum.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/hive/transaction_hive_model.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 
-class TransactionModel {
+class TransactionModel with EquatableMixin {
   final String? id;
   final TransactionTypEnum type;
   final DateTime transactionDate;
@@ -69,4 +70,8 @@ class TransactionModel {
       sourceType: sourceType ?? this.sourceType,
     );
   }
+
+  @override
+  List<Object?> get props =>
+      [id, type, transactionDate, amount, categoryType, sourceType];
 }

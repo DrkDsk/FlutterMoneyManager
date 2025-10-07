@@ -21,7 +21,8 @@ Future<void> registerRepositories() async {
 
   getIt.registerLazySingleton<FinancialSummaryRepository>(() =>
       FinancialSummaryRepositoryImpl(
-          financialSummaryService: financialSummaryService));
+          financialSummaryService: financialSummaryService,
+          transactionService: transactionService));
 
   getIt.registerLazySingleton<StatsRepository>(() => StatsRepositoryImpl(
       transactionService: transactionService, statService: statService));

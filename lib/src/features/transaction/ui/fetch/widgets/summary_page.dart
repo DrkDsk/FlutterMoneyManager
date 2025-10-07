@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/summary/summary_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/summary/summary_event.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/summary/summary_state.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/monthly_summary_comparison_widget.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/top_five_summary_widget.dart';
 
 class SummaryPage extends StatefulWidget {
   const SummaryPage({super.key});
@@ -33,6 +33,8 @@ class _SummaryPageState extends State<SummaryPage> {
         currentMonthIndex: month,
         previousMonthIndex: previousMonthIndex,
         year: year));
+
+    _summaryBloc.add(FetchTopFiveExpense(month: month, year: year));
   }
 
   @override
@@ -43,19 +45,17 @@ class _SummaryPageState extends State<SummaryPage> {
         builder: (context, state) {
           final currentSummary = state.currentMonthlySummary;
           final lastSummary = state.lastMonthlySummary;
+          final topFiveExpense = state.topFiveSummary.expenseStats;
 
           return Column(
             children: [
-              Container(
-                decoration: ContainerStyles.kWidgetRoundedDecoration,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                child: MonthlySummaryComparisonWidget(
-                  label: "Last Month Comparison",
-                  currentSummary: currentSummary,
-                  lastMonthSummary: lastSummary,
-                ),
+              MonthlySummaryComparisonWidget(
+                label: "Last Month Comparison",
+                currentSummary: currentSummary,
+                lastMonthSummary: lastSummary,
               ),
+              const SizedBox(height: 10),
+              TopFiveSummaryWidget(stats: topFiveExpense)
             ],
           );
         },
