@@ -17,11 +17,11 @@ class MonthlySummaryComparisonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediumStyle = theme.textTheme.bodyLarge;
+    final mediumStyle = theme.textTheme.bodyMedium;
 
     return Column(
       children: [
-        Text(label),
+        Text(label, style: mediumStyle),
         const SizedBox(
           height: 10,
         ),
