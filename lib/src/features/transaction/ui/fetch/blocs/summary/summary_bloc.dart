@@ -3,9 +3,13 @@ import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/su
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/summary/summary_state.dart';
 
 class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
-  SummaryBloc() : super(SummaryState()) {
-    on<SummaryEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+  SummaryBloc() : super(SummaryState.initial()) {
+    on<FetchSummaryEvent>(_fetchSummaryEvent);
+  }
+
+  Future<void> _fetchSummaryEvent(
+      FetchSummaryEvent event, Emitter<SummaryState> emit) async {
+    final currentMonthIndex = event.currentMonthIndex;
+    print("currentMonthIndex: $currentMonthIndex");
   }
 }
