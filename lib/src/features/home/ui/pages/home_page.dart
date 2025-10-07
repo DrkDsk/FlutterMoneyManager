@@ -11,6 +11,7 @@ import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/tr
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/daily_balance_page.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/widgets/custom_tab_bar.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/header_balance_scroll_page.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/summary_page.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transaction_summary_content.dart';
 
 class HomePage extends StatefulWidget {
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               children: const [
                                 DailyBalancePage(),
                                 CalendarPage(),
-                                DailyBalancePage(),
+                                SummaryPage(),
                               ]),
                         ),
                       ],
