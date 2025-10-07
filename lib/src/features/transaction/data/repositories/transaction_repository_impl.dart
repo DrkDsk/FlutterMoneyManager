@@ -5,6 +5,8 @@ import 'package:flutter_money_manager/src/core/error/exceptions/unknown_exceptio
 import 'package:flutter_money_manager/src/core/error/failure/failure.dart';
 import 'package:flutter_money_manager/src/features/accounts/domain/entities/account_summary_item.dart';
 import 'package:flutter_money_manager/src/features/transaction/data/models/transaction_model.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_summary.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/summary_comparison_response.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transactions_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/repositories/transaction_repository.dart';
@@ -87,5 +89,40 @@ class TransactionRepositoryImpl implements TransactionRepository {
     _transactionService.delete(id: id);
 
     return const Right(null);
+  }
+
+  @override
+  Future<Either<Failure, SummaryComparisonResponse>> getComparisonByMonths(
+      {required int currentMonth,
+      required int previousMonth,
+      required int year}) async {
+    final results = await Future.wait([
+      _transactionService.getTransactionsMonth(
+          year: year, month: previousMonth),
+      _transactionService.getTransactionsMonth(year: year, month: currentMonth),
+    ]);
+
+    final previousTransactions = results[0];
+    final currentTransactions = results[1];
+
+    final summaries = await Future.wait([
+      _transactionService.getSummaryWithTransactions(
+          transactions: previousTransactions),
+      _transactionService.getSummaryWithTransactions(
+          transactions: currentTransactions),
+    ]);
+
+    final previousSummary = summaries[0].summary;
+    final currentSummary = summaries[1].summary;
+
+    final differenceSummary = MonthlySummary(
+      income: currentSummary.income - previousSummary.income,
+      expense: currentSummary.expense - previousSummary.expense,
+      total: currentSummary.total - previousSummary.total,
+    );
+
+    return Right(SummaryComparisonResponse(
+        currentMonthlySummary: differenceSummary,
+        lastMonthlySummary: previousSummary));
   }
 }

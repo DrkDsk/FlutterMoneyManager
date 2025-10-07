@@ -79,67 +79,72 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          BlocBuilder<TransactionsBloc, TransactionsState>(
-            builder: (context, state) {
-              return HeaderBalanceScrollPage(
+      child: BlocBuilder<TransactionsBloc, TransactionsState>(
+        builder: (context, state) {
+          final summary = state.summary;
+
+          return Column(
+            children: [
+              const SizedBox(height: 10),
+              HeaderBalanceScrollPage(
                 monthName: state.monthName,
                 leftTap: () => _changeMonth(
                     daysOffset: -30, getIndex: _transactionsBloc.prevIndex),
                 rightTap: () => _changeMonth(
                     daysOffset: 30, getIndex: _transactionsBloc.nextIndex),
-              );
-            },
-          ),
-          Expanded(
-              child: PageView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 13,
-            controller: _pageController,
-            onPageChanged: onPageChanged,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  const TransactionSummaryContent(),
-                  const SizedBox(height: 10),
-                  BlocSelector<StatsBloc, StatsState, Decoration?>(
-                    selector: (state) {
-                      final isIncomeTransaction =
-                          state.type == TransactionTypEnum.income;
+              ),
+              Expanded(
+                  child: PageView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 13,
+                controller: _pageController,
+                onPageChanged: onPageChanged,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      TransactionSummaryContent(summary: summary),
+                      const SizedBox(height: 10),
+                      BlocSelector<StatsBloc, StatsState, Decoration?>(
+                        selector: (state) {
+                          final isIncomeTransaction =
+                              state.type == TransactionTypEnum.income;
 
-                      return isIncomeTransaction
-                          ? ContainerStyles.incomeDecoration
-                          : ContainerStyles.expenseDecoration;
-                    },
-                    builder: (context, indicatorDecoration) {
-                      return CustomTabBar(
-                          decoration: indicatorDecoration,
-                          tabController: _tabController,
-                          onTap: (tabIndex) => _statsBloc
-                              .add(UpdateTransactionType(tabIndex: tabIndex)),
-                          tabs: [
-                            Tab(
-                                text: TransactionsConstants.kIncomeType
-                                    .firstUpper()),
-                            Tab(
-                                text: TransactionsConstants.kExpenseType
-                                    .firstUpper())
-                          ]);
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: TabBarView(
-                        controller: _tabController,
-                        children: const [IncomeStatPage(), ExpenseStatPage()]),
-                  ),
-                ],
-              );
-            },
-          )),
-        ],
+                          return isIncomeTransaction
+                              ? ContainerStyles.incomeDecoration
+                              : ContainerStyles.expenseDecoration;
+                        },
+                        builder: (context, indicatorDecoration) {
+                          return CustomTabBar(
+                              decoration: indicatorDecoration,
+                              tabController: _tabController,
+                              onTap: (tabIndex) => _statsBloc.add(
+                                  UpdateTransactionType(tabIndex: tabIndex)),
+                              tabs: [
+                                Tab(
+                                    text: TransactionsConstants.kIncomeType
+                                        .firstUpper()),
+                                Tab(
+                                    text: TransactionsConstants.kExpenseType
+                                        .firstUpper())
+                              ]);
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: TabBarView(
+                            controller: _tabController,
+                            children: const [
+                              IncomeStatPage(),
+                              ExpenseStatPage()
+                            ]),
+                      ),
+                    ],
+                  );
+                },
+              )),
+            ],
+          );
+        },
       ),
     );
   }
