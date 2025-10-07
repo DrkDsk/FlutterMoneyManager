@@ -5,11 +5,13 @@ class SummaryText extends StatelessWidget {
     super.key,
     required this.summaryLabel,
     required this.summaryValue,
+    this.prefix = "",
     required this.textValueColor,
   });
 
   final String summaryLabel;
   final String summaryValue;
+  final String prefix;
   final Color textValueColor;
 
   @override
@@ -23,7 +25,7 @@ class SummaryText extends StatelessWidget {
           style: theme.textTheme.bodyMedium,
         ),
         Text(
-          "\$ $summaryValue",
+          "$prefix \$$summaryValue",
           style: theme.textTheme.bodyLarge
               ?.copyWith(color: textValueColor, fontWeight: FontWeight.w400),
         ),

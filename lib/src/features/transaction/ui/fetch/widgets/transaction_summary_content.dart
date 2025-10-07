@@ -7,19 +7,30 @@ import 'package:flutter_money_manager/src/features/transaction/domain/entities/m
 
 class TransactionSummaryContent extends StatelessWidget {
   final MonthlySummary summary;
+  final bool showPrefix;
 
-  const TransactionSummaryContent({super.key, required this.summary});
+  const TransactionSummaryContent(
+      {super.key, required this.summary, this.showPrefix = false});
+
+  String getPrefix(num value, {required bool showPrefix}) {
+    if (!showPrefix || value == 0) return "";
+    return value.isNegative ? "-" : "+";
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final prefixIncome = getPrefix(summary.income, showPrefix: showPrefix);
+    final prefixExpense = getPrefix(summary.expense, showPrefix: showPrefix);
+    final prefixTotal = getPrefix(summary.total, showPrefix: showPrefix);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SummaryText(
           summaryLabel: TransactionsConstants.kIncomeType.firstUpper(),
-          summaryValue: "${summary.income}",
+          summaryValue: "${summary.income.abs()}",
+          prefix: prefixIncome,
           textValueColor: AppColors.incomeColor,
         ),
         const SizedBox(
@@ -27,7 +38,8 @@ class TransactionSummaryContent extends StatelessWidget {
         ),
         SummaryText(
           summaryLabel: TransactionsConstants.kExpenseType.firstUpper(),
-          summaryValue: "${summary.expense}",
+          prefix: prefixExpense,
+          summaryValue: "${summary.expense.abs()}",
           textValueColor: AppColors.expenseColor,
         ),
         const SizedBox(
@@ -35,7 +47,8 @@ class TransactionSummaryContent extends StatelessWidget {
         ),
         SummaryText(
           summaryLabel: "Total",
-          summaryValue: "${summary.total}",
+          prefix: prefixTotal,
+          summaryValue: "${summary.total.abs()}",
           textValueColor: colorScheme.onPrimary,
         ),
       ],
