@@ -3,48 +3,42 @@ import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
 import 'package:flutter_money_manager/src/core/extensions/string_extension.dart';
 import 'package:flutter_money_manager/src/features/home/ui/widgets/summary_text.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
-import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_state.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_summary.dart';
 
 class TransactionSummaryContent extends StatelessWidget {
-  const TransactionSummaryContent({
-    super.key,
-  });
+  final MonthlySummary summary;
+
+  const TransactionSummaryContent({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return BlocBuilder<TransactionsBloc, TransactionsState>(
-      builder: (context, state) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SummaryText(
-              summaryLabel: TransactionsConstants.kIncomeType.firstUpper(),
-              summaryValue: "${state.summary.income}",
-              textValueColor: AppColors.incomeColor,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            SummaryText(
-              summaryLabel: TransactionsConstants.kExpenseType.firstUpper(),
-              summaryValue: "${state.summary.expense}",
-              textValueColor: AppColors.expenseColor,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            SummaryText(
-              summaryLabel: "Total",
-              summaryValue: "${state.summary.total}",
-              textValueColor: colorScheme.onPrimary,
-            ),
-          ],
-        );
-      },
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SummaryText(
+          summaryLabel: TransactionsConstants.kIncomeType.firstUpper(),
+          summaryValue: "${summary.income}",
+          textValueColor: AppColors.incomeColor,
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        SummaryText(
+          summaryLabel: TransactionsConstants.kExpenseType.firstUpper(),
+          summaryValue: "${summary.expense}",
+          textValueColor: AppColors.expenseColor,
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        SummaryText(
+          summaryLabel: "Total",
+          summaryValue: "${summary.total}",
+          textValueColor: colorScheme.onPrimary,
+        ),
+      ],
     );
   }
 }
