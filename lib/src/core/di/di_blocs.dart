@@ -40,6 +40,7 @@ Future<void> registerBlocs() async {
   getIt.registerFactory<StatsBloc>(
       () => StatsBloc(repository: getIt<StatsRepository>()));
 
-  getIt.registerFactory<SummaryBloc>(
-      () => SummaryBloc(repository: transactionRepositoryInst));
+  getIt.registerFactory<SummaryBloc>(() => SummaryBloc(
+      transactionRepository: transactionRepositoryInst,
+      financialSummaryRepository: financialSummaryRepositoryInst));
 }

@@ -12,3 +12,10 @@ class FetchSummaryEvent extends SummaryEvent {
       required this.previousMonthIndex,
       required this.year});
 }
+
+class FetchTopFiveExpense extends SummaryEvent {
+  final int month;
+  final int year;
+
+  const FetchTopFiveExpense({required this.month, required this.year});
+}
