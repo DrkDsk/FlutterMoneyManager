@@ -8,6 +8,7 @@ import 'package:flutter_money_manager/src/features/transaction/domain/repositori
 import 'package:flutter_money_manager/src/features/transaction/domain/useCases/save_yearly_transaction_use_case.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/create/cubit/create_transaction_cubit.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/summary/summary_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
 import 'package:get_it/get_it.dart';
 
@@ -38,4 +39,6 @@ Future<void> registerBlocs() async {
 
   getIt.registerFactory<StatsBloc>(
       () => StatsBloc(repository: getIt<StatsRepository>()));
+
+  getIt.registerFactory<SummaryBloc>(() => SummaryBloc());
 }

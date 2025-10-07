@@ -6,6 +6,7 @@ import 'package:flutter_money_manager/src/features/home/ui/blocs/navigation_cubi
 import 'package:flutter_money_manager/src/features/home/ui/screens/home_screen.dart';
 import 'package:flutter_money_manager/src/features/stats/ui/blocs/stats_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/calendar/calendar_bloc.dart';
+import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/summary/summary_bloc.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/blocs/transactions/transactions_bloc.dart';
 
 class LoginButton extends StatelessWidget {
@@ -32,6 +33,9 @@ class LoginButton extends StatelessWidget {
                 ),
                 BlocProvider(
                   create: (_) => getIt<StatsBloc>(),
+                ),
+                BlocProvider(
+                  create: (_) => getIt<SummaryBloc>(),
                 ),
               ], child: const HomeScreen()))),
       child: Container(
