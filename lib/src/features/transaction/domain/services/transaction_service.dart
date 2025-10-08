@@ -40,11 +40,16 @@ class TransactionService {
     final transactions = await _transactionDatasource.getAllTransactions();
 
     final filtered = await Isolate.run(() {
-      return transactions
+      final filteredList = transactions
           .where((t) =>
               t.transactionDate.year == year &&
               t.transactionDate.month == month)
           .toList();
+
+      filteredList
+          .sort((a, b) => b.transactionDate.compareTo(a.transactionDate));
+
+      return filteredList;
     });
 
     return filtered;
