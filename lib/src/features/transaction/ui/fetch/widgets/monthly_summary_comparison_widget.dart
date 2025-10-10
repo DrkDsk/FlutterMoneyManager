@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
+import 'package:flutter_money_manager/src/core/constants/transactions_constants.dart';
+import 'package:flutter_money_manager/src/core/extensions/string_extension.dart';
 import 'package:flutter_money_manager/src/core/styles/container_styles.dart';
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/monthly_summary.dart';
 import 'package:flutter_money_manager/src/features/transaction/ui/fetch/widgets/transaction_summary_content.dart';
@@ -35,14 +37,14 @@ class MonthlySummaryComparisonWidget extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  const Text("Income"),
+                  Text(TransactionsConstants.kIncomeType.firstUpper()),
                   Text("\$${lastMonthSummary.income}",
                       style: mediumStyle?.copyWith(color: AppColors.onPrimary))
                 ],
               ),
               Column(
                 children: [
-                  const Text("Expense"),
+                  Text(TransactionsConstants.kExpenseType.firstUpper()),
                   Text("\$${lastMonthSummary.expense}",
                       style: mediumStyle?.copyWith(color: AppColors.onPrimary))
                 ],

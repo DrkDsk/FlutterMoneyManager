@@ -15,8 +15,8 @@ class CustomNumericKeyboard extends StatelessWidget {
 
   Widget _buildButton(String text,
       {VoidCallback? onTap, TextStyle? style, BoxDecoration? decoration}) {
-    final buttonStyle = style ??
-        TextStyle(color: AppColors.primary.customOpacity(0.8), fontSize: 22);
+    final buttonStyle =
+        style ?? TextStyle(color: AppColors.onPrimary, fontSize: 22);
 
     return Expanded(
       child: Center(
@@ -42,10 +42,12 @@ class CustomNumericKeyboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return FractionallySizedBox(
       heightFactor: 0.4,
       child: Container(
-        color: AppColors.onPrimary.customOpacity(0.85),
+        color: theme.colorScheme.primary,
         child: Column(
           children: [
             const SizedBox(
@@ -76,6 +78,7 @@ class CustomNumericKeyboard extends StatelessWidget {
               child: Row(children: [
                 _buildButton(
                   "OK",
+                  style: TextStyle(color: AppColors.primary, fontSize: 22),
                   onTap: () => onOkSubmit(),
                   decoration: BoxDecoration(color: AppColors.turquoise),
                 ),

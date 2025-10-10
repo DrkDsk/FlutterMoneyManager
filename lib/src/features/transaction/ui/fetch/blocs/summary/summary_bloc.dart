@@ -16,13 +16,15 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
         super(SummaryState.initial()) {
     on<FetchSummaryEvent>(_fetchSummaryEvent);
     on<FetchTopFiveExpense>(_fetchTopFiveExpense);
+    on<UpdateSelectedDate>(_updateSelectedDate);
+    on<UpdateTopFiveType>(_updateTopFiveType);
   }
 
   Future<void> _fetchSummaryEvent(
       FetchSummaryEvent event, Emitter<SummaryState> emit) async {
     final previousMonthIndex = event.previousMonthIndex;
-    final currentMonthIndex = event.currentMonthIndex;
-    final year = event.year;
+    final currentMonthIndex = state.selectedMonth;
+    final year = state.selectedYear;
 
     final result = await _transactionRepository.getComparisonByMonths(
         currentMonth: currentMonthIndex,
@@ -48,12 +50,29 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
 
   Future<void> _fetchTopFiveExpense(
       FetchTopFiveExpense event, Emitter<SummaryState> emit) async {
-    final monthIndex = event.month;
-    final yearIndex = event.year;
+    final monthIndex = state.selectedMonth;
+    final yearIndex = state.selectedYear;
+    final type = state.selectedTypeForChart;
 
     final result = await _financialSummaryRepository.getTopFiveSummary(
-        month: monthIndex, year: yearIndex);
+        month: monthIndex, year: yearIndex, type: type);
 
     emit(state.copyWith(topFiveSummary: result));
+  }
+
+  Future<void> _updateSelectedDate(
+      UpdateSelectedDate event, Emitter<SummaryState> emit) async {
+    final month = event.month;
+    final year = event.year;
+
+    emit(state.copyWith(selectedMonth: month, selectedYear: year));
+  }
+
+  Future<void> _updateTopFiveType(
+      UpdateTopFiveType event, Emitter<SummaryState> emit) async {
+    final type = event.type;
+
+    emit(state.copyWith(selectedTypeForChart: type));
+    add(const FetchTopFiveExpense());
   }
 }

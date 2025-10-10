@@ -27,12 +27,14 @@ class FinancialSummaryRepositoryImpl implements FinancialSummaryRepository {
 
   @override
   Future<TopFiveSummary> getTopFiveSummary(
-      {required int month, required int year}) async {
+      {required int month,
+      required int year,
+      required TransactionTypEnum type}) async {
     final allTransactions = await _transactionService.getTransactionsMonth(
         year: year, month: month);
 
     final transactions = allTransactions
-        .where((transaction) => transaction.type == TransactionTypEnum.expense)
+        .where((transaction) => transaction.type == type)
         .toList();
 
     final top5Entries = transactions
