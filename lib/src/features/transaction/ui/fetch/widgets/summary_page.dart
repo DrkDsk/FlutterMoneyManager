@@ -29,12 +29,11 @@ class _SummaryPageState extends State<SummaryPage> {
         focusedDate.subtract(const Duration(days: 30)).month;
     final year = focusedDate.year;
 
-    _summaryBloc.add(FetchSummaryEvent(
-        currentMonthIndex: month,
-        previousMonthIndex: previousMonthIndex,
-        year: year));
+    _summaryBloc.add(UpdateSelectedDate(year: year, month: month));
 
-    _summaryBloc.add(FetchTopFiveExpense(month: month, year: year));
+    _summaryBloc.add(FetchSummaryEvent(previousMonthIndex: previousMonthIndex));
+
+    _summaryBloc.add(const FetchTopFiveExpense());
   }
 
   @override

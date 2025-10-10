@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_manager/src/core/colors/app_colors.dart';
 
 import 'package:flutter_money_manager/src/features/transaction/domain/entities/transaction_category.dart';
 
@@ -17,7 +16,7 @@ class BottomTransactionCategory extends StatelessWidget {
     return FractionallySizedBox(
       heightFactor: 0.4,
       child: Container(
-        color: AppColors.keyboardBackgroundColor,
+        color: theme.colorScheme.primary,
         child: GridView.builder(
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -41,9 +40,9 @@ class BottomTransactionCategory extends StatelessWidget {
                     category.name,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: theme.colorScheme.primary),
+                        ?.copyWith(color: theme.colorScheme.onPrimary),
                     maxLines: 2,
-                    overflow: TextOverflow.ellipsis, // 👈 evita cortes feos
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
